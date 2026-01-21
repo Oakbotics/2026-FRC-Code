@@ -4,9 +4,13 @@
 
 package frc.robot.shooter;
 
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix6.hardware.TalonFX; 
+import com.ctre.phoenix6.hardware.TalonFX;
+
+import javax.xml.validation.SchemaFactoryConfigurationError;
+
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
@@ -21,7 +25,6 @@ public class ShooterSubsystem extends SubsystemBase {
     /** Creates a new ExampleSubsystem. */
   public ShooterSubsystem() {
     shooterMotor = new TalonFX(ShooterConstants.shooterMotorOneID);
-    
     configureMotors();
   }
 
@@ -39,9 +42,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
   
   public void runVelocityTorqueFOC(double rps) {
-    shooterMotor.setControl(
-      velocityTorqueRequest.withVelocity(rps)
-    );
+    double motorRPS = rps * 6.0;
+    VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0).withVelocity(motorRPS).withFeedForward(1.0);
+    shooterMotor.setControl(request);
   }
   
 
@@ -61,7 +64,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void printRPM() {
     double motorRPS = shooterMotor.getVelocity().getValueAsDouble();
-    double shooterRPM = (motorRPS / 6.0) * 60.0;
+    double shooterRPM = motorRPS * 60.0;
     SmartDashboard.putNumber("Shooter Motor RPM", shooterRPM);
   }
 
