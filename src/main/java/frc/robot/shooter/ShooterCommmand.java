@@ -35,7 +35,7 @@ public class ShooterCommmand extends Command {
   @Override
   public void execute() {
     // m_shooterSubsystem.shootFuel(speed);
-    // m_shooterSubsystem.runVelocity(100);
+    // m_shooterSubsystem.runVelocity(200);
     m_shooterSubsystem.runVelocityTorqueFOC(15);
     m_shooterSubsystem.printRPM();
     m_shooterSubsystem.printVoltageOutput();
@@ -45,9 +45,9 @@ public class ShooterCommmand extends Command {
   @Override
   public void end(boolean interrupted) {
   // m_shooterSubsystem.shootFuel(0);
-    // m_shooterSubsystem.runVelocity(0);
+    //m_shooterSubsystem.runVelocity(0);
     m_shooterSubsystem.runVelocityTorqueFOC(0);
-    m_shooterSubsystem.resetVoltageOutput();
+    // m_shooterSubsystem.resetVoltageOutput();
   }
 
   // Returns true when the command should end.

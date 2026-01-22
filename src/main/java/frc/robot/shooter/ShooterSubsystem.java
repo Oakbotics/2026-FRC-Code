@@ -20,7 +20,7 @@ import frc.robot.Configs.ShooterConfigs;
 public class ShooterSubsystem extends SubsystemBase {
     private final TalonFX shooterMotor;
     private final DutyCycleOut dutyCycle = new DutyCycleOut(0); 
-    private final VelocityVoltage voltageRequest = new VelocityVoltage(0);
+    private final VelocityVoltage voltageRequest = new VelocityVoltage(0).withEnableFOC(true);
     private final VelocityTorqueCurrentFOC velocityTorqueRequest = new VelocityTorqueCurrentFOC(0);
     /** Creates a new ExampleSubsystem. */
   public ShooterSubsystem() {
@@ -41,11 +41,24 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterMotor.setControl(voltageRequest); 
   }
   
-  public void runVelocityTorqueFOC(double rps) {
-    double motorRPS = rps * 6.0;
-    VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0).withVelocity(motorRPS).withFeedForward(1.0);
+public void runVelocityTorqueFOC(double rps) {
+    double motorRPS = rps; // gear ratio included if needed
+
+    // Create velocity control request
+    VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0)
+            .withVelocity(motorRPS)
+            .withFeedForward(0.05); // small feedforward to help startup
+
+    // Send control to motor
     shooterMotor.setControl(request);
-  }
+
+    // Logging
+    SmartDashboard.putNumber("Motor Target RPS", motorRPS);
+    SmartDashboard.putNumber("Motor Actual RPS", shooterMotor.getVelocity().getValueAsDouble());
+}
+
+
+
   
 
   public void printVoltageOutput() {

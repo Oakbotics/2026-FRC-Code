@@ -19,7 +19,7 @@ public final class Configs {
 
 
             config.Slot0.kS = 0.0;
-            config.Slot0.kV = 0.0;
+            config.Slot0.kV = 0.15;
             config.Slot0.kA = 0.0;
 
             config.Feedback.SensorToMechanismRatio = 6.0;
@@ -27,8 +27,12 @@ public final class Configs {
             config.CurrentLimits.SupplyCurrentLimit = 40;
             config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-            config.CurrentLimits.StatorCurrentLimit = 30;
+            config.CurrentLimits.StatorCurrentLimit = 100;
             config.CurrentLimits.StatorCurrentLimitEnable = true;
+
+            config.TorqueCurrent.PeakForwardTorqueCurrent = 100;
+            config.TorqueCurrent.PeakReverseTorqueCurrent = -100;
+
 
             return config;
         }
