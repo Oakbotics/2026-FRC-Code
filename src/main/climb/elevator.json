@@ -1,0 +1,34 @@
+{
+  "schema_version": "1",
+  "gear_ratio": 6,
+  "mass_kg": 5,
+  "drum_radius_m": 0.127,
+  "max_height_m": 0,
+  "elevator_gui_info": {
+    "num_motors": 1,
+    "gearbox_type": 0,
+    "elevator_upper_bound": 0,
+    "has_determined_inverts": false,
+    "has_verified_lower_limits": false,
+    "has_verified_upper_limits": false,
+    "current_page_index": 0
+  },
+  "motor_controllers": [],
+  "setpoints": [
+    {
+      "name": "Ground",
+      "target_rot": 0,
+      "is_setpoint_running": false
+    },
+    {
+      "name": "Middle",
+      "target_rot": 5,
+      "is_setpoint_running": false
+    },
+    {
+      "name": "Top",
+      "target_rot": 10,
+      "is_setpoint_running": false
+    }
+  ]
+}
