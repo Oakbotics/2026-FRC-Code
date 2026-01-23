@@ -19,6 +19,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -66,6 +67,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         RotationsPerSecond.of(0.75).in(RadiansPerSecond),
         RotationsPerSecond.of(1.5).in(RadiansPerSecond)
     );
+    SwerveDrivePoseEstimator m_odometry;
+    
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -205,7 +208,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         configurePathPlanner();
         if (Utils.isSimulation()) {
             startSimThread();
+
+    
         }
+
+
     }
 
     /**
@@ -282,6 +289,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+
+  
     }
 
     private void configurePathPlanner() {
@@ -294,7 +303,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         AutoBuilder.configure(
-            this::getPose,
+            this::getPose, 
             this::resetOdometry,
             this::getChassisSpeeds,
             speeds -> setControl(m_autoRequest.withSpeeds(speeds)),
