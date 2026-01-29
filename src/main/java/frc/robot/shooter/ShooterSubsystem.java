@@ -6,55 +6,99 @@ package frc.robot.shooter;
 
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import javax.xml.validation.SchemaFactoryConfigurationError;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import frc.robot.Configs;
 import frc.robot.Configs.ShooterConfigs;
 
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import static edu.wpi.first.units.Units.*;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
+import com.ctre.phoenix6.controls.VoltageOut;
+
 public class ShooterSubsystem extends SubsystemBase {
-    private final TalonFX shooterMotor;
+    private final TalonFX shooterMotorOne;
+    private final TalonFX shooterMotorTwo;
     private final DutyCycleOut dutyCycle = new DutyCycleOut(0); 
     private final VelocityVoltage voltageRequest = new VelocityVoltage(0).withEnableFOC(true);
     private final VelocityTorqueCurrentFOC velocityTorqueRequest = new VelocityTorqueCurrentFOC(0);
+    private final VoltageOut sysIdControl = new VoltageOut(0);
+    private final SysIdRoutine m_SysIdRoutine;
+
     /** Creates a new ExampleSubsystem. */
   public ShooterSubsystem() {
-    shooterMotor = new TalonFX(ShooterConstants.shooterMotorOneID);
+    shooterMotorOne = new TalonFX(ShooterConstants.shooterMotorOneID);
+    shooterMotorTwo = new TalonFX(ShooterConstants.shooterMotorTwoID);
+      m_SysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(null,
+      Volts.of(4),
+      null, 
+      (state) -> SignalLogger.writeString("state", state.toString())),
+      new SysIdRoutine.Mechanism(
+        (volts) -> shooterMotorOne.setControl(sysIdControl.withOutput(volts.in(Volts))),
+        log -> {
+          log.motor("Shooter Motor")
+          .voltage(shooterMotorOne.getMotorVoltage().getValue())
+          .angularPosition(shooterMotorOne.getPosition().getValue())
+          .angularVelocity(shooterMotorOne.getVelocity().getValue());
+        },
+      this));
     configureMotors();
+    SignalLogger.setPath("/home/vuser/logs/");
+    
   }
 
   public void configureMotors() {
-    shooterMotor.getConfigurator().apply(Configs.ShooterConfigs.shooterMotorConfig());
+    shooterMotorOne.getConfigurator().apply(Configs.ShooterConfigs.shooterMotorConfig());
+    shooterMotorTwo.getConfigurator().apply(Configs.ShooterConfigs.shooterMotorConfig());
+
+    shooterMotorOne.getVelocity().setUpdateFrequency(100);
+    shooterMotorOne.getPosition().setUpdateFrequency(100);
+
+  }
+  public Command sysIdDynamic(SysIdRoutine.Direction direction){
+    return m_SysIdRoutine.dynamic(direction);
+  }
+  
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction){
+    return m_SysIdRoutine.quasistatic(direction);
   }
 
   public void shootFuel(double speed) {
-    shooterMotor.setControl(dutyCycle.withOutput(speed));
+    shooterMotorOne.setControl(dutyCycle.withOutput(speed));
   }
 
   public void runVelocity(double rps) {
     voltageRequest.Velocity = rps;
-    shooterMotor.setControl(voltageRequest); 
+    shooterMotorOne.setControl(voltageRequest); 
   }
   
 public void runVelocityTorqueFOC(double rps) {
     double motorRPS = rps; // gear ratio included if needed
-
+    double kS_Amps = 0.2; 
+    double kV_Amps = 0.1;
+    double feedForwardAmps = (kS_Amps * Math.signum(rps)) + (kV_Amps * rps);
     // Create velocity control request
     VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0)
             .withVelocity(motorRPS)
-            .withFeedForward(0.05); // small feedforward to help startup
+            .withFeedForward(feedForwardAmps); // small feedforward to help startup
 
     // Send control to motor
-    shooterMotor.setControl(request);
+    shooterMotorOne.setControl(request);
+    shooterMotorTwo.setControl(request);
 
     // Logging
     SmartDashboard.putNumber("Motor Target RPS", motorRPS);
-    SmartDashboard.putNumber("Motor Actual RPS", shooterMotor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Motor Actual RPS", shooterMotorOne.getVelocity().getValueAsDouble());
 }
 
 
@@ -62,7 +106,7 @@ public void runVelocityTorqueFOC(double rps) {
   
 
   public void printVoltageOutput() {
-    double motorVoltage = shooterMotor.getMotorVoltage().getValueAsDouble();
+    double motorVoltage = shooterMotorOne.getMotorVoltage().getValueAsDouble();
     SmartDashboard.putNumber("Motor Voltage", motorVoltage);
   }
 
@@ -71,12 +115,12 @@ public void runVelocityTorqueFOC(double rps) {
   }
 
   public void printCurrentLimits() {
-    SmartDashboard.putNumber("Shooter Stator Current", shooterMotor.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter Supply Current", shooterMotor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter Stator Current", shooterMotorOne.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter Supply Current", shooterMotorOne.getSupplyCurrent().getValueAsDouble());
   }
 
   public void printRPM() {
-    double motorRPS = shooterMotor.getVelocity().getValueAsDouble();
+    double motorRPS = shooterMotorOne.getVelocity().getValueAsDouble();
     double shooterRPM = motorRPS * 60.0;
     SmartDashboard.putNumber("Shooter Motor RPM", shooterRPM);
   }
