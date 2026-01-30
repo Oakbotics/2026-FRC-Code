@@ -317,7 +317,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             speeds -> setControl(m_autoRequest.withSpeeds(speeds)),
             new PPHolonomicDriveController(
                 new PIDConstants(9.0, 0.0, 0.1),
-                new PIDConstants(8.0, 0.0, 0.0)
+                new PIDConstants(16.0, 0.0, 0.0)
             ),
             config,
             () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
