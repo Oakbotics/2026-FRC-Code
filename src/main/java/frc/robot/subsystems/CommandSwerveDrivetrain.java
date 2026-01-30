@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ApplyFieldSpeeds;
+import com.ctre.phoenix6.swerve.SwerveRequest.ApplyRobotSpeeds;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -19,6 +20,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -56,16 +58,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
-
-    private final ApplyFieldSpeeds m_autoRequest = new ApplyFieldSpeeds();
-
+    private final ApplyRobotSpeeds m_autoRequest = new ApplyRobotSpeeds();
     private final PathConstraints m_pathConstraints = new PathConstraints(
         TunerConstants.kSpeedAt12Volts.in(MetersPerSecond),
         2.0,
         RotationsPerSecond.of(0.75).in(RadiansPerSecond),
         RotationsPerSecond.of(1.5).in(RadiansPerSecond)
     );
-
+    SwerveDrivePoseEstimator m_odometry;
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -204,7 +204,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         configurePathPlanner();
         if (Utils.isSimulation()) {
             startSimThread();
+
+    
         }
+
+
     }
 
     /*
