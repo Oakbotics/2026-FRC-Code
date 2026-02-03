@@ -15,13 +15,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-<<<<<<< HEAD
 import frc.robot.shooter.ShooterCommmand;
-import frc.robot.commands.TestAuto;
-=======
+import frc.robot.commands.RotatePositionAuto;
 import frc.robot.commands.autoCommand.TestAuto;
-import frc.robot.commands.ShooterCommmand;
->>>>>>> 3da39d2223badacc2d7cd8f63c5e9b697960ecae
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.shooter.ShooterSubsystem;
@@ -91,6 +87,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new TestAuto(drivetrain);
+        return new RotatePositionAuto(drivetrain);
     }
 }
