@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.shooter.ShooterCommmand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Elevator;
 import frc.robot.shooter.ShooterSubsystem;
 
 public class RobotContainer {
@@ -36,7 +37,12 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
+    private final CommandXboxController joystickOperator = new CommandXboxController(1);
+
+
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+    public final Elevator m_elevatorSubsystem = new Elevator();
 
     public RobotContainer() {
         configureBindings();
@@ -78,6 +84,12 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+
+                joystickOperator.x().onTrue(m_elevatorSubsystem.goToSetpoint(() -> Elevator.Setpoint.Middle));
+                joystickOperator.y().onTrue(m_elevatorSubsystem.goToSetpoint(() -> Elevator.Setpoint.Top));
+                joystickOperator.b().onTrue(m_elevatorSubsystem.goToSetpoint(() -> Elevator.Setpoint.Ground));
+
+
     }
 
     public Command getAutonomousCommand() {

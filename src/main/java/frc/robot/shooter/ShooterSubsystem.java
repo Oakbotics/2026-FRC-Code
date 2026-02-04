@@ -84,8 +84,8 @@ public class ShooterSubsystem extends SubsystemBase {
   
 public void runVelocityTorqueFOC(double rps) {
     double motorRPS = rps; // gear ratio included if needed
-    double kS_Amps = 0.2; 
-    double kV_Amps = 0.1;
+    double kS_Amps = ShooterConstants.kS; 
+    double kV_Amps = ShooterConstants.kV;
     double feedForwardAmps = (kS_Amps * Math.signum(rps)) + (kV_Amps * rps);
     // Create velocity control request
     VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0)
