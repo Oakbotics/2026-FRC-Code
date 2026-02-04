@@ -25,7 +25,7 @@ public class AlignToHubOdometry extends Command {
   private final Pose2d m_targetPose;
 
   private final PIDController xController = new PIDController(3.8, 0.0, 0.0);
-  private final PIDController yController = new PIDController(1.5, 0.0, 0.0);
+  private final PIDController yController = new PIDController(3.8, 0.0, 0.0);
   private final PIDController rotController = new PIDController(5, 0.0, 0.0);
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -106,6 +106,6 @@ public class AlignToHubOdometry extends Command {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return xController.atSetpoint() && yController.atSetpoint() && rotController.atSetpoint();
   }
 }
