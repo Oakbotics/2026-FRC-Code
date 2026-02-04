@@ -24,9 +24,9 @@ public class AlignToHubOdometry extends Command {
   private final CommandSwerveDrivetrain m_drivetrain;
   private final Pose2d m_targetPose;
 
-  private final PIDController xController = new PIDController(1.5, 0.0, 0.0);
+  private final PIDController xController = new PIDController(3.8, 0.0, 0.0);
   private final PIDController yController = new PIDController(1.5, 0.0, 0.0);
-  private final PIDController rotController = new PIDController(1.5, 0.0, 0.0);
+  private final PIDController rotController = new PIDController(5, 0.0, 0.0);
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -42,17 +42,22 @@ public class AlignToHubOdometry extends Command {
 
     xController.setTolerance(0.05);                 // meters
     yController.setTolerance(0.05);                 // meters
-    rotController.setTolerance(Math.toRadians(3.0)); // radians
+    //rotController.setTolerance(Math.toRadians(3.0)); // radians
 
     addRequirements(drivetrain);
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    xController.reset();
+    yController.reset();
+    rotController.reset();
+  }
 
   @Override
   public void execute() {
     Pose2d current = m_drivetrain.getState().Pose;
+
 
     double vx = MathUtil.clamp(
         xController.calculate(current.getX(), m_targetPose.getX()),
@@ -75,17 +80,28 @@ public class AlignToHubOdometry extends Command {
              .withRotationalRate(omega)
     );
 
+    SmartDashboard.putNumber("curX", current.getX());
+    SmartDashboard.putNumber("curY", current.getY());
+    SmartDashboard.putNumber("curDeg", current.getRotation().getDegrees());
+
+    SmartDashboard.putNumber("tgtX", m_targetPose.getX());
+    SmartDashboard.putNumber("tgtY", m_targetPose.getY());
+    SmartDashboard.putNumber("tgtDeg", m_targetPose.getRotation().getDegrees());
+
+    SmartDashboard.putNumber("vx_mps", vx);
+    SmartDashboard.putNumber("vy_mps", vy);
+    SmartDashboard.putNumber("omega_radps", omega);
   }
 
   @Override
   public void end(boolean interrupted) {
-  
+    // Stop the drivetrain when done/interrupted
     m_drivetrain.setControl(
         drive.withVelocityX(0.0)
              .withVelocityY(0.0)
              .withRotationalRate(0.0)
     );
-
+    SmartDashboard.putBoolean("AlignToHub/Running", false);
   }
 
   @Override
