@@ -21,10 +21,10 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.math.MathUtil;
 // import frc.robot.commands.ShooterCommmand;
-import frc.robot.commands.TestAuto;
+// import frc.robot.commands.TestAuto;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.commands.RotateToHubAimPointVision;
+// import frc.robot.commands.RotateToHubAimPointVision;
 import frc.robot.commands.AlignRotationToHubLimelight;
 import frc.robot.subsystems.LimeLightSubsystem;
 
@@ -70,21 +70,7 @@ public class RobotContainer {
                     .withRotationalRate(joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
-        joystick.rightTrigger(0.5).whileTrue(
-            new RotateToHubAimPointVision(
-                drivetrain,
-                m_limelightSubsystem,
 
-
-                // IMPORTANT: match your default drive scaling/signs exactly
-                () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
-                () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed,
-
-
-                // Fallback manual rotation when no tag (or when command decides to give up)
-                () -> MathUtil.applyDeadband(joystick.getRightX(), 0.10) * MaxAngularRate
-            )
-        );
         joystick.leftTrigger().whileTrue(
             new AlignRotationToHubLimelight(
                 m_limelightSubsystem,
@@ -127,7 +113,7 @@ public class RobotContainer {
     }
 
 
-    public Command getAutonomousCommand() {
-        return new RotatePositionAuto(drivetrain);
-    }
+    // public Command getAutonomousCommand() {
+    //     // return new RotatePositionAuto(drivetrain);
+    // }
 }
