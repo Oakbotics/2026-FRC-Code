@@ -128,6 +128,6 @@ public class RobotContainer {
 
 
     public Command getAutonomousCommand() {
-        return new TestAuto(drivetrain);
+        return new RotatePositionAuto(drivetrain);
     }
 }
