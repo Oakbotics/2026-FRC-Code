@@ -18,6 +18,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
@@ -40,9 +41,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class Elevator extends SubsystemBase {
     /** Position setpoints for the elevator. */
     public enum Setpoint {
-        Ground(Rotations.of(-0.5)),
-        Middle(Rotations.of(-1)),
-        Top(Rotations.of(-2));
+        Ground(Rotations.of(0.65)),
+        Middle(Rotations.of(1)),
+        Top(Rotations.of(2.25));
 
         /** The position target of the setpoint in angular units. */
         public final Angle target;
@@ -115,6 +116,7 @@ public class Elevator extends SubsystemBase {
         .withMotorOutput(
             leaderInitialConfigs.MotorOutput.clone()
                 .withNeutralMode(NeutralModeValue.Coast)
+                .withInverted(InvertedValue.Clockwise_Positive)
         )
         .withCurrentLimits(
             leaderInitialConfigs.CurrentLimits.clone()
@@ -151,8 +153,8 @@ public class Elevator extends SubsystemBase {
         )
         .withMotionMagic(
             leaderInitialConfigs.MotionMagic.clone()
-                .withMotionMagicCruiseVelocity(RotationsPerSecond.of(8.88888888888889))
-                .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(44.44444444444444))
+                .withMotionMagicCruiseVelocity(RotationsPerSecond.of(3.5555555555556))
+                .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(28.88888889))
         );
 
     /** Configs for {@link #motor_id_2}. */
