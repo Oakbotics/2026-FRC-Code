@@ -19,9 +19,9 @@ public class TestAuto extends SequentialCommandGroup {
         );
 
         addCommands(
-            drivetrain.resetPoseCommand(startingPose),
+            drivetrain.resetPoseCommand(startingPose)
 
-            new AlignToHubOdometry(drivetrain, targetPose)
+            // new AlignToHubOdometry(drivetrain, targetPose)
         );
     }
 }
