@@ -24,8 +24,12 @@ import edu.wpi.first.math.MathUtil;
 // import frc.robot.commands.TestAuto;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.commands.AlignAuto;
 // import frc.robot.commands.RotateToHubAimPointVision;
 import frc.robot.commands.AlignRotationToHubLimelight;
+import frc.robot.commands.AlignRotationToHubOdometry;
+import frc.robot.commands.HubAuto;
+import frc.robot.commands.RotatePositionAuto;
 import frc.robot.subsystems.LimeLightSubsystem;
 
 
@@ -80,6 +84,15 @@ public class RobotContainer {
             )
         );
 
+        joystick.rightTrigger().whileTrue(
+            new AlignRotationToHubOdometry(
+                drivetrain,
+                m_limelightSubsystem,
+                () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
+                () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
+            )
+        );
+
         joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
 
         // Idle while the robot is disabled. This ensures the configured
@@ -113,7 +126,7 @@ public class RobotContainer {
     }
 
 
-    // public Command getAutonomousCommand() {
-    //     // return new RotatePositionAuto(drivetrain);
-    // }
+    public Command getAutonomousCommand() {
+        return new AlignAuto(drivetrain, m_limelightSubsystem);
+    }
 }

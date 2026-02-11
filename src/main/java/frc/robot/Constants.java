@@ -1,8 +1,11 @@
 package frc.robot;
 
 
+import java.util.Optional;
 import java.util.Set;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 
 public final class Constants {
@@ -27,14 +30,14 @@ public final class Constants {
         24, 25, 26, 27
     );
 
+   public static Translation2d hubPosition() {
+      final Optional<Alliance> alliance = DriverStation.getAlliance();
 
-    /**
-     * HUB center in WPILib field coordinates (WPI Blue coordinate system).
-     * IMPORTANT: Put the REAL hub center from the official 2026 field drawings here.
-     * (Do NOT reuse the old "+8.7736/+4.0257" offset trick.)
-     */
-    public static final Translation2d HUB_CENTER_WPI_BLUE = new Translation2d(8.7736, 4.0257);
-
+      if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
+        return new Translation2d(4.625467, 4.034663);
+      }
+      return new Translation2d(11.915521, 4.034663);
+    }
 
     /** Heading PID (rad, rad/s) */
     public static final double HEADING_kP = 6.0;

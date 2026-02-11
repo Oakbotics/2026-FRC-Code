@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.commands.AlignToHubOdometry;
+import frc.robot.commands.MoveOdometry;
 
 public class RotatePositionAuto extends SequentialCommandGroup {
 
@@ -39,10 +39,10 @@ public class RotatePositionAuto extends SequentialCommandGroup {
         addCommands(
             drivetrain.resetPoseCommand(startingPose),
 
-            new AlignToHubOdometry(drivetrain, targetPose),
-            new AlignToHubOdometry(drivetrain, targetPose1),
-            new AlignToHubOdometry(drivetrain, targetPose2),
-            new AlignToHubOdometry(drivetrain, targetPose3)
+            new MoveOdometry(drivetrain, targetPose),
+            new MoveOdometry(drivetrain, targetPose1),
+            new MoveOdometry(drivetrain, targetPose2),
+            new MoveOdometry(drivetrain, targetPose3)
         );
     }
 }
