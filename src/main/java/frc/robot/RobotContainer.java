@@ -19,12 +19,15 @@ import frc.robot.shooter.ShooterCommmand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.wrist.WristCommand;
+import frc.robot.wrist.WristSubsystem;
 import frc.robot.shooter.ShooterSubsystem;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+    private final WristSubsystem m_wristSubsystem = new WristSubsystem();
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -71,7 +74,6 @@ public class RobotContainer {
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
-
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
@@ -85,9 +87,11 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-                joystickOperator.x().onTrue(m_elevatorSubsystem.goToSetpoint(() -> Elevator.Setpoint.Middle));
+                // joystickOperator.x().onTrue(m_elevatorSubsystem.goToSetpoint(() -> Elevator.Setpoint.Middle));
                 joystickOperator.y().onTrue(m_elevatorSubsystem.goToSetpoint(() -> Elevator.Setpoint.Top));
                 joystickOperator.b().onTrue(m_elevatorSubsystem.goToSetpoint(() -> Elevator.Setpoint.Ground));
+                joystickOperator.x().onTrue(new WristCommand(m_wristSubsystem, 40));
+
 
 
     }
