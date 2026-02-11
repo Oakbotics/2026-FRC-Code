@@ -4,26 +4,29 @@
 
 package frc.robot.shooter;
 
-import frc.robot.shooter.ShooterSubsystem;
+import frc.robot.shooter.LeftShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
 public class ShooterCommmand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // private final ExampleSubsystem m_subsystem;
-  private final ShooterSubsystem m_shooterSubsystem;
+  private final LeftShooterSubsystem m_leftShooterSubsystem;
+  private final RightShooterSubsystem m_rightShooterSubsystem;
+
   private final double speed;
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShooterCommmand(ShooterSubsystem m_shooterSubsystem, double speed) {
+  public ShooterCommmand(RightShooterSubsystem m_rightShooterSubsytem, LeftShooterSubsystem m_leftShooterSubsystem, double speed) {
     // m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    this.m_shooterSubsystem = m_shooterSubsystem;
+    this.m_leftShooterSubsystem = m_leftShooterSubsystem;
+    this.m_rightShooterSubsystem = m_rightShooterSubsytem;
     this.speed = speed;
-    addRequirements(m_shooterSubsystem);
+    addRequirements(m_leftShooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -34,20 +37,23 @@ public class ShooterCommmand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // m_shooterSubsystem.shootFuel(speed);
-    // m_shooterSubsystem.runVelocity(200);
-    m_shooterSubsystem.runVelocityTorqueFOC(15);
-    m_shooterSubsystem.printRPM();
-    m_shooterSubsystem.printVoltageOutput();
+    // m_leftShooterSubsystem.shootFuel(speed);
+    // m_leftShooterSubsystem.runVelocity(200);
+    m_leftShooterSubsystem.runVelocityTorqueFOC(15);
+    m_leftShooterSubsystem.printRPM();
+    m_leftShooterSubsystem.printVoltageOutput();
+    m_rightShooterSubsystem.runVelocityTorqueFOC(15);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-  // m_shooterSubsystem.shootFuel(0);
-    //m_shooterSubsystem.runVelocity(0);
-    m_shooterSubsystem.runVelocityTorqueFOC(0);
-    // m_shooterSubsystem.resetVoltageOutput();
+  // m_leftShooterSubsystem.shootFuel(0);
+    //m_leftShooterSubsystem.runVelocity(0);
+    m_leftShooterSubsystem.runVelocityTorqueFOC(0);
+    m_rightShooterSubsystem.runVelocityTorqueFOC(0);
+
+    // m_leftShooterSubsystem.resetVoltageOutput();
   }
 
   // Returns true when the command should end.

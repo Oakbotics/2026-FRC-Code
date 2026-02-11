@@ -25,7 +25,7 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import com.ctre.phoenix6.controls.VoltageOut;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class LeftShooterSubsystem extends SubsystemBase {
     private final TalonFX shooterMotorOne;
     private final TalonFX shooterMotorTwo;
     private final DutyCycleOut dutyCycle = new DutyCycleOut(0); 
@@ -35,7 +35,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private final SysIdRoutine m_SysIdRoutine;
 
     /** Creates a new ExampleSubsystem. */
-  public ShooterSubsystem() {
+  public LeftShooterSubsystem() {
     shooterMotorOne = new TalonFX(ShooterConstants.shooterMotorOneID);
     shooterMotorTwo = new TalonFX(ShooterConstants.shooterMotorTwoID);
       m_SysIdRoutine = new SysIdRoutine(

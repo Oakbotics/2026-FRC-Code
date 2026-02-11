@@ -11,5 +11,10 @@ public class ShooterConstants {
 
     public static final int shooterMotorOneID = 2;
     public static final int shooterMotorTwoID = 14;
+    public static final int shooterMotorThreeID = 100;
+    public static final int shooterMotorFourID = 5;
+
     public static final int kickerMotorID = 1;
+
+
 }
