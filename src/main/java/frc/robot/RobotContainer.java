@@ -28,6 +28,7 @@ import frc.robot.commands.AlignAuto;
 // import frc.robot.commands.RotateToHubAimPointVision;
 import frc.robot.commands.AlignRotationToHubLimelight;
 import frc.robot.commands.AlignRotationToHubOdometry;
+import frc.robot.commands.FollowTrajectory;
 import frc.robot.commands.HubAuto;
 import frc.robot.commands.RotatePositionAuto;
 import frc.robot.subsystems.LimeLightSubsystem;
@@ -127,6 +128,6 @@ public class RobotContainer {
 
 
     public Command getAutonomousCommand() {
-        return new AlignAuto(drivetrain, m_limelightSubsystem);
+        return new FollowTrajectory(drivetrain);
     }
 }
