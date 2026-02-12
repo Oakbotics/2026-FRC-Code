@@ -8,7 +8,7 @@ import frc.robot.shooter.LeftShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class ShooterCommmand extends Command {
+public class ShooterCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // private final ExampleSubsystem m_subsystem;
   private final LeftShooterSubsystem m_leftShooterSubsystem;
@@ -20,7 +20,7 @@ public class ShooterCommmand extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShooterCommmand(RightShooterSubsystem m_rightShooterSubsytem, LeftShooterSubsystem m_leftShooterSubsystem, double speed) {
+  public ShooterCommand(RightShooterSubsystem m_rightShooterSubsytem, LeftShooterSubsystem m_leftShooterSubsystem, double speed) {
     // m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_leftShooterSubsystem = m_leftShooterSubsystem;
