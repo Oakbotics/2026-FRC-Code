@@ -51,7 +51,7 @@ public class FollowTrajectory extends Command {
         TrajectoryConfig config = new TrajectoryConfig(3.0, 2.0);
 
         Pose2d start = new Pose2d(1.0, 5.0, Rotation2d.fromDegrees(0));
-        Pose2d end = new Pose2d(5.0, 5.0, Rotation2d.fromDegrees(0));
+        Pose2d end = new Pose2d(5.0, 5.0, Rotation2d.fromDegrees(45));
         List<Translation2d> interiorWaypoints = List.of(new Translation2d(3.0, 6));
 
         trajectory = TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config);
@@ -71,9 +71,10 @@ public class FollowTrajectory extends Command {
         var desiredState = trajectory.sample(timer.get());
 
         var speeds = controller.calculate(
-            drivetrain.getState().Pose,
+            drivetrain.getPose(),
             desiredState,
             desiredState.poseMeters.getRotation()
+            //Rotation2d.fromDegrees(0)
         );
 
         double vx = MathUtil.clamp(speeds.vxMetersPerSecond, -m_maxSpeedMps, m_maxSpeedMps);

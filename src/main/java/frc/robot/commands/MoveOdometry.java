@@ -80,17 +80,17 @@ public class MoveOdometry extends Command {
              .withRotationalRate(omega)
     );
 
-    SmartDashboard.putNumber("curX", current.getX());
-    SmartDashboard.putNumber("curY", current.getY());
-    SmartDashboard.putNumber("curDeg", current.getRotation().getDegrees());
+    // SmartDashboard.putNumber("curX", current.getX());
+    // SmartDashboard.putNumber("curY", current.getY());
+    // SmartDashboard.putNumber("curDeg", current.getRotation().getDegrees());
 
-    SmartDashboard.putNumber("tgtX", m_targetPose.getX());
-    SmartDashboard.putNumber("tgtY", m_targetPose.getY());
-    SmartDashboard.putNumber("tgtDeg", m_targetPose.getRotation().getDegrees());
+    // SmartDashboard.putNumber("tgtX", m_targetPose.getX());
+    // SmartDashboard.putNumber("tgtY", m_targetPose.getY());
+    // SmartDashboard.putNumber("tgtDeg", m_targetPose.getRotation().getDegrees());
 
-    SmartDashboard.putNumber("vx_mps", vx);
-    SmartDashboard.putNumber("vy_mps", vy);
-    SmartDashboard.putNumber("omega_radps", omega);
+    // SmartDashboard.putNumber("vx_mps", vx);
+    // SmartDashboard.putNumber("vy_mps", vy);
+    // SmartDashboard.putNumber("omega_radps", omega);
   }
 
   @Override
