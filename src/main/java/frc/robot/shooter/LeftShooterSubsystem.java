@@ -4,25 +4,19 @@
 
 package frc.robot.shooter;
 
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import javax.xml.validation.SchemaFactoryConfigurationError;
-
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import frc.robot.Configs;
-import frc.robot.Configs.ShooterConfigs;
 
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import static edu.wpi.first.units.Units.*;
-import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import com.ctre.phoenix6.controls.VoltageOut;
 
 public class LeftShooterSubsystem extends SubsystemBase {
@@ -33,9 +27,11 @@ public class LeftShooterSubsystem extends SubsystemBase {
     private final VelocityTorqueCurrentFOC velocityTorqueRequest = new VelocityTorqueCurrentFOC(0);
     private final VoltageOut sysIdControl = new VoltageOut(0);
     private final SysIdRoutine m_SysIdRoutine;
+    private final Slot0Configs slot0configs = new Slot0Configs();
 
     /** Creates a new ExampleSubsystem. */
   public LeftShooterSubsystem() {
+
     shooterMotorOne = new TalonFX(ShooterConstants.shooterMotorOneID);
     shooterMotorTwo = new TalonFX(ShooterConstants.shooterMotorTwoID);
       m_SysIdRoutine = new SysIdRoutine(
@@ -64,11 +60,19 @@ public class LeftShooterSubsystem extends SubsystemBase {
     configureMotors();
     SignalLogger.setPath("/home/vuser/logs/");
     
+    
   }
 
   public void configureMotors() {
-    shooterMotorOne.getConfigurator().apply(Configs.ShooterConfigs.shooterMotorConfig());
-    shooterMotorTwo.getConfigurator().apply(Configs.ShooterConfigs.shooterMotorConfig());
+    slot0configs.kS = 9.0;
+    slot0configs.kV = 0.26;
+    // slot0configs.kA = 1.05;
+    slot0configs.kP = 95.0;
+    slot0configs.kI = 0.0;
+    slot0configs.kD = 0.0;
+
+    shooterMotorOne.getConfigurator().apply(slot0configs);
+    shooterMotorTwo.getConfigurator().apply(slot0configs);
 
     shooterMotorOne.getVelocity().setUpdateFrequency(100);
     shooterMotorTwo.getVelocity().setUpdateFrequency(100);
@@ -93,27 +97,31 @@ public class LeftShooterSubsystem extends SubsystemBase {
     shooterMotorOne.setControl(voltageRequest); 
   }
   
-public void runVelocityTorqueFOC(double rps) {
-    double motorRPS = rps; // gear ratio included if needed
-    double kS_Amps = 1.2; 
-    double kV_Amps = 1.0;
-    double feedForwardAmps = (kS_Amps * Math.signum(rps)) + (kV_Amps * rps);
-    // Create velocity control request
-    VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0)
-            .withVelocity(motorRPS)
-            .withFeedForward(feedForwardAmps); // small feedforward to help startup
+  public void runVelocityTorqueFOC(double rps) {
+      double motorRPS = rps; // gear ratio included if needed
+      double kS_Amps = 9.0; 
+      double kV_Amps = 0.26;
+      double feedForwardAmps = (kS_Amps * Math.signum(rps)) + (kV_Amps * rps);
+      double actualRPS = shooterMotorOne.getVelocity().refresh().getValueAsDouble();
+      // Create velocity control request
+      VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0)
+              .withVelocity(motorRPS)
+              .withFeedForward(feedForwardAmps); // small feedforward to help startup
 
-    // Send control to motor
-    shooterMotorOne.setControl(request);
-    shooterMotorTwo.setControl(request);
+      // Send control to motor
+      shooterMotorOne.setControl(request);
+      shooterMotorTwo.setControl(request);
 
-    // Logging
-    SmartDashboard.putNumber("Motor Target RPS", motorRPS);
-    SmartDashboard.putNumber("Motor Actual RPS", shooterMotorOne.getVelocity().getValueAsDouble());
-}
+      // Logging
+      SmartDashboard.putNumber("Motor Target RPS", motorRPS);
+      SmartDashboard.putNumber("Motor Actual RPS", actualRPS);
+  }
 
 
-
+  public void setVoltage(double voltage){
+    shooterMotorOne.setVoltage(voltage);
+    shooterMotorTwo.setVoltage(voltage);
+  }
   
 
   public void printVoltageOutput() {
@@ -133,12 +141,13 @@ public void runVelocityTorqueFOC(double rps) {
   public void printRPM() {
     double motorRPS = shooterMotorOne.getVelocity().getValueAsDouble();
     double shooterRPM = motorRPS * 60.0;
-    SmartDashboard.putNumber("Shooter Motor RPM", shooterMotorOne.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter Motor RPM", shooterRPM);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
   }
 
   @Override

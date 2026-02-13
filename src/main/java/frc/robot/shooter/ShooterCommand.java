@@ -34,6 +34,7 @@ public class ShooterCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_leftShooterSubsystem.runVelocityTorqueFOC(speed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -41,10 +42,8 @@ public class ShooterCommand extends Command {
   public void execute() {
     // m_leftShooterSubsystem.shootFuel(speed);
     // m_leftShooterSubsystem.runVelocity(200);
-    m_leftShooterSubsystem.runVelocityTorqueFOC(speed);
     m_leftShooterSubsystem.printRPM();
     m_leftShooterSubsystem.printVoltageOutput();
-    m_rightShooterSubsystem.runVelocityTorqueFOC(speed);
     //m_kickerSubsystem.setKickerSpeed(speed);
   }
 
@@ -53,8 +52,7 @@ public class ShooterCommand extends Command {
   public void end(boolean interrupted) {
   // m_leftShooterSubsystem.shootFuel(0);
     //m_leftShooterSubsystem.runVelocity(0);
-    m_leftShooterSubsystem.runVelocityTorqueFOC(0);
-    m_rightShooterSubsystem.runVelocityTorqueFOC(0);
+    m_leftShooterSubsystem.setVoltage(0);
     // m_kickerSubsystem.setKickerSpeed(0);
 
     // m_leftShooterSubsystem.resetVoltageOutput();

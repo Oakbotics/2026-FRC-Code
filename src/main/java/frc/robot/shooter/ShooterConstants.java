@@ -1,7 +1,7 @@
 package frc.robot.shooter;
 
 public class ShooterConstants {
-    public static final double kP = 10;
+    public static final double kP = 95;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double minOutput = -1;
