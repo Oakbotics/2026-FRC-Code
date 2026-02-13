@@ -13,6 +13,7 @@ public class ShooterCommand extends Command {
   // private final ExampleSubsystem m_subsystem;
   private final LeftShooterSubsystem m_leftShooterSubsystem;
   private final RightShooterSubsystem m_rightShooterSubsystem;
+  private final KickerSubsystem m_kickerSubsystem;
 
   private final double speed;
   /**
@@ -20,11 +21,12 @@ public class ShooterCommand extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShooterCommand(RightShooterSubsystem m_rightShooterSubsytem, LeftShooterSubsystem m_leftShooterSubsystem, double speed) {
+  public ShooterCommand(RightShooterSubsystem m_rightShooterSubsytem, LeftShooterSubsystem m_leftShooterSubsystem, KickerSubsystem m_kickerSubsystem, double speed) {
     // m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_leftShooterSubsystem = m_leftShooterSubsystem;
     this.m_rightShooterSubsystem = m_rightShooterSubsytem;
+    this.m_kickerSubsystem = m_kickerSubsystem;
     this.speed = speed;
     addRequirements(m_leftShooterSubsystem);
   }
@@ -39,10 +41,11 @@ public class ShooterCommand extends Command {
   public void execute() {
     // m_leftShooterSubsystem.shootFuel(speed);
     // m_leftShooterSubsystem.runVelocity(200);
-    m_leftShooterSubsystem.runVelocityTorqueFOC(15);
+    m_leftShooterSubsystem.runVelocityTorqueFOC(speed);
     m_leftShooterSubsystem.printRPM();
     m_leftShooterSubsystem.printVoltageOutput();
-    m_rightShooterSubsystem.runVelocityTorqueFOC(15);
+    m_rightShooterSubsystem.runVelocityTorqueFOC(speed);
+    //m_kickerSubsystem.setKickerSpeed(speed);
   }
 
   // Called once the command ends or is interrupted.
@@ -52,6 +55,7 @@ public class ShooterCommand extends Command {
     //m_leftShooterSubsystem.runVelocity(0);
     m_leftShooterSubsystem.runVelocityTorqueFOC(0);
     m_rightShooterSubsystem.runVelocityTorqueFOC(0);
+    // m_kickerSubsystem.setKickerSpeed(0);
 
     // m_leftShooterSubsystem.resetVoltageOutput();
   }

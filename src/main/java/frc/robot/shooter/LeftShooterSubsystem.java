@@ -44,12 +44,21 @@ public class LeftShooterSubsystem extends SubsystemBase {
       null, 
       (state) -> SignalLogger.writeString("state", state.toString())),
       new SysIdRoutine.Mechanism(
-        (volts) -> shooterMotorOne.setControl(sysIdControl.withOutput(volts.in(Volts))),
+        (volts) ->{
+          shooterMotorOne.setControl(sysIdControl.withOutput(volts.in(Volts)));
+          shooterMotorTwo.setControl(sysIdControl.withOutput(volts.in(Volts)));
+        },
+
         log -> {
-          log.motor("Shooter Motor")
+          log.motor("Left Shooter Motor One")
           .voltage(shooterMotorOne.getMotorVoltage().getValue())
           .angularPosition(shooterMotorOne.getPosition().getValue())
           .angularVelocity(shooterMotorOne.getVelocity().getValue());
+
+          log.motor("Left Shooter Motor Two")
+          .voltage(shooterMotorTwo.getMotorVoltage().getValue())
+          .angularPosition(shooterMotorTwo.getPosition().getValue())
+          .angularVelocity(shooterMotorTwo.getVelocity().getValue());
         },
       this));
     configureMotors();
@@ -62,7 +71,9 @@ public class LeftShooterSubsystem extends SubsystemBase {
     shooterMotorTwo.getConfigurator().apply(Configs.ShooterConfigs.shooterMotorConfig());
 
     shooterMotorOne.getVelocity().setUpdateFrequency(100);
+    shooterMotorTwo.getVelocity().setUpdateFrequency(100);
     shooterMotorOne.getPosition().setUpdateFrequency(100);
+    shooterMotorTwo.getPosition().setUpdateFrequency(100);
 
   }
   public Command sysIdDynamic(SysIdRoutine.Direction direction){
@@ -84,8 +95,8 @@ public class LeftShooterSubsystem extends SubsystemBase {
   
 public void runVelocityTorqueFOC(double rps) {
     double motorRPS = rps; // gear ratio included if needed
-    double kS_Amps = 0.2; 
-    double kV_Amps = 0.1;
+    double kS_Amps = 1.2; 
+    double kV_Amps = 1.0;
     double feedForwardAmps = (kS_Amps * Math.signum(rps)) + (kV_Amps * rps);
     // Create velocity control request
     VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0)
@@ -122,7 +133,7 @@ public void runVelocityTorqueFOC(double rps) {
   public void printRPM() {
     double motorRPS = shooterMotorOne.getVelocity().getValueAsDouble();
     double shooterRPM = motorRPS * 60.0;
-    SmartDashboard.putNumber("Shooter Motor RPM", shooterRPM);
+    SmartDashboard.putNumber("Shooter Motor RPM", shooterMotorOne.getVelocity().getValueAsDouble());
   }
 
   @Override

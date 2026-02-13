@@ -1,6 +1,8 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.InvertedValue;
+
 import frc.robot.shooter.ShooterConstants;
 
 public final class Configs {
@@ -32,7 +34,10 @@ public final class Configs {
 
             config.TorqueCurrent.PeakForwardTorqueCurrent = 100;
             config.TorqueCurrent.PeakReverseTorqueCurrent = -100;
+            config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+            
 
+            
 
             return config;
         }
