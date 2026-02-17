@@ -36,8 +36,7 @@ public class AlignRotationToHubOdometry extends Command {
   private final PIDController headingPID;
 
   final Optional<Alliance> alliance = DriverStation.getAlliance();
-  Pose2d estimatePoseMT2;
-  Rotation2d estimateRotMT1;
+  PoseEstimate estimatePoseMT1;
 
   private final SwerveRequest.FieldCentric driveRequest =
       new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -63,26 +62,25 @@ public class AlignRotationToHubOdometry extends Command {
   
   @Override
   public void initialize() {
-    int tagID = (int) LimelightHelpers.getFiducialID(VisionAlignConstants.LIMELIGHT_NAME);
-    
-    if(alliance.isPresent() && alliance.get() == Alliance.Blue) {
-      estimatePoseMT2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(VisionAlignConstants.LIMELIGHT_NAME).pose;
-      estimateRotMT1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionAlignConstants.LIMELIGHT_NAME).pose.getRotation();
-    } else {
-      estimatePoseMT2 = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2(VisionAlignConstants.LIMELIGHT_NAME).pose;
-      estimateRotMT1 = LimelightHelpers.getBotPoseEstimate_wpiRed(VisionAlignConstants.LIMELIGHT_NAME).pose.getRotation();
-    }
-
-    if (tagID != -1 && VisionAlignConstants.HUB_TAG_IDS.contains(tagID)) {
-      drivetrain.resetOdometry(new Pose2d(estimatePoseMT2.getX(), estimatePoseMT2.getY(), estimateRotMT1));
-    }
-    
     headingPID.reset();
   }
 
 
   @Override
   public void execute() {
+     int tagID = (int) LimelightHelpers.getFiducialID(VisionAlignConstants.LIMELIGHT_NAME);
+    
+    if(alliance.isPresent() && alliance.get() == Alliance.Blue) {
+      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionAlignConstants.LIMELIGHT_NAME);
+    } else {
+      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiRed(VisionAlignConstants.LIMELIGHT_NAME);
+    }
+
+    if (tagID != -1 && VisionAlignConstants.HUB_TAG_IDS.contains(tagID)) {
+      // drivetrain.resetOdometry(new Pose2d(estimatePoseMT2.pose.getX(), estimatePoseMT2.pose.getY(), estimateRotMT1));
+      drivetrain.addVisionMeasurement(estimatePoseMT1.pose, estimatePoseMT1.timestampSeconds);
+    }
+    
     Pose2d robotPose = drivetrain.getState().Pose;
     double currentHeading = robotPose.getRotation().getRadians();
 

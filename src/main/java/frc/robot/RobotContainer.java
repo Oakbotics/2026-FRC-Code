@@ -32,6 +32,7 @@ import frc.robot.commands.AlignToHubLimelight;
 import frc.robot.commands.FollowTrajectory;
 import frc.robot.commands.HubAuto;
 import frc.robot.commands.MoveOdometry;
+import frc.robot.commands.ResetOdometryLimelight;
 import frc.robot.commands.RotatePositionAuto;
 import frc.robot.subsystems.LimeLightSubsystem;
 
@@ -102,6 +103,7 @@ public class RobotContainer {
         );
 
         joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+        joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
