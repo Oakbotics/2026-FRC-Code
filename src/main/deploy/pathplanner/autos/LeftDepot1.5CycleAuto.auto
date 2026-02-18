@@ -7,31 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "HubMoveBackPath"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ResetOdometryLimelight"
+            "pathName": "LeftToDepotPath"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BackToStartDepotPath"
+            "pathName": "CollectDepotLeftToRight"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CollectDepotRightToLeft"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotToFacingHubPath"
+            "pathName": "RightDepotToHubPath"
           }
         },
         {
@@ -44,6 +32,18 @@
           "type": "named",
           "data": {
             "name": "AlignRotationToHubOdometry"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HubToLeftCenterPath"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CollectFuelLeftToRight"
           }
         }
       ]
