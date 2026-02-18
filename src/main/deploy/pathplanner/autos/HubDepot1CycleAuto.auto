@@ -19,7 +19,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Move Side Path"
+            "pathName": "Back To Start Depot Path"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Intake Depot Path"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot To Facing Hub Path"
           }
         },
         {
@@ -32,18 +44,6 @@
           "type": "named",
           "data": {
             "name": "AlignRotationToHubOdometry"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Move Forward Path"
           }
         }
       ]

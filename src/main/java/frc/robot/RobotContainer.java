@@ -58,7 +58,8 @@ public class RobotContainer {
     public RobotContainer() {
         // Initialize the auto chooser
         NamedCommands.registerCommand("AlignToHubLimelight", new AlignToHubLimelight(m_limelightSubsystem, drivetrain));
-        NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry(
+        NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
+        NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
                 drivetrain,
                 m_limelightSubsystem,
                 () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
@@ -68,7 +69,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Move", new MoveOdometry(drivetrain, target));
 
         m_autoChooser = AutoBuilder.buildAutoChooser();
-        m_autoChooser.setDefaultOption("AutoTug", AutoBuilder.buildAuto("AutoTug"));
+        m_autoChooser.setDefaultOption("HubDepot1CycleAuto", AutoBuilder.buildAuto("HubDepot1CycleAuto"));
         configureBindings();
     }
 

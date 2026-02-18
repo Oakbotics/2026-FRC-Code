@@ -38,6 +38,9 @@ public class AlignRotationToHubOdometry extends Command {
   final Optional<Alliance> alliance = DriverStation.getAlliance();
   PoseEstimate estimatePoseMT1;
 
+  double currentHeading;
+  double desiredHeading;
+
   private final SwerveRequest.FieldCentric driveRequest =
       new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
@@ -58,13 +61,11 @@ public class AlignRotationToHubOdometry extends Command {
 
     addRequirements(drivetrain, limelight);
   }
-
   
   @Override
   public void initialize() {
     headingPID.reset();
   }
-
 
   @Override
   public void execute() {
@@ -82,7 +83,7 @@ public class AlignRotationToHubOdometry extends Command {
     }
     
     Pose2d robotPose = drivetrain.getState().Pose;
-    double currentHeading = robotPose.getRotation().getRadians();
+    currentHeading = robotPose.getRotation().getRadians();
 
     final double vx = driverVx.getAsDouble();
     final double vy = driverVy.getAsDouble();
@@ -90,7 +91,7 @@ public class AlignRotationToHubOdometry extends Command {
     double distanceX = VisionAlignConstants.hubPosition().getX() - robotPose.getX();
     double distanceY = VisionAlignConstants.hubPosition().getY() - robotPose.getY();
 
-    double desiredHeading = Math.atan2(distanceY, distanceX);
+    desiredHeading = Math.atan2(distanceY, distanceX);
     double omega = headingPID.calculate(currentHeading, desiredHeading);
     
     omega = MathUtil.clamp(
@@ -112,12 +113,10 @@ public class AlignRotationToHubOdometry extends Command {
   }
 
   @Override
-  public void end(boolean interrupted) {
-
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
-    return false;
+    return DriverStation.isAutonomousEnabled() && Math.abs(desiredHeading - currentHeading) <= Math.toRadians(3);
   }
 }

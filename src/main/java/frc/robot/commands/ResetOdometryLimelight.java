@@ -24,7 +24,7 @@ public class ResetOdometryLimelight extends Command {
   final Optional<Alliance> alliance = DriverStation.getAlliance();
   PoseEstimate estimatePoseMT1;
 
-  public ResetOdometryLimelight(CommandSwerveDrivetrain drivetrain) {
+  public ResetOdometryLimelight(CommandSwerveDrivetrain drivetrain ) {
     this.drivetrain = drivetrain;
 
     addRequirements(drivetrain);
