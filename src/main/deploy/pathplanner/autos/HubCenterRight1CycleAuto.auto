@@ -19,19 +19,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BackToStartDepotPath"
+            "pathName": "HubBackToCenterRightPath"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Intake Depot Path"
+            "pathName": "CollectFuelRightToLeftPath"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "DepotToFacingHubPath"
+            "pathName": "CenterLeftToHubPath"
           }
         },
         {

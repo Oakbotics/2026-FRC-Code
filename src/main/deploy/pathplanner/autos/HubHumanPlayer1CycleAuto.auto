@@ -19,19 +19,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BackToStartDepotPath"
+            "pathName": "HubToHumanPlayerPath"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Intake Depot Path"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotToFacingHubPath"
+            "pathName": "HumanPlayerToHubPath"
           }
         },
         {
