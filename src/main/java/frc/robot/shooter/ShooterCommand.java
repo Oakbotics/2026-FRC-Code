@@ -6,6 +6,7 @@ package frc.robot.shooter;
 
 import frc.robot.shooter.LeftShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 /** An example command that uses an example subsystem. */
 public class ShooterCommand extends Command {
