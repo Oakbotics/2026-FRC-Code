@@ -20,10 +20,17 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.shooter.ShooterSubsystem;
 
+import edu.wpi.first.units.measure.Angle;
+
+import frc.robot.subsystems.WristSubsystem;
+import frc.robot.commands.WristCommand;
+
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+    private final WristSubsystem m_WristSubsystem = new WristSubsystem();
+
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -73,7 +80,8 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         joystick.a().whileTrue(new ShooterCommmand(m_shooterSubsystem, 0.5));
-
+        Angle angle = Rotation.of(10);
+        joystick.x().whileTrue(new WristCommand(m_WristSubsystem, angle));
         // Reset the field-centric heading on left bumper press.
         joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
