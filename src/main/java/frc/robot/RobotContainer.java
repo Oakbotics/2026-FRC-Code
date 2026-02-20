@@ -42,8 +42,8 @@ public class RobotContainer {
     private final LimeLightSubsystem m_limelightSubsystem = new LimeLightSubsystem();
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1)
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+        .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1)
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -69,7 +69,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Move", new MoveOdometry(drivetrain, target));
 
         m_autoChooser = AutoBuilder.buildAutoChooser();
-        m_autoChooser.setDefaultOption("HubDepot1CycleAuto", AutoBuilder.buildAuto("HubDepot1CycleAuto"));
+        m_autoChooser.setDefaultOption("LeftDepot1.5CycleAuto", AutoBuilder.buildAuto("LeftDepot1.5CycleAuto"));
         configureBindings();
     }
 
@@ -79,20 +79,20 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                drive.withVelocityX(joystick.getLeftY() * MaxSpeed * (1 - (joystick.getLeftTriggerAxis() * 0.75))) // Drive forward with negative Y (forward)
+                    .withVelocityY(joystick.getLeftX() * MaxSpeed * (1 - (joystick.getLeftTriggerAxis() * 0.75))) // Drive left with negative X (left)
                     .withRotationalRate(joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
-        joystick.leftTrigger().whileTrue(
-            new AlignRotationToHubLimelight(
-                m_limelightSubsystem,
-                drivetrain,
-                () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
-                () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
-            )
-        );
+        // joystick.leftTrigger().whileTrue(
+        //     new AlignRotationToHubLimelight(
+        //         m_limelightSubsystem,
+        //         drivetrain,
+        //         () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
+        //         () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
+        //     )
+        // );
 
         joystick.rightTrigger().whileTrue(
             new AlignRotationToHubOdometry(

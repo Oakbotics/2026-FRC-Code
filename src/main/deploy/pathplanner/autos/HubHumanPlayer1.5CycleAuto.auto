@@ -5,9 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.25
+            "pathName": "HubMoveBackPath"
           }
         },
         {
@@ -17,21 +17,21 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "HubToHumanPlayerPath"
+          }
+        },
+        {
           "type": "wait",
           "data": {
-            "waitTime": 0.25
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left to Center"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Center to Hub Shot"
+            "pathName": "HumanPlayerToHubPath"
           }
         },
         {
@@ -47,15 +47,27 @@
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Hub Shot to Depot"
+            "waitTime": 3.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Depot to Hub Shot"
+            "pathName": null
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CollectFuelRightToLeftPath"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterLeftToHubPath"
           }
         },
         {
