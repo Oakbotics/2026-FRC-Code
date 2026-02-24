@@ -52,12 +52,12 @@ public class WristSubsystem extends SubsystemBase {
       .withSlot0(
           wristMotorInitialConfigs.Slot0.clone()
               .withKP(2)
-              .withKI(0)
-              .withKD(0)
+              .withKI(0.1)
+              .withKD(0.1)
               .withKS(0.2)
               .withKV(1.08)
-              .withKA(0)
-              .withKG(0)
+              .withKA(0.1)
+              .withKG(0.1)
               .withGravityType(GravityTypeValue.Arm_Cosine)
       )
       .withFeedback(
@@ -84,7 +84,7 @@ public class WristSubsystem extends SubsystemBase {
       );
 
   public Angle getPosition() {
-        return wristMotor.getPosition(false).getValue();
+        return wristMotor.getPosition(true).getValue().times(360);
   }
   public Command holdPosition() {
         return runOnce(() ->

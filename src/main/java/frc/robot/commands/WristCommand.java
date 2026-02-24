@@ -28,6 +28,7 @@ public class WristCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_subsystem.goToSetpoint(m_angle);
     
   }
 
