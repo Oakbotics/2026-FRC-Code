@@ -94,12 +94,11 @@ public class WristSubsystem extends SubsystemBase {
         }));
     }
 
-  public Command goToSetpoint(Angle newPos) {
-      return run(() -> {
+  public void goToSetpoint(Angle newPos) {
+      
           //SmartDashboard.putNumber("target", setpoint.get().target.magnitude());
           setpointRequest.withPosition(newPos);
           wristMotor.setControl(setpointRequest);
-      });
     }
 
   @Override

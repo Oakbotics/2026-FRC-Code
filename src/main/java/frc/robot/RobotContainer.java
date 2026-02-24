@@ -79,9 +79,11 @@ public class RobotContainer {
         joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-        joystick.a().whileTrue(new ShooterCommmand(m_shooterSubsystem, 0.5));
-        Angle angle = Rotation.of(10);
-        joystick.x().whileTrue(new WristCommand(m_WristSubsystem, angle));
+        //joystick.a().whileTrue(new ShooterCommmand(m_shooterSubsystem, 0.5));
+        Angle angleDown = Rotation.of(-0.2);
+        Angle angleUp = Rotation.of(-0.7);
+        joystick.a().whileTrue(new WristCommand(m_WristSubsystem, angleUp));
+        joystick.x().whileTrue(new WristCommand(m_WristSubsystem, angleDown));
         // Reset the field-centric heading on left bumper press.
         joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
