@@ -30,7 +30,9 @@ public class RobotContainer {
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
     private final WristSubsystem m_WristSubsystem = new WristSubsystem();
-
+    //wrist positions
+    Angle angleDown = Rotation.of(-0.2); //while down on ground
+    Angle angleUp = Rotation.of(-0.7);  // while up and inside robot
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -80,8 +82,7 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         //joystick.a().whileTrue(new ShooterCommmand(m_shooterSubsystem, 0.5));
-        Angle angleDown = Rotation.of(-0.2);
-        Angle angleUp = Rotation.of(-0.7);
+        
         joystick.a().whileTrue(new WristCommand(m_WristSubsystem, angleUp));
         joystick.x().whileTrue(new WristCommand(m_WristSubsystem, angleDown));
         // Reset the field-centric heading on left bumper press.
