@@ -8,6 +8,8 @@ package frc.robot.commands;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /** An example command that uses an example subsystem. */
 public class IntakeCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -32,7 +34,9 @@ public class IntakeCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+     SmartDashboard.putNumber("currentWristAngle: ", m_subsystem.getPosition().magnitude());
+  }
 
   // Called once the command ends or is interrupted.
   @Override

@@ -10,6 +10,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import static edu.wpi.first.units.Units.*;
+import edu.wpi.first.units.measure.Angle;
+
 public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX intakeMotor;
   private final DutyCycleOut m_intakCycleOut = new DutyCycleOut(0.0);
@@ -18,6 +21,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
   public void setMotorSpeed(double speed) {
     intakeMotor.setControl(m_intakCycleOut.withOutput(speed));
+  }
+  public Angle getPosition() {
+        return intakeMotor.getPosition(true).getValue().times(360);
   }
   @Override
   public void periodic() {
