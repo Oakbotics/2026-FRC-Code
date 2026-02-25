@@ -19,6 +19,7 @@ import static edu.wpi.first.units.Units.*;
 import java.util.function.Supplier;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -51,13 +52,13 @@ public class WristSubsystem extends SubsystemBase {
       )
       .withSlot0(
           wristMotorInitialConfigs.Slot0.clone()
-              .withKP(2)
-              .withKI(0.1)
-              .withKD(0.1)
-              .withKS(0.2)
-              .withKV(1.08)
-              .withKA(0.1)
-              .withKG(0.1)
+              .withKP(500)
+              .withKI(0)
+              .withKD(1)
+              .withKS(0)
+              .withKV(2)
+              .withKA(0)
+              .withKG(0)
               .withGravityType(GravityTypeValue.Arm_Cosine)
       )
       .withFeedback(
@@ -67,6 +68,7 @@ public class WristSubsystem extends SubsystemBase {
       .withHardwareLimitSwitch(
           wristMotorInitialConfigs.HardwareLimitSwitch.clone()
               .withForwardLimitEnable(true)
+        
               .withForwardLimitAutosetPositionEnable(false)
               .withForwardLimitRemoteSensorID(0)
               .withForwardLimitSource(ForwardLimitSourceValue.LimitSwitchPin)
@@ -79,10 +81,12 @@ public class WristSubsystem extends SubsystemBase {
       )
       .withMotionMagic(
           wristMotorInitialConfigs.MotionMagic.clone()
-              .withMotionMagicCruiseVelocity(RotationsPerSecond.of(8.88888888888889))
-              .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(44.44444444444444))
+              .withMotionMagicCruiseVelocity(RotationsPerSecond.of(256))
+              .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(1000))
       );
-
+  public double getVolts() {
+      return wristMotor.getMotorVoltage(true).getValueAsDouble();
+  }
   public Angle getPosition() {
         return wristMotor.getPosition(true).getValue().times(360);
   }

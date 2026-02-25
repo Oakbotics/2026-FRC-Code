@@ -31,8 +31,8 @@ public class RobotContainer {
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
     private final WristSubsystem m_WristSubsystem = new WristSubsystem();
     //wrist positions
-    Angle angleDown = Rotation.of(-0.2); //while down on ground
-    Angle angleUp = Rotation.of(-0.7);  // while up and inside robot
+    Angle angleDown = Rotation.of(-0.25); //while down on ground
+    Angle angleUp = Rotation.of(-0.5);  // while up and inside robot
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
