@@ -64,12 +64,12 @@ public class LeftShooterSubsystem extends SubsystemBase {
   }
 
   public void configureMotors() {
-    slot0configs.kS = 0.4;
-    slot0configs.kV = 0.26;
+    slot0configs.kS = 17.5;
+    slot0configs.kV = 0.23739;
     slot0configs.kA = 0.0;
-    slot0configs.kP = 100;
-    slot0configs.kI = 0.5;
-    slot0configs.kD = 1.5;
+    slot0configs.kP = 0.05;
+    slot0configs.kI = 0.0;
+    slot0configs.kD = 0.0;
 
     shooterMotorOne.getConfigurator().apply(slot0configs);
     shooterMotorTwo.getConfigurator().apply(slot0configs);
@@ -104,10 +104,10 @@ public class LeftShooterSubsystem extends SubsystemBase {
       // double feedForwardAmps = (kS_Amps * Math.signum(rps)) + (kV_Amps * rps);
       double actualRPS = shooterMotorOne.getVelocity().refresh().getValueAsDouble();
       // Create velocity control request
-      // VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0)
+      VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0).withSlot(0);
       //         .withVelocity(motorRPS)
       //         .withFeedForwards(feedForwardAmps);
-      final VelocityVoltage request = new VelocityVoltage(0).withSlot(0);
+      // final VelocityVoltage request = new VelocityVoltage(0).withSlot(0);
 
 
       shooterMotorOne.setControl(request.withVelocity(motorRPS).withFeedForward(0));

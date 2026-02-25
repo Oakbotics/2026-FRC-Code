@@ -27,7 +27,7 @@ public final class Configs {
             config.Slot0.kV = 0.15;
             config.Slot0.kA = 0.01;
 
-            config.Feedback.SensorToMechanismRatio = 6.0;
+            config.Feedback.SensorToMechanismRatio = 1.0;
            
             config.CurrentLimits.SupplyCurrentLimit = 40;
             config.CurrentLimits.SupplyCurrentLimitEnable = true;
