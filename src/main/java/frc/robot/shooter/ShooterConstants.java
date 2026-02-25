@@ -19,6 +19,7 @@ public class ShooterConstants {
     public static final InterpolatingDoubleTreeMap DISTANCE_M_TO_RPS = new InterpolatingDoubleTreeMap();
 
     static {
+        DISTANCE_M_TO_RPS.put(1.00, 47.0);
         DISTANCE_M_TO_RPS.put(1.50, 55.0);
         DISTANCE_M_TO_RPS.put(2.00, 62.0);
         DISTANCE_M_TO_RPS.put(2.50, 70.0);

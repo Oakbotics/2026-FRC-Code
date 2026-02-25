@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants;
+import frc.robot.Constants.VisionAlignConstants;
 
 
 public class LimeLightSubsystem extends SubsystemBase {
@@ -144,7 +145,7 @@ public class LimeLightSubsystem extends SubsystemBase {
   }
 
   public double getDistanceToHubMeters() {
-    Pose2d botPose = getBotPoseWpiBlue(); 
+    Pose2d botPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionAlignConstants.LIMELIGHT_NAME).pose; 
     return botPose.getTranslation().getDistance(Constants.VisionAlignConstants.hubPosition());
   }
 
