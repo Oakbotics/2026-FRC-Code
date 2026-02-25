@@ -16,19 +16,24 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.shooter.ShooterCommmand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.WristCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 import frc.robot.shooter.ShooterSubsystem;
 
 import edu.wpi.first.units.measure.Angle;
 
-import frc.robot.subsystems.WristSubsystem;
-import frc.robot.commands.WristCommand;
+//import frc.robot.subsystems.WristSubsystem;
+//import frc.robot.commands.WristCommand;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+    private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     private final WristSubsystem m_WristSubsystem = new WristSubsystem();
     //wrist positions
     Angle angleDown = Rotation.of(-0.25); //while down on ground
@@ -82,7 +87,7 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         //joystick.a().whileTrue(new ShooterCommmand(m_shooterSubsystem, 0.5));
-        
+        joystick.b().whileTrue(new IntakeCommand(m_intakeSubsystem, -0.2));
         joystick.a().whileTrue(new WristCommand(m_WristSubsystem, angleUp));
         joystick.x().whileTrue(new WristCommand(m_WristSubsystem, angleDown));
         // Reset the field-centric heading on left bumper press.
