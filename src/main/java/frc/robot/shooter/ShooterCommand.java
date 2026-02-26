@@ -32,6 +32,7 @@ public class ShooterCommand extends Command {
   @Override
   public void initialize() {
     m_leftShooterSubsystem.runVelocityTorqueFOC(speed);
+    m_rightShooterSubsystem.runVelocityTorqueFOC(speed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -45,6 +46,7 @@ public class ShooterCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_leftShooterSubsystem.setVoltage(0);
+    m_rightShooterSubsystem.setVoltage(0);
   }
 
   // Returns true when the command should end.
