@@ -1,14 +1,7 @@
 package frc.robot.ShootOnTheMove;
 
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-
 public final class ShootOnMoveConstants {
   private ShootOnMoveConstants() {}
-
-  public static final Transform2d ROBOT_TO_SHOOTER =
-      new Transform2d(new Translation2d(0.30, 0.00), new Rotation2d()); // TODO tune
 
   public static final double PHASE_DELAY_SEC = 0.03;
 

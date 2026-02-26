@@ -100,7 +100,6 @@ public class ShootOnMoveToHub extends Command {
             robotPose,
             fieldVelMps,
             hubPos,
-            ShootOnMoveConstants.ROBOT_TO_SHOOTER,
             ShooterConstants.DISTANCE_M_TO_RPS,
             ShooterConstants.DISTANCE_M_TO_TOF_SEC,
             ShootOnMoveConstants.PHASE_DELAY_SEC,

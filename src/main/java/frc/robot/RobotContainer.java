@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.shooter.ShooterCommand;
+import frc.robot.ShootOnTheMove.ShootOnMoveToHub;
 import frc.robot.commands.AlignRotationToHubOdometry;
 import frc.robot.commands.ResetOdometryLimelight;
 import frc.robot.commands.ShootFromHubDistance;
@@ -103,9 +104,19 @@ public class RobotContainer {
             )
         );
 
-        drivetrain.registerTelemetry(logger::telemeterize);
+        joystick.leftTrigger().whileTrue(
+            new ShootOnMoveToHub(
+                drivetrain, 
+                m_limeLightSubsystem, 
+                m_leftShooterSubsystem, 
+                m_rightShooterSubsystem, 
+                m_kickerSubsystem, 
+                () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
+                () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
+            )
+        );
 
-        
+        drivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {

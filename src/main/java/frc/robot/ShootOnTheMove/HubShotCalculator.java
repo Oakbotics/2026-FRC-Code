@@ -22,7 +22,6 @@ public final class HubShotCalculator {
       Pose2d robotPose,
       Translation2d fieldVelMps,
       Translation2d hubPos,
-      Transform2d robotToShooter,
       InterpolatingDoubleTreeMap distanceToRps,
       InterpolatingDoubleTreeMap distanceToTofSec,
       double phaseDelaySec,
@@ -35,29 +34,32 @@ public final class HubShotCalculator {
       return new Solution(false, Rotation2d.kZero, Double.NaN, Double.NaN, 0.0);
     }
 
-    Translation2d projectedRobotTranslation =
-        robotPose
-            .getTranslation()
-            .plus(
-                new Translation2d(
-                    fieldVelMps.getX() * phaseDelaySec, fieldVelMps.getY() * phaseDelaySec));
-    Pose2d projectedRobotPose = new Pose2d(projectedRobotTranslation, robotPose.getRotation());
+    Translation2d basePos =
+    robotPose.getTranslation().plus(
+        new Translation2d(
+            fieldVelMps.getX() * phaseDelaySec,
+            fieldVelMps.getY() * phaseDelaySec));
 
-    Translation2d shooterPos = projectedRobotPose.transformBy(robotToShooter).getTranslation();
+    Translation2d lookaheadPos = basePos;
 
-    Translation2d lookaheadShooterPos = shooterPos;
-    double dist = lookaheadShooterPos.getDistance(hubPos);
+    double dist = lookaheadPos.getDistance(hubPos);
     double tof = distanceToTofSec.get(dist);
 
     for (int i = 0; i < 8; i++) {
+
       tof = distanceToTofSec.get(dist);
-      lookaheadShooterPos =
-          shooterPos.plus(
-              new Translation2d(fieldVelMps.getX() * tof, fieldVelMps.getY() * tof));
-      dist = lookaheadShooterPos.getDistance(hubPos);
+
+      lookaheadPos =
+          basePos.plus(
+              new Translation2d(
+                  fieldVelMps.getX() * tof,
+                  fieldVelMps.getY() * tof));
+
+      dist = lookaheadPos.getDistance(hubPos);
     }
 
-    Rotation2d desiredHeading = hubPos.minus(lookaheadShooterPos).getAngle();
+  Rotation2d desiredHeading =
+      hubPos.minus(lookaheadPos).getAngle();
 
     double rps = distanceToRps.get(dist);
     rps = MathUtil.clamp(rps, minRps, maxRps);
