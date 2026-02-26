@@ -104,6 +104,8 @@ public class RobotContainer {
         );
 
         drivetrain.registerTelemetry(logger::telemeterize);
+
+        
     }
 
     public Command getAutonomousCommand() {

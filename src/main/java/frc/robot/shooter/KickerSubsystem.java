@@ -22,6 +22,11 @@ public class KickerSubsystem extends SubsystemBase {
     kickerMotor.setControl(speedRequest.withOutput(speed));
   }
 
+
+  public void stop() {
+    setKickerSpeed(0.0);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

@@ -62,4 +62,5 @@ public final class Constants {
     /** Clamp omega so the robot doesn’t snap violently */
     public static final double MAX_OMEGA_RAD_PER_SEC = 6.0;
   }
+
 }

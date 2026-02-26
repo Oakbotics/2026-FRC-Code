@@ -26,6 +26,20 @@ public class ShooterConstants {
         DISTANCE_M_TO_RPS.put(3.00, 78.0);
         DISTANCE_M_TO_RPS.put(3.50, 86.0);
         DISTANCE_M_TO_RPS.put(4.00, 94.0);
+
+
+    }
+
+    public static final InterpolatingDoubleTreeMap DISTANCE_M_TO_TOF_SEC = new InterpolatingDoubleTreeMap();
+
+    static{
+        DISTANCE_M_TO_TOF_SEC.put(1.00, 0.35);
+        DISTANCE_M_TO_TOF_SEC.put(1.50, 0.40);
+        DISTANCE_M_TO_TOF_SEC.put(2.00, 0.46);
+        DISTANCE_M_TO_TOF_SEC.put(2.50, 0.52);
+        DISTANCE_M_TO_TOF_SEC.put(3.00, 0.58);
+        DISTANCE_M_TO_TOF_SEC.put(3.50, 0.64);
+        DISTANCE_M_TO_TOF_SEC.put(4.00, 0.70);  
     }
 
     public static final double MIN_TARGET_RPS = 0.0;
