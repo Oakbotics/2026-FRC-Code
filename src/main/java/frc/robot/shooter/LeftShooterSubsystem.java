@@ -64,10 +64,10 @@ public class LeftShooterSubsystem extends SubsystemBase {
   }
 
   public void configureMotors() {
-    slot0configs.kS = 9.0;
-    slot0configs.kV = 0.26;
-    // slot0configs.kA = 1.05;
-    slot0configs.kP = 95.0;
+    slot0configs.kS = 17.5;
+    slot0configs.kV = 0.23739;
+    slot0configs.kA = 0.0;
+    slot0configs.kP = 0.05;
     slot0configs.kI = 0.0;
     slot0configs.kD = 0.0;
 
@@ -98,21 +98,22 @@ public class LeftShooterSubsystem extends SubsystemBase {
   }
   
   public void runVelocityTorqueFOC(double rps) {
-      double motorRPS = rps; // gear ratio included if needed
-      double kS_Amps = 9.0; 
-      double kV_Amps = 0.26;
-      double feedForwardAmps = (kS_Amps * Math.signum(rps)) + (kV_Amps * rps);
+      double motorRPS = rps; 
+      // double kS_Amps = 0.0; 
+      // double kV_Amps = 0.0;
+      // double feedForwardAmps = (kS_Amps * Math.signum(rps)) + (kV_Amps * rps);
       double actualRPS = shooterMotorOne.getVelocity().refresh().getValueAsDouble();
       // Create velocity control request
-      VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0)
-              .withVelocity(motorRPS)
-              .withFeedForward(feedForwardAmps); // small feedforward to help startup
+      VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0).withSlot(0);
+      //         .withVelocity(motorRPS)
+      //         .withFeedForwards(feedForwardAmps);
+      // final VelocityVoltage request = new VelocityVoltage(0).withSlot(0);
 
-      // Send control to motor
-      shooterMotorOne.setControl(request);
-      shooterMotorTwo.setControl(request);
 
-      // Logging
+      shooterMotorOne.setControl(request.withVelocity(motorRPS).withFeedForward(0));
+      shooterMotorTwo.setControl(request.withVelocity(motorRPS).withFeedForward(0));
+
+
       SmartDashboard.putNumber("Motor Target RPS", motorRPS);
       SmartDashboard.putNumber("Motor Actual RPS", actualRPS);
   }
@@ -123,6 +124,13 @@ public class LeftShooterSubsystem extends SubsystemBase {
     shooterMotorTwo.setVoltage(voltage);
   }
   
+  public void setRawVbus(){
+    var voltageRequest = new VoltageOut(0);
+
+    shooterMotorOne.setControl(voltageRequest.withOutput(12));
+
+    printRPM();
+  }
 
   public void printVoltageOutput() {
     double motorVoltage = shooterMotorOne.getMotorVoltage().getValueAsDouble();
@@ -147,7 +155,7 @@ public class LeftShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
+    
   }
 
   @Override
