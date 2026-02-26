@@ -29,12 +29,12 @@ public class LeftShooterSubsystem extends SubsystemBase {
     private final SysIdRoutine m_SysIdRoutine;
     private final Slot0Configs slot0configs = new Slot0Configs();
 
-    /** Creates a new ExampleSubsystem. */
+    /** Runs the left shooter. */
   public LeftShooterSubsystem() {
 
     shooterMotorOne = new TalonFX(ShooterConstants.shooterMotorOneID);
     shooterMotorTwo = new TalonFX(ShooterConstants.shooterMotorTwoID);
-      m_SysIdRoutine = new SysIdRoutine(
+    m_SysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null,
       Volts.of(4),
       null, 
@@ -109,10 +109,8 @@ public class LeftShooterSubsystem extends SubsystemBase {
       //         .withFeedForwards(feedForwardAmps);
       // final VelocityVoltage request = new VelocityVoltage(0).withSlot(0);
 
-
       shooterMotorOne.setControl(request.withVelocity(motorRPS).withFeedForward(0));
       shooterMotorTwo.setControl(request.withVelocity(motorRPS).withFeedForward(0));
-
 
       SmartDashboard.putNumber("Motor Target RPS", motorRPS);
       SmartDashboard.putNumber("Motor Actual RPS", actualRPS);

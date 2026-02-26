@@ -13,7 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class KickerSubsystem extends SubsystemBase {
   private final TalonFX kickerMotor;
   private final DutyCycleOut speedRequest = new DutyCycleOut(0);
-  /** Creates a new ExampleSubsystem. */
+
+  /** Runs our kicker motor to move fuel to our shootor. */
   public KickerSubsystem() {
     kickerMotor = new TalonFX(ShooterConstants.kickerMotorID);
 

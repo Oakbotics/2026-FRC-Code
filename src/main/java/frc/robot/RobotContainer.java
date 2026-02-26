@@ -17,17 +17,16 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.shooter.ShooterCommand;
-import frc.robot.commands.AlignRotationToHubOdometry;
-import frc.robot.commands.ResetOdometryLimelight;
-import frc.robot.commands.ShootFromHubDistance;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.vision.AlignRotationToHubOdometry;
+import frc.robot.vision.LimeLightSubsystem;
+import frc.robot.vision.ResetOdometryLimelight;
+import frc.robot.vision.ShootFromHubDistance;
 import frc.robot.shooter.KickerCommand;
 import frc.robot.shooter.KickerSubsystem;
 import frc.robot.shooter.LeftShooterSubsystem;
 import frc.robot.shooter.RightShooterSubsystem;
-import frc.robot.subsystems.LimeLightSubsystem;
-import frc.robot.commands.ShootFromHubDistance;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed

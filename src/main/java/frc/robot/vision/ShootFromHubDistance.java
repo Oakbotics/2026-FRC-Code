@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.vision;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.shooter.LeftShooterSubsystem;
 import frc.robot.shooter.RightShooterSubsystem;
 import frc.robot.shooter.ShooterConstants;
-import frc.robot.subsystems.LimeLightSubsystem;
 
 public class ShootFromHubDistance extends Command {
   private final LeftShooterSubsystem leftShooter;

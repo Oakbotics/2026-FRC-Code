@@ -4,9 +4,7 @@
 
 package frc.robot.shooter;
 
-import frc.robot.shooter.LeftShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 /** An example command that uses an example subsystem. */
 public class ShooterCommand extends Command {
@@ -14,7 +12,6 @@ public class ShooterCommand extends Command {
   // private final ExampleSubsystem m_subsystem;
   private final LeftShooterSubsystem m_leftShooterSubsystem;
   private final RightShooterSubsystem m_rightShooterSubsystem;
-  private final KickerSubsystem m_kickerSubsystem;
 
   private final double speed;
   /**
@@ -22,12 +19,11 @@ public class ShooterCommand extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShooterCommand(RightShooterSubsystem m_rightShooterSubsytem, LeftShooterSubsystem m_leftShooterSubsystem, KickerSubsystem m_kickerSubsystem, double speed) {
+  public ShooterCommand(RightShooterSubsystem m_rightShooterSubsytem, LeftShooterSubsystem m_leftShooterSubsystem, double speed) {
     // m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_leftShooterSubsystem = m_leftShooterSubsystem;
     this.m_rightShooterSubsystem = m_rightShooterSubsytem;
-    this.m_kickerSubsystem = m_kickerSubsystem;
     this.speed = speed;
     addRequirements(m_leftShooterSubsystem);
   }
@@ -41,22 +37,14 @@ public class ShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // m_leftShooterSubsystem.shootFuel(speed);
-    // m_leftShooterSubsystem.runVelocity(200);
     m_leftShooterSubsystem.printRPM();
     m_leftShooterSubsystem.printVoltageOutput();
-    //m_kickerSubsystem.setKickerSpeed(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-  // m_leftShooterSubsystem.shootFuel(0);
-    //m_leftShooterSubsystem.runVelocity(0);
     m_leftShooterSubsystem.setVoltage(0);
-    // m_kickerSubsystem.setKickerSpeed(0);
-
-    // m_leftShooterSubsystem.resetVoltageOutput();
   }
 
   // Returns true when the command should end.
