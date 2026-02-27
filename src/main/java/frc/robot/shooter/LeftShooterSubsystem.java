@@ -62,13 +62,13 @@ public class LeftShooterSubsystem extends SubsystemBase {
     
     
   }
-
+  // 44 inch from hub
   public void configureMotors() {
     slot0configs.kS = 17.5;
     slot0configs.kV = 0.16;
     slot0configs.kA = 0.0;
-    slot0configs.kP = 4.5;
-    slot0configs.kI = 0.33;
+    slot0configs.kP = 6.0;
+    slot0configs.kI = 0.4;
     slot0configs.kD = 0.05;
 
     shooterMotorOne.getConfigurator().apply(slot0configs);
