@@ -79,8 +79,8 @@ public class RobotContainer {
         joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-        joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, m_kickerSubsystem, 44
-        
+        joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, m_kickerSubsystem, 18
+
         ));
         joystick.b().whileTrue(new KickerCommand(m_kickerSubsystem, 15));
         joystick.y().whileTrue(new RunCommand(() -> m_leftShooterSubsystem.setRawVbus()));
