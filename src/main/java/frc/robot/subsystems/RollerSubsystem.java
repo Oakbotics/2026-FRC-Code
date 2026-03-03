@@ -10,14 +10,14 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class IntakeSubsystem extends SubsystemBase {
-  private final TalonFX intakeMotor;
-  private final DutyCycleOut m_intakeCycleOut = new DutyCycleOut(0.0);
-  public IntakeSubsystem() {
-    intakeMotor = new TalonFX(3);
+public class RollerSubsystem extends SubsystemBase {
+  private final TalonFX rollerMotor;
+  private final DutyCycleOut m_rollerCycleOut = new DutyCycleOut(0.0);
+  public RollerSubsystem() {
+    rollerMotor = new TalonFX(3);
   }
   public void setMotorSpeed(double speed) {
-    intakeMotor.setControl(m_intakeCycleOut.withOutput(speed));
+    rollerMotor.setControl(m_rollerCycleOut.withOutput(speed));
   }
   @Override
   public void periodic() {

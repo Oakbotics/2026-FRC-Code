@@ -26,13 +26,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Elevator.Setpoint;
 
 public class WristSubsystem extends SubsystemBase {
+
+  public WristEncoderSubsystem m_wristEncoder = new WristEncoderSubsystem();
   /** Creates a new ExampleSubsystem. */
+
+  public final int wristMotorId = 3;
   private final TalonFX wristMotor;
   public int kNumConfigAttempts = 5;
   private final MotionMagicVoltage setpointRequest = new MotionMagicVoltage(0);
   public WristSubsystem() {
     //define wrist motor and apply configs
-    wristMotor = new TalonFX(3);
+    wristMotor = new TalonFX(wristMotorId);
     for (int i = 0; i < 5; ++i) {
             var status = wristMotor.getConfigurator().apply(wristMotorConfig);
             if (status.isOK()) break;
@@ -63,7 +67,7 @@ public class WristSubsystem extends SubsystemBase {
       )
       .withFeedback(
           wristMotorInitialConfigs.Feedback.clone()
-              .withSensorToMechanismRatio(48)
+              .withSensorToMechanismRatio(2)
       )
       .withHardwareLimitSwitch(
           wristMotorInitialConfigs.HardwareLimitSwitch.clone()
@@ -88,7 +92,7 @@ public class WristSubsystem extends SubsystemBase {
       return wristMotor.getMotorVoltage(true).getValueAsDouble();
   }
   public Angle getPosition() {
-        return wristMotor.getPosition(true).getValue().times(360);
+        return wristMotor.getPosition(true).getValue() - m_wristEncoder.getInitialPosition();
   }
   public Command holdPosition() {
         return runOnce(() ->
@@ -101,7 +105,7 @@ public class WristSubsystem extends SubsystemBase {
   public void goToSetpoint(Angle newPos) {
       
           //SmartDashboard.putNumber("target", setpoint.get().target.magnitude());
-          setpointRequest.withPosition(newPos);
+          setpointRequest.withPosition(newPos - m_wristEncoder.getInitialPosition());
           wristMotor.setControl(setpointRequest);
     }
 
