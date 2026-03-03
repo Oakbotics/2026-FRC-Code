@@ -68,7 +68,8 @@ public class LeftShooterSubsystem extends SubsystemBase {
     slot0configs.kV = 0.16;
     slot0configs.kA = 0.0;
     slot0configs.kP = 6.0;
-    slot0configs.kI = 0.4;
+    slot0configs.kI = 0.42
+    ;
     slot0configs.kD = 0.05;
 
     shooterMotorOne.getConfigurator().apply(slot0configs);
