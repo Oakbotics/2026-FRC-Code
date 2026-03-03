@@ -31,10 +31,24 @@ public class WristSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
 
   public final int wristMotorId = 3;
+  public final int wristEncoderId = 4;
   private final TalonFX wristMotor;
   public int kNumConfigAttempts = 5;
   private final MotionMagicVoltage setpointRequest = new MotionMagicVoltage(0);
   public WristSubsystem() {
+
+    private static final double MAGNET_OFFSET = 0.0;
+    private static final boolean SENSOR_INVERTED = false;
+        
+    private final CANcoder encoder; = new CANcoder(wristEncoderId);
+    CANcoderConfiguration config = new CANcoderConfiguration();
+        
+    config.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    config.MagnetSensor.SensorDirection = SENSOR_INVERTED;
+    config.MagnetSensor.MagnetOffset = MAGNET_OFFSET;
+    encoder.getConfigurator().apply(config);
+
+
     //define wrist motor and apply configs
     wristMotor = new TalonFX(wristMotorId);
     for (int i = 0; i < 5; ++i) {
@@ -45,6 +59,7 @@ public class WristSubsystem extends SubsystemBase {
   /** Configs for wristMotor. */
   private static final TalonFXConfiguration wristMotorInitialConfigs = new TalonFXConfiguration();
   private final TalonFXConfiguration wristMotorConfig = wristMotorInitialConfigs.clone()
+      .withPosition(encoder.getAbsolutePosition())
       .withMotorOutput(
           wristMotorInitialConfigs.MotorOutput.clone()
               .withNeutralMode(NeutralModeValue.Coast)
@@ -92,7 +107,7 @@ public class WristSubsystem extends SubsystemBase {
       return wristMotor.getMotorVoltage(true).getValueAsDouble();
   }
   public Angle getPosition() {
-        return wristMotor.getPosition(true).getValue() - m_wristEncoder.getInitialPosition();
+        return wristMotor.getPosition(true).getValue();
   }
   public Command holdPosition() {
         return runOnce(() ->
@@ -105,7 +120,7 @@ public class WristSubsystem extends SubsystemBase {
   public void goToSetpoint(Angle newPos) {
       
           //SmartDashboard.putNumber("target", setpoint.get().target.magnitude());
-          setpointRequest.withPosition(newPos - m_wristEncoder.getInitialPosition());
+          setpointRequest.withPosition(newPos);
           wristMotor.setControl(setpointRequest);
     }
 
