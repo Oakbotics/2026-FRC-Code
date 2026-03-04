@@ -22,13 +22,13 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.shooter.KickerCommand;
 import frc.robot.shooter.KickerSubsystem;
 import frc.robot.shooter.LeftShooterSubsystem;
-import frc.robot.shooter.RightShooterSubsystem;
+
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     private final LeftShooterSubsystem m_leftShooterSubsystem = new LeftShooterSubsystem();
-    private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
+    // private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
     private final KickerSubsystem m_kickerSubsystem = new KickerSubsystem();
 
 
@@ -79,7 +79,7 @@ public class RobotContainer {
         joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-        joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, m_kickerSubsystem, 33));//44 inches from hub
+        joystick.a().whileTrue(new ShooterCommand(m_leftShooterSubsystem, m_kickerSubsystem, 33));//44 inches from hub
         joystick.b().whileTrue(new KickerCommand(m_kickerSubsystem, 15));
         joystick.y().whileTrue(new RunCommand(() -> m_leftShooterSubsystem.setRawVbus()));
         joystick.x().whileTrue(m_leftShooterSubsystem.sysIdDynamic(Direction.kForward));

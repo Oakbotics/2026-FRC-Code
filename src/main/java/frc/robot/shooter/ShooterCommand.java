@@ -13,7 +13,7 @@ public class ShooterCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // private final ExampleSubsystem m_subsystem;
   private final LeftShooterSubsystem m_leftShooterSubsystem;
-  private final RightShooterSubsystem m_rightShooterSubsystem;
+  // private final RightShooterSubsystem m_rightShooterSubsystem;
   private final KickerSubsystem m_kickerSubsystem;
 
   private final double speed;
@@ -22,11 +22,11 @@ public class ShooterCommand extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShooterCommand(RightShooterSubsystem m_rightShooterSubsytem, LeftShooterSubsystem m_leftShooterSubsystem, KickerSubsystem m_kickerSubsystem, double speed) {
+  public ShooterCommand(LeftShooterSubsystem m_leftShooterSubsystem, KickerSubsystem m_kickerSubsystem, double speed) {
     // m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_leftShooterSubsystem = m_leftShooterSubsystem;
-    this.m_rightShooterSubsystem = m_rightShooterSubsytem;
+    // this.m_rightShooterSubsystem = m_rightShooterSubsytem;
     this.m_kickerSubsystem = m_kickerSubsystem;
     this.speed = speed;
     addRequirements(m_leftShooterSubsystem);

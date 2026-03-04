@@ -28,12 +28,14 @@ public class LeftShooterSubsystem extends SubsystemBase {
     private final VoltageOut sysIdControl = new VoltageOut(0);
     private final SysIdRoutine m_SysIdRoutine;
     private final Slot0Configs slot0configs = new Slot0Configs();
+    private final ShooterConfigs configs;
 
     /** Creates a new ExampleSubsystem. */
   public LeftShooterSubsystem() {
 
     shooterMotorOne = new TalonFX(ShooterConstants.shooterMotorOneID);
     shooterMotorTwo = new TalonFX(ShooterConstants.shooterMotorTwoID);
+    configs = new ShooterConfigs();
       m_SysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null,
       Volts.of(4),
@@ -64,15 +66,10 @@ public class LeftShooterSubsystem extends SubsystemBase {
   }
   // 44 inch from hub
   public void configureMotors() {
-    slot0configs.kS = 17.5;
-    slot0configs.kV = 0.16;
-    slot0configs.kA = 0.0;
-    slot0configs.kP = 6.0;
-    slot0configs.kI = 0.4;
-    slot0configs.kD = 0.05;
 
-    shooterMotorOne.getConfigurator().apply(slot0configs);
-    shooterMotorTwo.getConfigurator().apply(slot0configs);
+    shooterMotorOne.getConfigurator().apply(configs.shooterMotorConfig());
+    shooterMotorTwo.getConfigurator().apply(configs.shooterMotorConfig());
+    
 
     shooterMotorOne.getVelocity().setUpdateFrequency(100);
     shooterMotorTwo.getVelocity().setUpdateFrequency(100);
