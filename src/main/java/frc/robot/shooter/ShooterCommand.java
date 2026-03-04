@@ -46,7 +46,7 @@ public class ShooterCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_leftShooterSubsystem.setVoltage(0);
-    m_rightShooterSubsystem.setVoltage(0);
+   // m_rightShooterSubsystem.setVoltage(0);
   }
 
   // Returns true when the command should end.

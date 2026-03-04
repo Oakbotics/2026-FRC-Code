@@ -37,7 +37,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-public class ElevatorSubsystem extends SubsystemBase { 
+public class Elevator extends SubsystemBase {
     /** Position setpoints for the elevator. */
     public enum Setpoint {
         Ground(Rotations.of(-0.5)),
@@ -65,7 +65,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private static final Distance kDrumRadius = Meters.of(0.027178);
     private static final Distance kMaxHeight = Meters.of(0);
 
-    /* leader and follower motors */ 
+    /* leader and follower motors */
     private final CANBus kCANBus = new CANBus("rio");
     private final TalonFX motor_id_1 = new TalonFX(1, kCANBus);
     private final TalonFX motor_id_2 = new TalonFX(2, kCANBus);
@@ -95,7 +95,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         0.0, kMaxHeight.in(Meters), true, 0.0
     );
 
-    private static final double kSimLoopPeriod = 0.002; // 2 ms 
+    private static final double kSimLoopPeriod = 0.002; // 2 ms
     private Notifier simNotifier = null;
     private double lastSimTime = 0.0;
 
@@ -200,7 +200,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(44.44444444444444))
         );
 
-    public ElevatorSubsystem() {
+    public Elevator() {
         for (int i = 0; i < kNumConfigAttempts; ++i) {
             var status = motor_id_1.getConfigurator().apply(motor_id_1Configs);
             if (status.isOK()) break;

@@ -4,80 +4,127 @@
 
 package frc.robot.wrist;
 
-
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
+import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
+import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+import static edu.wpi.first.units.Units.*;
 
+import java.util.function.Supplier;
+
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Configs;
-
-
 
 public class WristSubsystem extends SubsystemBase {
-    
-  private final TalonFX wristMotor;
 
-  private final PositionVoltage positionRequest = new PositionVoltage(0).withSlot(0);
-
-  private final VoltageOut voltageRequest = new VoltageOut(0);
-
-
-  /** Creates a new ExampleSubsystem. */
-  public WristSubsystem() {
-    wristMotor = new TalonFX(WristConstants.wristMotorCANId);
-
-    wristMotor.setPosition(0);
-    StatusCode status = wristMotor.getConfigurator().apply(Configs.WristConfigs.wristConfig);
   
+  /** Creates a new ExampleSubsystem. */
+  
+    public final int wristMotorId = 3;
+    public final int wristEncoderId = 4;
+    private final TalonFX wristMotor;
+    public int kNumConfigAttempts = 5;
+    final CANcoder encoder;
+    private final MotionMagicVoltage setpointRequest = new MotionMagicVoltage(0);
+    public WristSubsystem() {
+  
+      final double magnetOffset = 0.0;
+      final SensorDirectionValue SensorDirectionValue = null;
+          
+      encoder = new CANcoder(wristEncoderId);
+      CANcoderConfiguration config = new CANcoderConfiguration();
+          
+      //config.MagnetSensor.SensorDirection = SENSOR_INVERTED;
+      config.MagnetSensor.MagnetOffset = magnetOffset;
+      config.MagnetSensor.SensorDirection = SensorDirectionValue;
+    encoder.getConfigurator().apply(config);
+
+
+    //define wrist motor and apply configs
+    wristMotor = new TalonFX(wristMotorId);
+    for (int i = 0; i < 5; ++i) {
+            var status = wristMotor.getConfigurator().apply(wristMotorConfig);
+            if (status.isOK()) break;
+    }
+    wristMotor.setPosition(encoder.getAbsolutePosition().getValueAsDouble());
   }
-
-  public void wristRotateToPosition(double positionDegrees){
-    double targetRotations = degreesToRotations(positionDegrees);
-    wristMotor.setControl(positionRequest.withPosition(targetRotations));
-  }
-
-  public double getWristAngle(){
-    double rotations = wristMotor.getPosition().getValueAsDouble();
-    return rotationsToDegrees(rotations);
-  }
-
-  public double getWristVelocity(){
-    double rotationsPerSecond = wristMotor.getVelocity().getValueAsDouble();
-    return rotationsPerSecond * 360.0;
-  }
-
-  public void stop(){
-    wristMotor.setControl(voltageRequest.withOutput(0));
-  }
-
-
-  public void printWristPosition(){
-    SmartDashboard.putNumber("Wrist Position", getWristAngle());
-    SmartDashboard.putNumber("Wrist Velocity (deg/second)", getWristVelocity());
-  }
-
-
-
-
-  private static double degreesToRotations(double degrees){
-
-    return degrees / 360;
-  }
-
-  private static double rotationsToDegrees(double rotations){
-
-    return rotations * 360;
-  }
-
-
-//   public Angle setPosition(Supplier<Angle> angle) {
-//     return run(() -> {
+  /** Configs for wristMotor. */
+  private static final TalonFXConfiguration wristMotorInitialConfigs = new TalonFXConfiguration();
+  private final TalonFXConfiguration wristMotorConfig = wristMotorInitialConfigs.clone()
+      .withMotorOutput(
+          wristMotorInitialConfigs.MotorOutput.clone()
+              .withNeutralMode(NeutralModeValue.Coast)
+      )
+      .withCurrentLimits(
+          wristMotorInitialConfigs.CurrentLimits.clone()
+              .withStatorCurrentLimit(Amps.of(120))
+              .withStatorCurrentLimitEnable(true)
+      )
+      .withSlot0(
+          wristMotorInitialConfigs.Slot0.clone()
+              .withKP(500)
+              .withKI(0)
+              .withKD(1)
+              .withKS(0)
+              .withKV(2)
+              .withKA(0)
+              .withKG(0)
+              .withGravityType(GravityTypeValue.Arm_Cosine)
+      )
+      .withFeedback(
+          wristMotorInitialConfigs.Feedback.clone()
+              .withSensorToMechanismRatio(2)
+      )
+      .withHardwareLimitSwitch(
+          wristMotorInitialConfigs.HardwareLimitSwitch.clone()
+              .withForwardLimitEnable(true)
         
-//     });
-//   }
+              .withForwardLimitAutosetPositionEnable(false)
+              .withForwardLimitRemoteSensorID(0)
+              .withForwardLimitSource(ForwardLimitSourceValue.LimitSwitchPin)
+              .withForwardLimitType(ForwardLimitTypeValue.NormallyOpen)
+              .withReverseLimitAutosetPositionEnable(false)
+              .withReverseLimitEnable(true)
+              .withReverseLimitRemoteSensorID(0)
+              .withReverseLimitSource(ReverseLimitSourceValue.LimitSwitchPin)
+              .withReverseLimitType(ReverseLimitTypeValue.NormallyOpen)
+      )
+      .withMotionMagic(
+          wristMotorInitialConfigs.MotionMagic.clone()
+              .withMotionMagicCruiseVelocity(RotationsPerSecond.of(256))
+              .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(1000))
+      );
+  public double getVolts() {
+      return wristMotor.getMotorVoltage(true).getValueAsDouble();
+  }
+  public Angle getPosition() {
+        return wristMotor.getPosition(true).getValue();
+  }
+  public Command holdPosition() {
+        return runOnce(() ->
+            setpointRequest.withPosition(getPosition())
+        ).andThen(run(() -> {
+            wristMotor.setControl(setpointRequest);
+        }));
+    }
+
+  public void goToSetpoint(Angle newPos) {
+      
+          //SmartDashboard.putNumber("target", setpoint.get().target.magnitude());
+          setpointRequest.withPosition(newPos);
+          wristMotor.setControl(setpointRequest);
+    }
 
   @Override
   public void periodic() {

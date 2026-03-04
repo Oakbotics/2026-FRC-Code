@@ -14,8 +14,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Constants.VisionAlignConstants;
 
 
 public class LimeLightSubsystem extends SubsystemBase {
@@ -140,12 +138,12 @@ public class LimeLightSubsystem extends SubsystemBase {
 
   public boolean hasHubTargetRight() {
     int tid = getRightID();
-    return Constants.VisionAlignConstants.HUB_TAG_IDS.contains(tid);
+    return frc.robot.vision.VisionConstants.HUB_TAG_IDS.contains(tid);
   }
 
   public double getDistanceToHubMeters() {
-    Pose2d botPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionAlignConstants.LIMELIGHT_NAME).pose; 
-    return botPose.getTranslation().getDistance(Constants.VisionAlignConstants.hubPosition());
+    Pose2d botPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME).pose; 
+    return botPose.getTranslation().getDistance(VisionConstants.hubPosition());
   }
 
 

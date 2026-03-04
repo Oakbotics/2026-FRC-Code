@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 
@@ -19,22 +20,23 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.controls.VoltageOut;
 
 public class LeftShooterSubsystem extends SubsystemBase {
-  // initializing the motors dutycycle velocity, voltage request, torque request, sysid.
-  private final TalonFX shooterMotorOne;
-  private final TalonFX shooterMotorTwo;
-  private final VelocityVoltage voltageRequest = new VelocityVoltage(0).withEnableFOC(true);
-  private final VoltageOut sysIdControl = new VoltageOut(0);
-  private final SysIdRoutine m_SysIdRoutine;
-  private final Slot0Configs slot0configs = new Slot0Configs();
+    private final TalonFX shooterMotorOne;
+    private final TalonFX shooterMotorTwo;
+    private final DutyCycleOut dutyCycle = new DutyCycleOut(0); 
+    private final VelocityVoltage voltageRequest = new VelocityVoltage(0).withEnableFOC(true);
+    private final VelocityTorqueCurrentFOC velocityTorqueRequest = new VelocityTorqueCurrentFOC(0);
+    private final VoltageOut sysIdControl = new VoltageOut(0);
+    private final SysIdRoutine m_SysIdRoutine;
+    private final Slot0Configs slot0configs = new Slot0Configs();
+    private final ShooterConfigs configs;
 
-    /** Runs the left shooter. */
+    /** Creates a new ExampleSubsystem. */
   public LeftShooterSubsystem() {
-    // initializes motor ids.
+
     shooterMotorOne = new TalonFX(ShooterConstants.shooterMotorOneID);
     shooterMotorTwo = new TalonFX(ShooterConstants.shooterMotorTwoID);
-
-    // setting up sysid to log our motors in their state, how much volts they're putting out and to calculate velocity.
-    m_SysIdRoutine = new SysIdRoutine(
+    configs = new ShooterConfigs();
+      m_SysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null,
       Volts.of(4),
       null, 
@@ -57,35 +59,24 @@ public class LeftShooterSubsystem extends SubsystemBase {
           .angularVelocity(shooterMotorTwo.getVelocity().getValue());
         },
       this));
-    // configures motors.
     configureMotors();
-    // setting up our path for logs
     SignalLogger.setPath("/home/vuser/logs/");
     
     
   }
-
+  // 44 inch from hub
   public void configureMotors() {
-    // setting up our pid values for motors
-    slot0configs.kS = 17.5;
-    slot0configs.kV = 0.23739;
-    slot0configs.kA = 0.0;
-    slot0configs.kP = 0.05;
-    slot0configs.kI = 0.0;
-    slot0configs.kD = 0.0;
 
-    // configuring motors with pid
-    shooterMotorOne.getConfigurator().apply(slot0configs);
-    shooterMotorTwo.getConfigurator().apply(slot0configs);
+    shooterMotorOne.getConfigurator().apply(configs.shooterMotorConfig());
+    shooterMotorTwo.getConfigurator().apply(configs.shooterMotorConfig());
+    
 
-    // sets update frequency for sysid
     shooterMotorOne.getVelocity().setUpdateFrequency(100);
     shooterMotorTwo.getVelocity().setUpdateFrequency(100);
     shooterMotorOne.getPosition().setUpdateFrequency(100);
     shooterMotorTwo.getPosition().setUpdateFrequency(100);
 
   }
-  // default sysid commands
   public Command sysIdDynamic(SysIdRoutine.Direction direction){
     return m_SysIdRoutine.dynamic(direction);
   }
@@ -94,13 +85,15 @@ public class LeftShooterSubsystem extends SubsystemBase {
     return m_SysIdRoutine.quasistatic(direction);
   }
 
-  // runs our motor velocity using volts 
+  public void shootFuel(double speed) {
+    shooterMotorOne.setControl(dutyCycle.withOutput(speed));
+  }
+
   public void runVelocity(double rps) {
     voltageRequest.Velocity = rps;
     shooterMotorOne.setControl(voltageRequest); 
   }
   
-  // runs shooter using torque foc
   public void runVelocityTorqueFOC(double rps) {
       double motorRPS = rps; 
       // double kS_Amps = 0.0; 
@@ -113,22 +106,21 @@ public class LeftShooterSubsystem extends SubsystemBase {
       //         .withFeedForwards(feedForwardAmps);
       // final VelocityVoltage request = new VelocityVoltage(0).withSlot(0);
 
-      // moves motor with torque foc request
+
       shooterMotorOne.setControl(request.withVelocity(motorRPS).withFeedForward(0));
       shooterMotorTwo.setControl(request.withVelocity(motorRPS).withFeedForward(0));
 
-      // imports target rps and motor rps into smart dashboard
+
       SmartDashboard.putNumber("Motor Target RPS", motorRPS);
       SmartDashboard.putNumber("Motor Actual RPS", actualRPS);
   }
 
-  // sets voltage
+
   public void setVoltage(double voltage){
     shooterMotorOne.setVoltage(voltage);
     shooterMotorTwo.setVoltage(voltage);
   }
   
-  // used for sysid testing 
   public void setRawVbus(){
     var voltageRequest = new VoltageOut(0);
 
@@ -137,24 +129,20 @@ public class LeftShooterSubsystem extends SubsystemBase {
     printRPM();
   }
 
-  // prints motor voltage onto smart dashboard
   public void printVoltageOutput() {
     double motorVoltage = shooterMotorOne.getMotorVoltage().getValueAsDouble();
     SmartDashboard.putNumber("Motor Voltage", motorVoltage);
   }
 
-  // sets motor voltage to zero in smart dashboard when reset
   public void resetVoltageOutput() {
     SmartDashboard.putNumber("Motor Voltage", 0);
   }
 
-  // prints stator current onto smart dashboard
   public void printCurrentLimits() {
     SmartDashboard.putNumber("Shooter Stator Current", shooterMotorOne.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Shooter Supply Current", shooterMotorOne.getSupplyCurrent().getValueAsDouble());
   }
 
-  // prints shooter motor rpm onto smart dashboard
   public void printRPM() {
     double motorRPS = shooterMotorOne.getVelocity().getValueAsDouble();
     double shooterRPM = motorRPS * 60.0;

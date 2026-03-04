@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.wrist;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -8,47 +8,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.shooter.ShooterConstants;
 import frc.robot.wrist.WristConstants;
 
-public final class Configs {
-    private Configs() {}
-
-    public static final class ShooterConfigs {
-
-
-        public static TalonFXConfiguration shooterMotorConfig() {
-            TalonFXConfiguration config = new TalonFXConfiguration();
-
-
-
-            config.Slot0.kP = ShooterConstants.kP;
-            config.Slot0.kI = ShooterConstants.kI;
-            config.Slot0.kD = ShooterConstants.kD;
-
-
-            config.Slot0.kS = 0.0;
-            config.Slot0.kV = 0.15;
-            config.Slot0.kA = 0.01;
-
-            config.Feedback.SensorToMechanismRatio = 6.0;
-           
-            config.CurrentLimits.SupplyCurrentLimit = 40;
-            config.CurrentLimits.SupplyCurrentLimitEnable = true;
-
-            config.CurrentLimits.StatorCurrentLimit = 100;
-            config.CurrentLimits.StatorCurrentLimitEnable = true;
-
-            config.TorqueCurrent.PeakForwardTorqueCurrent = 100;
-            config.TorqueCurrent.PeakReverseTorqueCurrent = -100;
-            config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-            config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-            
-
-            
-
-            return config;
-        }
-    }
-
-      public static final class WristConfigs {
+public final class WristConfigs {
         public static final TalonFXConfiguration wristConfig = new TalonFXConfiguration();
         
         // Gear ratio: motor rotations to mechanism rotations
@@ -90,6 +50,5 @@ public final class Configs {
 
             // Closed-loop ramp rate (optional, smooth motion)
             wristConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.1;
-        }
     }
 }

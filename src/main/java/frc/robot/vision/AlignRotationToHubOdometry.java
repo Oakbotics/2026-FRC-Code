@@ -19,9 +19,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.VisionAlignConstants;
 import frc.robot.drive.CommandSwerveDrivetrain;
 import frc.robot.vision.LimelightHelpers.PoseEstimate;
+import frc.robot.vision.VisionConstants;
 
 public class AlignRotationToHubOdometry extends Command {
 
@@ -49,13 +49,13 @@ public class AlignRotationToHubOdometry extends Command {
     this.driverVy = vy;
 
     headingPID = new PIDController(
-        VisionAlignConstants.HEADING_kP,
-        VisionAlignConstants.HEADING_kI,
-        VisionAlignConstants.HEADING_kD);
+        VisionConstants.HEADING_kP,
+        VisionConstants.HEADING_kI,
+        VisionConstants.HEADING_kD);
 
     headingPID.enableContinuousInput(-Math.PI, Math.PI);
-    headingPID.setTolerance(Math.toRadians(VisionAlignConstants.HEADING_TOLERANCE_DEG));
-    headingPID.setIntegratorRange(VisionAlignConstants.HEADING_I_MIN, VisionAlignConstants.HEADING_I_MAX);
+    headingPID.setTolerance(Math.toRadians(VisionConstants.HEADING_TOLERANCE_DEG));
+    headingPID.setIntegratorRange(VisionConstants.HEADING_I_MIN, VisionConstants.HEADING_I_MAX);
 
     addRequirements(drivetrain, limelight);
   }
@@ -67,15 +67,15 @@ public class AlignRotationToHubOdometry extends Command {
 
   @Override
   public void execute() {
-     int tagID = (int) LimelightHelpers.getFiducialID(VisionAlignConstants.LIMELIGHT_NAME);
+     int tagID = (int) LimelightHelpers.getFiducialID(VisionConstants.LIMELIGHT_NAME);
     
     if(alliance.isPresent() && alliance.get() == Alliance.Blue) {
-      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionAlignConstants.LIMELIGHT_NAME);
+      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME);
     } else {
-      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiRed(VisionAlignConstants.LIMELIGHT_NAME);
+      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiRed(VisionConstants.LIMELIGHT_NAME);
     }
 
-    if (tagID != -1 && VisionAlignConstants.HUB_TAG_IDS.contains(tagID)) {
+    if (tagID != -1 && VisionConstants.HUB_TAG_IDS.contains(tagID)) {
       // drivetrain.resetOdometry(new Pose2d(estimatePoseMT2.pose.getX(), estimatePoseMT2.pose.getY(), estimateRotMT1));
       drivetrain.addVisionMeasurement(estimatePoseMT1.pose, estimatePoseMT1.timestampSeconds);
     }
@@ -86,16 +86,16 @@ public class AlignRotationToHubOdometry extends Command {
     final double vx = driverVx.getAsDouble();
     final double vy = driverVy.getAsDouble();
 
-    double distanceX = VisionAlignConstants.hubPosition().getX() - robotPose.getX();
-    double distanceY = VisionAlignConstants.hubPosition().getY() - robotPose.getY();
+    double distanceX = VisionConstants.hubPosition().getX() - robotPose.getX();
+    double distanceY = VisionConstants.hubPosition().getY() - robotPose.getY();
 
     desiredHeading = Math.atan2(distanceY, distanceX);
     double omega = headingPID.calculate(currentHeading, desiredHeading);
     
     omega = MathUtil.clamp(
       omega,
-      -VisionAlignConstants.MAX_OMEGA_RAD_PER_SEC,
-      VisionAlignConstants.MAX_OMEGA_RAD_PER_SEC
+      -VisionConstants.MAX_OMEGA_RAD_PER_SEC,
+      VisionConstants.MAX_OMEGA_RAD_PER_SEC
     );
     
     drivetrain.setControl(
@@ -105,7 +105,7 @@ public class AlignRotationToHubOdometry extends Command {
         .withRotationalRate(omega)
     );
 
-    SmartDashboard.putBoolean("TV", LimelightHelpers.getTV(VisionAlignConstants.LIMELIGHT_NAME));
+    SmartDashboard.putBoolean("TV", LimelightHelpers.getTV(VisionConstants.LIMELIGHT_NAME));
     SmartDashboard.putNumber("OmegaCmd", omega);
     SmartDashboard.putNumber("DesiredDeg", Math.toDegrees(desiredHeading));
   }

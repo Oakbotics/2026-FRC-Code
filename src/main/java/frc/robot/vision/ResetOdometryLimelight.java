@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.VisionAlignConstants;
 import frc.robot.drive.CommandSwerveDrivetrain;
 import frc.robot.vision.LimelightHelpers.PoseEstimate;
+import frc.robot.vision.VisionConstants;
 
 public class ResetOdometryLimelight extends Command {
 
@@ -31,12 +31,12 @@ public class ResetOdometryLimelight extends Command {
   
   @Override
   public void initialize() {
-    int tagID = (int) LimelightHelpers.getFiducialID(VisionAlignConstants.LIMELIGHT_NAME);
+    int tagID = (int) LimelightHelpers.getFiducialID(VisionConstants.LIMELIGHT_NAME);
     
     if(alliance.isPresent() && alliance.get() == Alliance.Blue) {
-      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionAlignConstants.LIMELIGHT_NAME);
+      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME);
     } else {
-      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiRed(VisionAlignConstants.LIMELIGHT_NAME);
+      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiRed(VisionConstants.LIMELIGHT_NAME);
     }
 
     if (tagID != -1) {
