@@ -36,42 +36,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.elevator.ElevatorConstants.Setpoint;
 
-public class Elevator extends SubsystemBase {
+public class ElevatorSubsystem extends SubsystemBase {
     /** Position setpoints for the elevator. */
-    public enum Setpoint {
-        Ground(Rotations.of(-0.5)),
-        Middle(Rotations.of(-1)),
-        Top(Rotations.of(-2));
-
-        /** The position target of the setpoint in angular units. */
-        public final Angle target;
-        /** The position target of the setpoint in linear units. */
-        public final Distance targetDist;
-
-        private Setpoint(Angle target) {
-            this.target = target;
-            this.targetDist = kDrumRadius.times(target.in(Radians));
-        }
-        private Setpoint(Distance target) {
-            this.target = Radians.of(target.div(kDrumRadius).magnitude());
-            this.targetDist = target;
-        }
-    }
 
     private static final int kNumConfigAttempts = 2;
-
-    private static final double kGearRatio = 9;
-    private static final Distance kDrumRadius = Meters.of(0.027178);
-    private static final Distance kMaxHeight = Meters.of(0);
-
+    public static ElevatorConfigs m_ElevatorConfigs = new ElevatorConfigs();
+  
     /* leader and follower motors */
     private final CANBus kCANBus = new CANBus("rio");
-    private final TalonFX motor_id_1 = new TalonFX(1, kCANBus);
-    private final TalonFX motor_id_2 = new TalonFX(2, kCANBus);
+    private final TalonFX motor_id_1 = new TalonFX(ElevatorConstants.motorOneId, kCANBus);
+    private final TalonFX motor_id_2 = new TalonFX(ElevatorConstants.motorTwoId, kCANBus);
 
     /* device status signals */
-    private final StatusSignal<Angle> motor_id_1Position = motor_id_1.getPosition(false);
+    private final StatusSignal<Angle> motor_id_1Position = motor_id_1.getPosition(false);   
     private final StatusSignal<AngularVelocity> motor_id_1Velocity = motor_id_1.getVelocity(false);
     private final StatusSignal<Current> motor_id_1TorqueCurrent = motor_id_1.getTorqueCurrent(false);
 
@@ -91,8 +70,8 @@ public class Elevator extends SubsystemBase {
     /* simulation */
     private final ElevatorSim elevatorSim_motor_id_1 = new ElevatorSim(
         DCMotor.getKrakenX60Foc(2),
-        kGearRatio, 5, kDrumRadius.in(Meters),
-        0.0, kMaxHeight.in(Meters), true, 0.0
+        ElevatorConstants.kGearRatio, 5, ElevatorConstants.kDrumRadius.in(Meters),
+        0.0, ElevatorConstants.kMaxHeight.in(Meters), true, 0.0
     );
 
     private static final double kSimLoopPeriod = 0.002; // 2 ms
@@ -100,113 +79,17 @@ public class Elevator extends SubsystemBase {
     private double lastSimTime = 0.0;
 
     /* Mechanism2d visualization of the elevator */
-    private final Mechanism2d mech2d = new Mechanism2d(1, kMaxHeight.in(Meters));
+    private final Mechanism2d mech2d = new Mechanism2d(1, ElevatorConstants.kMaxHeight.in(Meters));
     private final MechanismLigament2d motor_id_1Mech2d = mech2d.getRoot("motor_id_1 Root", 0.500, 0)
         .append(new MechanismLigament2d("motor_id_1", elevatorSim_motor_id_1.getPositionMeters(), 90));
 
-    /** Configs common across all motors. */
-    private static final TalonFXConfiguration motorInitialConfigs = new TalonFXConfiguration();
-
-    /** Configs common across just the leader motors. */
-    private static final TalonFXConfiguration leaderInitialConfigs = motorInitialConfigs.clone();
-
-    /** Configs for {@link #motor_id_1}. */
-    private final TalonFXConfiguration motor_id_1Configs = leaderInitialConfigs.clone()
-        .withMotorOutput(
-            leaderInitialConfigs.MotorOutput.clone()
-                .withNeutralMode(NeutralModeValue.Coast)
-        )
-        .withCurrentLimits(
-            leaderInitialConfigs.CurrentLimits.clone()
-                .withStatorCurrentLimit(Amps.of(120))
-                .withStatorCurrentLimitEnable(true)
-        )
-        .withSlot0(
-            leaderInitialConfigs.Slot0.clone()
-                .withKP(36)
-                .withKI(0)
-                .withKD(0)
-                .withKS(0.2)
-                .withKV(1.08)
-                .withKA(0)
-                .withKG(0)
-                .withGravityType(GravityTypeValue.Elevator_Static)
-        )
-        .withFeedback(
-            leaderInitialConfigs.Feedback.clone()
-                .withSensorToMechanismRatio(9)
-        )
-        .withHardwareLimitSwitch(
-            leaderInitialConfigs.HardwareLimitSwitch.clone()
-                .withForwardLimitEnable(true)
-                .withForwardLimitAutosetPositionEnable(false)
-                .withForwardLimitRemoteSensorID(0)
-                .withForwardLimitSource(ForwardLimitSourceValue.LimitSwitchPin)
-                .withForwardLimitType(ForwardLimitTypeValue.NormallyOpen)
-                .withReverseLimitAutosetPositionEnable(false)
-                .withReverseLimitEnable(true)
-                .withReverseLimitRemoteSensorID(0)
-                .withReverseLimitSource(ReverseLimitSourceValue.LimitSwitchPin)
-                .withReverseLimitType(ReverseLimitTypeValue.NormallyOpen)
-        )
-        .withMotionMagic(
-            leaderInitialConfigs.MotionMagic.clone()
-                .withMotionMagicCruiseVelocity(RotationsPerSecond.of(8.88888888888889))
-                .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(44.44444444444444))
-        );
-
-    /** Configs for {@link #motor_id_2}. */
-    private final TalonFXConfiguration motor_id_2Configs = motorInitialConfigs.clone()
-        .withMotorOutput(
-            motorInitialConfigs.MotorOutput.clone()
-                .withNeutralMode(NeutralModeValue.Coast)
-        )
-        .withCurrentLimits(
-            motorInitialConfigs.CurrentLimits.clone()
-                .withStatorCurrentLimit(Amps.of(120))
-                .withStatorCurrentLimitEnable(true)
-        )
-        .withSlot0(
-            motorInitialConfigs.Slot0.clone()
-                .withKP(36)
-                .withKI(0)
-                .withKD(0)
-                .withKS(0.2)
-                .withKV(1.08)
-                .withKA(0)
-                .withKG(0)
-                .withGravityType(GravityTypeValue.Elevator_Static)
-        )
-        .withFeedback(
-            motorInitialConfigs.Feedback.clone()
-                .withSensorToMechanismRatio(9)
-        )
-        .withHardwareLimitSwitch(
-            motorInitialConfigs.HardwareLimitSwitch.clone()
-                .withForwardLimitEnable(true)
-                .withForwardLimitAutosetPositionEnable(false)
-                .withForwardLimitRemoteSensorID(0)
-                .withForwardLimitSource(ForwardLimitSourceValue.LimitSwitchPin)
-                .withForwardLimitType(ForwardLimitTypeValue.NormallyOpen)
-                .withReverseLimitAutosetPositionEnable(false)
-                .withReverseLimitEnable(true)
-                .withReverseLimitRemoteSensorID(0)
-                .withReverseLimitSource(ReverseLimitSourceValue.LimitSwitchPin)
-                .withReverseLimitType(ReverseLimitTypeValue.NormallyOpen)
-        )
-        .withMotionMagic(
-            motorInitialConfigs.MotionMagic.clone()
-                .withMotionMagicCruiseVelocity(RotationsPerSecond.of(8.88888888888889))
-                .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(44.44444444444444))
-        );
-
-    public Elevator() {
+    public ElevatorSubsystem() {
         for (int i = 0; i < kNumConfigAttempts; ++i) {
-            var status = motor_id_1.getConfigurator().apply(motor_id_1Configs);
+            var status = motor_id_1.getConfigurator().apply(m_ElevatorConfigs.motor_id_1Configs);
             if (status.isOK()) break;
         }
         for (int i = 0; i < kNumConfigAttempts; ++i) {
-            var status = motor_id_2.getConfigurator().apply(motor_id_2Configs);
+            var status = motor_id_2.getConfigurator().apply(m_ElevatorConfigs.motor_id_2Configs);
             if (status.isOK()) break;
         }
 
@@ -320,7 +203,7 @@ public class Elevator extends SubsystemBase {
         );
 
         motor_id_1Mech2d.setLength(
-            motor_id_1Position.getValueAsDouble() * kDrumRadius.in(Meters) * 2 * Math.PI
+            motor_id_1Position.getValueAsDouble() * ElevatorConstants.kDrumRadius.in(Meters) * 2 * Math.PI
         );
     }
 
@@ -352,16 +235,16 @@ public class Elevator extends SubsystemBase {
 
             /* Apply the new rotor position and velocity to the motors (before gear ratio) */
             motor_id_1Sim.setRawRotorPosition(
-                Radians.of(elevatorSim_motor_id_1.getPositionMeters() / kDrumRadius.in(Meters) * kGearRatio)
+                Radians.of(elevatorSim_motor_id_1.getPositionMeters() / ElevatorConstants.kDrumRadius.in(Meters) *ElevatorConstants.kGearRatio)
             );
             motor_id_1Sim.setRotorVelocity(
-                RadiansPerSecond.of(elevatorSim_motor_id_1.getVelocityMetersPerSecond() / kDrumRadius.in(Meters) * kGearRatio)
+                RadiansPerSecond.of(elevatorSim_motor_id_1.getVelocityMetersPerSecond() / ElevatorConstants.kDrumRadius.in(Meters) * ElevatorConstants.kGearRatio)
             );
             motor_id_2Sim.setRawRotorPosition(
-                Radians.of(elevatorSim_motor_id_1.getPositionMeters() / kDrumRadius.in(Meters) * kGearRatio)
+                Radians.of(elevatorSim_motor_id_1.getPositionMeters() / ElevatorConstants.kDrumRadius.in(Meters) * ElevatorConstants.kGearRatio)
             );
             motor_id_2Sim.setRotorVelocity(
-                RadiansPerSecond.of(elevatorSim_motor_id_1.getVelocityMetersPerSecond() / kDrumRadius.in(Meters) * kGearRatio)
+                RadiansPerSecond.of(elevatorSim_motor_id_1.getVelocityMetersPerSecond() / ElevatorConstants.kDrumRadius.in(Meters) * ElevatorConstants.kGearRatio)
             );
         });
         simNotifier.startPeriodic(kSimLoopPeriod);
