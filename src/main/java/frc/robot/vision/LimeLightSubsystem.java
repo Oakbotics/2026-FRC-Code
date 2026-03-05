@@ -6,6 +6,8 @@
 package frc.robot.vision;
 
 
+import java.security.AllPermission;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
@@ -142,7 +144,12 @@ public class LimeLightSubsystem extends SubsystemBase {
   }
 
   public double getDistanceToHubMeters() {
-    Pose2d botPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME).pose; 
+    Pose2d botPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME).pose;
+
+    if (DriverStation.getAlliance().get() == Alliance.Red){
+      botPose = LimelightHelpers.getBotPoseEstimate_wpiRed(VisionConstants.LIMELIGHT_NAME).pose; 
+    }
+   
     return botPose.getTranslation().getDistance(VisionConstants.hubPosition());
   }
 

@@ -8,8 +8,11 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -52,6 +55,19 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     public RobotContainer() {
+        NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
+        NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
+                drivetrain,
+                m_limeLightSubsystem,
+                () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
+                () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
+            ));
+        Pose2d target = new Pose2d(drivetrain.getState().Pose.getX() + 1.0, drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation());
+        // NamedCommands.registerCommand("Move", new MoveOdometry(drivetrain, target));
+
+        // m_autoChooser = AutoBuilder.buildAutoChooser();
+        // m_autoChooser.setDefaultOption("LeftDepot1.5CycleAuto", AutoBuilder.buildAuto("LeftDepot1.5CycleAuto"));
+        configureBindings();
         configureBindings();
     }
 
