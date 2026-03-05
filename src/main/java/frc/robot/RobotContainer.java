@@ -130,14 +130,12 @@ public class RobotContainer {
 
         joystick.y().onTrue(m_Elevator.goToSetpoint(() -> Elevator.Setpoint.Top));
         joystick.a().onTrue(m_Elevator.goToSetpoint(() -> Elevator.Setpoint.Ground));
-
+ 
         joystick.povDown().onTrue(new ResetOdometryLimelight(drivetrain));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 1));
         joystick.leftBumper().whileTrue(new ShootFarCommandGroup(m_rightShooterSubsystem, m_leftShooterSubsystem, m_kickerSubsystem));
 
         drivetrain.registerTelemetry(logger::telemeterize);
-
-
     }
 
     public Command getAutonomousCommand() {  
