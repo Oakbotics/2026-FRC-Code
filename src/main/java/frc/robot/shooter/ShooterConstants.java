@@ -1,9 +1,9 @@
 package frc.robot.shooter;
 
 public class ShooterConstants {
-    public static final double kP = 8.0;
-    public static final double kI = 0.6;
-    public static final double kD = 0.05;
+    public static final double kP = 7.0;
+    public static final double kI = 2.5;
+    public static final double kD = 0.18;
     public static final double kS = 17.5;
     public static final double kV = 0.16;
     public static final double minOutput = -1;
@@ -17,6 +17,4 @@ public class ShooterConstants {
     public static final int shooterMotorFourID = 6;
 
     public static final int kickerMotorID = 7;
-
-
 }
