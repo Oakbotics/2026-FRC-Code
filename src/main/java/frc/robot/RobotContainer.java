@@ -25,6 +25,7 @@ import frc.robot.drive.TunerConstants;
 import frc.robot.elevator.Elevator;
 import frc.robot.intake.IntakeCommand;
 import frc.robot.intake.IntakeSubsystem;
+import frc.robot.led.LEDSubsystem;
 import frc.robot.drive.CommandSwerveDrivetrain;
 import frc.robot.vision.AlignRotationToHubOdometry;
 import frc.robot.vision.LimeLightSubsystem;
@@ -62,7 +63,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     final SendableChooser<Command> m_autoChooser;
-
+    private final LEDSubsystem leds = new LEDSubsystem(() -> drivetrain.getPose());
     public RobotContainer() {
         NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
         NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
