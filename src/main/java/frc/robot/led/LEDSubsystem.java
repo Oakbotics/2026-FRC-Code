@@ -15,14 +15,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.geometry.Pose2d;
 
 import frc.robot.util.HubTracker;
+import frc.robot.vision.VisionConstants;
 
 public class LEDSubsystem extends SubsystemBase {
 
     private final CANdle candle;
     private final Supplier<Pose2d> poseSupplier;
 
-    private static final double HUB_X = 8.27;
-    private static final double HUB_Y = 4.10;
+    private static final double HUB_X = VisionConstants.hubPosition().getX();
+    private static final double HUB_Y = VisionConstants.hubPosition().getY();
 
     public static final double SHOOT_LINE_DISTANCE = 4.0;
 
