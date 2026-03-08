@@ -120,11 +120,10 @@ public class WristSubsystem extends SubsystemBase {
     }
 
   public void goToSetpoint(Angle newPos) {
-      
-          //SmartDashboard.putNumber("target", setpoint.get().target.magnitude());
-          setpointRequest.withPosition(newPos);
-          wristMotor.setControl(setpointRequest);
-    }
+    //SmartDashboard.putNumber("target", setpoint.get().target.magnitude());
+    setpointRequest.withPosition(newPos);
+    wristMotor.setControl(setpointRequest); 
+  }
 
   @Override
   public void periodic() {

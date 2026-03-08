@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 /** An example command that uses an example subsystem. */
 public class WristCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-   private final WristSubsystem m_subsystem;
+   private final WristSubsystem m_wristSubsystem;
    private final Angle m_angle; 
 
   /**
@@ -20,22 +20,22 @@ public class WristCommand extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public WristCommand(WristSubsystem subsystem, Angle angle) {
-    this.m_subsystem = subsystem;
+  public WristCommand(WristSubsystem m_wristSubsystem, Angle angle) {
+    this.m_wristSubsystem = m_wristSubsystem;
     this.m_angle = angle;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.goToSetpoint(m_angle);
+    m_wristSubsystem.goToSetpoint(m_angle);
     
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-     SmartDashboard.putNumber("currentWristAngle: ", m_subsystem.getPosition().magnitude());
+     SmartDashboard.putNumber("currentWristAngle: ", m_wristSubsystem.getPosition().magnitude());
   }
 
   // Called once the command ends or is interrupted.

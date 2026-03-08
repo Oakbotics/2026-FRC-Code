@@ -21,11 +21,11 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor = new TalonFX(IntakeConstants.intakeMotorID);
   }
 
-  public void intakeFuel(double speed){
+  public void intakeFuel(double speed) {
     intakeMotor.setControl(dutyCycle.withOutput(speed));
   }
 
-  public void outakeFuel(double speed){
+  public void outakeFuel(double speed) {
     intakeMotor.setControl(dutyCycle.withOutput(-speed));
   }
 

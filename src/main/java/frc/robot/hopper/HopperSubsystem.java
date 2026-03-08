@@ -21,11 +21,11 @@ public class HopperSubsystem extends SubsystemBase {
     hopperMotor = new TalonFX(HopperConstants.hopperMotorID);
   }
 
-  public void hopFuel(double speed){
+  public void hopFuel(double speed) {
     hopperMotor.setControl(dutyCycle.withOutput(speed));
   }
 
-  public void outHopFuel(double speed){
+  public void outHopFuel(double speed) {
     hopperMotor.setControl(dutyCycle.withOutput(-speed));
   }
 

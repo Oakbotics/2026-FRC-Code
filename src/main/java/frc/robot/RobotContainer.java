@@ -14,6 +14,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.shooter.ShooterCommand;
 import frc.robot.drive.TunerConstants;
 import frc.robot.elevator.Elevator;
+import frc.robot.hopper.HopperCommand;
+import frc.robot.hopper.HopperSubsystem;
 import frc.robot.intake.IntakeCommand;
 import frc.robot.intake.IntakeSubsystem;
 import frc.robot.led.LEDSubsystem;
@@ -31,6 +34,8 @@ import frc.robot.vision.AlignRotationToHubOdometry;
 import frc.robot.vision.LimeLightSubsystem;
 import frc.robot.vision.ResetOdometryLimelight;
 import frc.robot.vision.ShootFromHubDistance;
+import frc.robot.wrist.WristCommand;
+import frc.robot.wrist.WristSubsystem;
 import frc.robot.shooter.KickerCommand;
 import frc.robot.shooter.KickerSubsystem;
 import frc.robot.shooter.LeftShooterSubsystem;
@@ -49,6 +54,7 @@ public class RobotContainer {
     private final KickerSubsystem m_kickerSubsystem = new KickerSubsystem();
     private final Elevator m_Elevator = new Elevator();
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+    private final WristSubsystem m_wristSubsystem = new WristSubsystem();
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -80,6 +86,8 @@ public class RobotContainer {
             drivetrain,
             m_limeLightSubsystem
         ));
+        NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1));
+        // NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, new Angle(90)));
         
         Pose2d target = new Pose2d(drivetrain.getState().Pose.getX() + 1.0, drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation());
 
