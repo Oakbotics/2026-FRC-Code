@@ -42,7 +42,7 @@ public class RightShooterSubsystem extends SubsystemBase {
       null, 
       (state) -> SignalLogger.writeString("state", state.toString())),
       new SysIdRoutine.Mechanism(
-        (volts) ->{
+        (volts) -> {
           shooterMotorThree.setControl(sysIdControl.withOutput(volts.in(Volts)));
           shooterMotorFour.setControl(sysIdControl.withOutput(volts.in(Volts)));
         },
@@ -116,12 +116,12 @@ public class RightShooterSubsystem extends SubsystemBase {
   }
 
 
-  public void setVoltage(double voltage){
+  public void setVoltage(double voltage) {
     shooterMotorThree.setVoltage(voltage);
     shooterMotorFour.setVoltage(voltage);
   }
   
-  public void setRawVbus(){
+  public void setRawVbus() {
     var voltageRequest = new VoltageOut(0);
 
     shooterMotorThree.setControl(voltageRequest.withOutput(12));

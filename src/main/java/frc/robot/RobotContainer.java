@@ -51,8 +51,8 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+        .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -109,11 +109,6 @@ public class RobotContainer {
         joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-        joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, 40));
-        joystick.b().whileTrue(new KickerCommand(m_kickerSubsystem, 100));
-
-
-
 
         joystick.rightTrigger().whileTrue(
             new ShootOnMoveToHub(
@@ -121,12 +116,12 @@ public class RobotContainer {
                 m_limeLightSubsystem, 
                 m_leftShooterSubsystem, 
                 m_rightShooterSubsystem, 
-                m_kickerSubsystem, 
-                () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
-                () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
+                () -> drivetrain.getState().Speeds.vxMetersPerSecond,
+                () -> drivetrain.getState().Speeds.vyMetersPerSecond
             )
         );
 
+        // joystick.rightTrigger().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, 40));
         joystick.rightBumper().whileTrue(new KickerCommand(m_kickerSubsystem, 100));
 
         joystick.y().onTrue(m_Elevator.goToSetpoint(() -> Elevator.Setpoint.Top));

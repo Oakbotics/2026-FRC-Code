@@ -35,28 +35,26 @@ public class ShootOnMoveToHub extends Command {
   private final LimeLightSubsystem limelight;
   private final LeftShooterSubsystem leftShooter;
   private final RightShooterSubsystem rightShooter;
-  private final KickerSubsystem kicker;
 
   private final DoubleSupplier driverVxMps;
   private final DoubleSupplier driverVyMps;
 
   private final PIDController headingPID =
       new PIDController(
-          ShootOnMoveConstants.HEADING_kP,
-          ShootOnMoveConstants.HEADING_kI,
-          ShootOnMoveConstants.HEADING_kD);
+        ShootOnMoveConstants.HEADING_kP,
+        ShootOnMoveConstants.HEADING_kI,
+        ShootOnMoveConstants.HEADING_kD);
 
   private final Timer targetGrace = new Timer();
 
   private final SwerveRequest.FieldCentric driveRequest =
-      new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
   public ShootOnMoveToHub(
       CommandSwerveDrivetrain drivetrain,
       LimeLightSubsystem limelight,
       LeftShooterSubsystem leftShooter,
       RightShooterSubsystem rightShooter,
-      KickerSubsystem kicker,
       DoubleSupplier driverVxMps,
       DoubleSupplier driverVyMps) {
 
@@ -64,7 +62,6 @@ public class ShootOnMoveToHub extends Command {
     this.limelight = limelight;
     this.leftShooter = leftShooter;
     this.rightShooter = rightShooter;
-    this.kicker = kicker;
     this.driverVxMps = driverVxMps;
     this.driverVyMps = driverVyMps;
 
@@ -73,7 +70,7 @@ public class ShootOnMoveToHub extends Command {
     headingPID.setIntegratorRange(
         ShootOnMoveConstants.HEADING_I_MIN, ShootOnMoveConstants.HEADING_I_MAX);
 
-    addRequirements(drivetrain, limelight, leftShooter, rightShooter, kicker);
+    addRequirements(drivetrain, limelight, leftShooter, rightShooter);
   }
 
   @Override
@@ -91,67 +88,48 @@ public class ShootOnMoveToHub extends Command {
     final double vy = driverVyMps.getAsDouble();
 
     Pose2d robotPose = drivetrain.getState().Pose;
-    Translation2d hubPos = VisionConstants.hubPosition();
 
     Translation2d fieldVelMps = new Translation2d(vx, vy);
 
     Solution sol =
-        HubShotCalculator.calculate(
-            robotPose,
-            fieldVelMps,
-            hubPos,
-            ShooterConstants.DISTANCE_M_TO_RPS,
-            ShooterConstants.DISTANCE_M_TO_TOF_SEC,
-            ShootOnMoveConstants.PHASE_DELAY_SEC,
-            ShootOnMoveConstants.MIN_DISTANCE_M,
-            ShootOnMoveConstants.MAX_DISTANCE_M,
-            ShooterConstants.MIN_TARGET_RPS,
-            ShooterConstants.MAX_TARGET_RPS);
+      HubShotCalculator.calculate(
+        robotPose,
+        fieldVelMps,
+        ShooterConstants.DISTANCE_M_TO_RPS,
+        ShooterConstants.DISTANCE_M_TO_TOF_SEC,
+        ShootOnMoveConstants.PHASE_DELAY_SEC,
+        ShootOnMoveConstants.MIN_DISTANCE_M,
+        ShootOnMoveConstants.MAX_DISTANCE_M,
+        ShooterConstants.MIN_TARGET_RPS,
+        ShooterConstants.MAX_TARGET_RPS);
 
     double currentHeadingRad = robotPose.getRotation().getRadians();
     double desiredHeadingRad = sol.desiredHeading().getRadians();
 
     double omega =
-        headingPID.calculate(currentHeadingRad, desiredHeadingRad);
+      headingPID.calculate(currentHeadingRad, desiredHeadingRad);
 
     omega =
-        MathUtil.clamp(
-            omega,
-            -ShootOnMoveConstants.MAX_OMEGA_RAD_PER_SEC,
-            ShootOnMoveConstants.MAX_OMEGA_RAD_PER_SEC);
+      MathUtil.clamp(
+        omega,
+        -ShootOnMoveConstants.MAX_OMEGA_RAD_PER_SEC,
+        ShootOnMoveConstants.MAX_OMEGA_RAD_PER_SEC);
 
-    drivetrain.setControl(
-        driveRequest.withVelocityX(vx).withVelocityY(vy).withRotationalRate(omega));
+    drivetrain.setControl(driveRequest.withVelocityX(vx).withVelocityY(vy).withRotationalRate(omega));
 
     double targetRps = sol.isValid() ? sol.targetRps() : 0.0;
+
     leftShooter.runVelocityTorqueFOC(targetRps);
     rightShooter.runVelocityTorqueFOC(targetRps);
 
-    boolean hasHubTarget = limelight.hasHubTargetRight();
-    if (hasHubTarget) {
-      targetGrace.reset();
-    }
-
-    boolean aimed = headingPID.atSetpoint();
-    boolean okToFire =
-        sol.isValid()
-            && aimed
-            && (hasHubTarget
-                || targetGrace.get() < ShootOnMoveConstants.LOST_TARGET_GRACE_SEC);
-
-    kicker.setKickerSpeed(okToFire ? ShootOnMoveConstants.KICKER_PERCENT : 0.0);
-
-    SmartDashboard.putBoolean("hasHubTarget", hasHubTarget);
     SmartDashboard.putBoolean("valid", sol.isValid());
-    SmartDashboard.putBoolean("aimed", aimed);
-    SmartDashboard.putBoolean("firing", okToFire);
     SmartDashboard.putNumber("distanceM", sol.lookaheadDistanceM());
     SmartDashboard.putNumber("tofSec", sol.timeOfFlightSec());
     SmartDashboard.putNumber("targetRps", targetRps);
 
     double errDeg =
-        Math.toDegrees(
-            Rotation2d.fromRadians(desiredHeadingRad).minus(robotPose.getRotation()).getRadians());
+      Math.toDegrees(
+        Rotation2d.fromRadians(desiredHeadingRad).minus(robotPose.getRotation()).getRadians());
     SmartDashboard.putNumber("headingErrDeg", errDeg);
   }
 
@@ -174,10 +152,8 @@ public class ShootOnMoveToHub extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    drivetrain.setControl(driveRequest.withVelocityX(0).withVelocityY(0).withRotationalRate(0));
-    leftShooter.runVelocityTorqueFOC(0.0);
-    rightShooter.runVelocityTorqueFOC(0.0);
-    kicker.stop();
+    leftShooter.setVoltage(0);
+    rightShooter.setVoltage(0);
   }
 
   @Override

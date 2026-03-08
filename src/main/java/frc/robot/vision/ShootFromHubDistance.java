@@ -37,7 +37,7 @@ public class ShootFromHubDistance extends Command {
 
   @Override
   public void execute() {
-    boolean hasHubTarget = limelight.hasHubTargetRight();
+    boolean hasHubTarget = limelight.hasHubTarget();
 
     double distanceM = Double.NaN;
     double targetRps = lastTargetRps;

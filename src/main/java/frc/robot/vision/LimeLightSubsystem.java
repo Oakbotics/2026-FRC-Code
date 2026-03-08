@@ -138,7 +138,7 @@ public class LimeLightSubsystem extends SubsystemBase {
 
   
 
-  public boolean hasHubTargetRight() {
+  public boolean hasHubTarget() {
     int tid = getRightID();
     return frc.robot.vision.VisionConstants.HUB_TAG_IDS.contains(tid);
   }

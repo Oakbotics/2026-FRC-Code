@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import frc.robot.vision.VisionConstants;
 
 public final class HubShotCalculator {
 
@@ -18,48 +19,47 @@ public final class HubShotCalculator {
 
   private HubShotCalculator() {}
 
-  public static Solution calculate(
-      Pose2d robotPose,
-      Translation2d fieldVelMps,
-      Translation2d hubPos,
-      InterpolatingDoubleTreeMap distanceToRps,
-      InterpolatingDoubleTreeMap distanceToTofSec,
-      double phaseDelaySec,
-      double minDistanceM,
-      double maxDistanceM,
-      double minRps,
-      double maxRps) {
+  public static Solution calculate (
+    Pose2d robotPose,
+    Translation2d fieldVelMps,
+    InterpolatingDoubleTreeMap distanceToRps,
+    InterpolatingDoubleTreeMap distanceToTOFSec,
+    double phaseDelaySec,
+    double minDistanceM,
+    double maxDistanceM,
+    double minRps,
+    double maxRps) {
 
-    if (robotPose == null || fieldVelMps == null || hubPos == null) {
+    if (robotPose == null || fieldVelMps == null) {
       return new Solution(false, Rotation2d.kZero, Double.NaN, Double.NaN, 0.0);
     }
 
     Translation2d basePos =
     robotPose.getTranslation().plus(
-        new Translation2d(
-            fieldVelMps.getX() * phaseDelaySec,
-            fieldVelMps.getY() * phaseDelaySec));
+      new Translation2d(
+        fieldVelMps.getX() * phaseDelaySec,
+        fieldVelMps.getY() * phaseDelaySec));
 
     Translation2d lookaheadPos = basePos;
 
-    double dist = lookaheadPos.getDistance(hubPos);
-    double tof = distanceToTofSec.get(dist);
+    double dist = lookaheadPos.getDistance(VisionConstants.hubPosition());
+    double tof = distanceToTOFSec.get(dist);
 
     for (int i = 0; i < 8; i++) {
 
-      tof = distanceToTofSec.get(dist);
+      tof = distanceToTOFSec.get(dist);
 
       lookaheadPos =
-          basePos.plus(
-              new Translation2d(
-                  fieldVelMps.getX() * tof,
-                  fieldVelMps.getY() * tof));
+        basePos.plus(
+          new Translation2d(
+            fieldVelMps.getX() * tof,
+            fieldVelMps.getY() * tof));
 
-      dist = lookaheadPos.getDistance(hubPos);
+      dist = lookaheadPos.getDistance(VisionConstants.hubPosition());
     }
 
   Rotation2d desiredHeading =
-      hubPos.minus(lookaheadPos).getAngle();
+      VisionConstants.hubPosition().minus(lookaheadPos).getAngle();
 
     double rps = distanceToRps.get(dist);
     rps = MathUtil.clamp(rps, minRps, maxRps);

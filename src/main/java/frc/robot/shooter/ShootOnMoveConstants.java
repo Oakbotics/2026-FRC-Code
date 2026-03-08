@@ -19,6 +19,4 @@ public final class ShootOnMoveConstants {
   public static final double MAX_OMEGA_RAD_PER_SEC = 6.0;
 
   public static final double LOST_TARGET_GRACE_SEC = 0.20;
-
-  public static final double KICKER_PERCENT = 0.80;
 }
