@@ -5,8 +5,8 @@
 
 package frc.robot.vision;
 
-
 import java.security.AllPermission;
+import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,27 +16,29 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.drive.CommandSwerveDrivetrain;
+import frc.robot.vision.LimelightHelpers.PoseEstimate;
 
 
 public class LimeLightSubsystem extends SubsystemBase {
 
-
+  private final CommandSwerveDrivetrain drivetrain;
   public NetworkTable m_limeLightRightTable;
-   public NetworkTable m_limeLightTopTable;
-   public NetworkTable m_limeLightLeftTable;
-   public Pose2d m_closestTagPose;
+  public NetworkTable m_limeLightTopTable;
+  public NetworkTable m_limeLightLeftTable;
+  public Pose2d m_closestTagPose;
   // Limelight Left: http://10.37.39.11:5801/
   //Limelight Right: http://10.37.39.12:5801/
  
   /** Creates a new LimeLightSubsystem. */
-  public LimeLightSubsystem() {
+  public LimeLightSubsystem(CommandSwerveDrivetrain drivetrain) {
     m_limeLightRightTable = NetworkTableInstance.getDefault().getTable("limelight-right");
     m_limeLightTopTable = NetworkTableInstance.getDefault().getTable("limelight-top");
     m_limeLightLeftTable = NetworkTableInstance.getDefault().getTable("limelight-left");
     m_limeLightRightTable.getEntry("pipeline").setNumber(0);
     // SmartDashboard.putData("Field", m_field);
 
-
+    this.drivetrain = drivetrain;
   }
   public Pose2d getBotPoseRightLL(){
     if(DriverStation.getAlliance().get() == Alliance.Red)
@@ -70,16 +72,8 @@ public class LimeLightSubsystem extends SubsystemBase {
         return est.pose;
     }
 
-
     return LimelightHelpers.getBotPose2d_wpiBlue("limelight-right");
 }
-
-
-
-
-
-
-
 
   public Pose2d getRobotRelativeTargetPose() {
     double[] targetPoseArray =
@@ -90,41 +84,28 @@ public class LimeLightSubsystem extends SubsystemBase {
         Rotation2d.fromDegrees(targetPoseArray[4]));
   }
 
-
   public int getRightID(){
     return ((int) m_limeLightRightTable.getEntry("tid").getDouble(-1));
   }
-
 
   public int getLeftID(){
     return ((int) m_limeLightLeftTable.getEntry("tid").getDouble(-1));
   }
 
-
   public int getTopID(){
     return ((int) m_limeLightTopTable.getEntry("tid").getDouble(-1));
   }
-
-
  
   public int getTopIDCount(){
     return ((int) m_limeLightTopTable.getEntry("botpose_orb").getDoubleArray(new double[10])[7]);
-
-
   }
-
 
   public int getRightIDCount(){
     return ((int) m_limeLightRightTable.getEntry("botpose_orb").getDoubleArray(new double[10])[7]);
-
-
   }
-
 
   public int getLeftIDCount(){
     return ((int) m_limeLightLeftTable.getEntry("botpose_orb").getDoubleArray(new double[10])[7]);
-
-
   }
   public double getRightLimelightTime(){
     return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right").timestampSeconds;
@@ -135,8 +116,6 @@ public class LimeLightSubsystem extends SubsystemBase {
   public double getTopLimelightTime(){
     return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelihgt-top").timestampSeconds;
   }
-
-  
 
   public boolean hasHubTarget() {
     int tid = getRightID();
@@ -153,9 +132,27 @@ public class LimeLightSubsystem extends SubsystemBase {
     return botPose.getTranslation().getDistance(VisionConstants.hubPosition());
   }
 
+  private void updateVisionOdometryIfHubTagVisible() {
+    int tagID = (int) LimelightHelpers.getFiducialID(VisionConstants.LIMELIGHT_NAME);
+    if (tagID == -1 || !VisionConstants.HUB_TAG_IDS.contains(tagID)) {
+      return;
+    }
+
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    PoseEstimate est =
+        (alliance.isPresent() && alliance.get() == Alliance.Blue)
+            ? LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME)
+            : LimelightHelpers.getBotPoseEstimate_wpiRed(VisionConstants.LIMELIGHT_NAME);
+
+    if (est != null) {
+      drivetrain.addVisionMeasurement(est.pose, est.timestampSeconds);
+    }
+  }
 
   @Override
   public void periodic() {
+    updateVisionOdometryIfHubTagVisible();
+    
     SmartDashboard.putNumber("Limelight Left Pipline", m_limeLightLeftTable.getEntry("pipeline").getNumber(-1).doubleValue());
     SmartDashboard.putNumber("Limelight Right Pipline", m_limeLightRightTable.getEntry("pipeline").getNumber(-1).doubleValue());
   }

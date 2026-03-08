@@ -47,11 +47,13 @@ import frc.robot.shooter.ShootOnMoveAutoCommandGroup;
 import frc.robot.shooter.ShootOnMoveToHub;
 
 public class RobotContainer {
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
+    
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     private final LeftShooterSubsystem m_leftShooterSubsystem = new LeftShooterSubsystem();
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
-    private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem();
     private final ShootFromHubDistance shootFromHubDistance = new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem);
     private final KickerSubsystem m_kickerSubsystem = new KickerSubsystem();
     private final Elevator m_Elevator = new Elevator();
@@ -69,8 +71,6 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
-
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     final SendableChooser<Command> m_autoChooser;
     private final LEDSubsystem leds = new LEDSubsystem(() -> drivetrain.getPose());
@@ -92,6 +92,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1));
         NamedCommands.registerCommand("WristCommand", new SuperWristCommand(m_superWristSubsystem, 90));
         // NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, new Angle(90)));
+        NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
         
         Pose2d target = new Pose2d(drivetrain.getState().Pose.getX() + 1.0, drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation());
 

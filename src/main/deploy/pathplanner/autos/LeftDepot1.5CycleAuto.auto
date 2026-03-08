@@ -45,6 +45,30 @@
           "data": {
             "name": "AlignRotationToHubOdometry"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Hub Shot to Depot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot to Hub Shot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetOdometryLimelight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignRotationToHubOdometry"
+          }
         }
       ]
     }
