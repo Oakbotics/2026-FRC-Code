@@ -34,6 +34,8 @@ import frc.robot.vision.AlignRotationToHubOdometry;
 import frc.robot.vision.LimeLightSubsystem;
 import frc.robot.vision.ResetOdometryLimelight;
 import frc.robot.vision.ShootFromHubDistance;
+import frc.robot.wrist.SuperWristCommand;
+import frc.robot.wrist.SuperWristSubsystem;
 import frc.robot.wrist.WristCommand;
 import frc.robot.wrist.WristSubsystem;
 import frc.robot.shooter.KickerCommand;
@@ -55,6 +57,7 @@ public class RobotContainer {
     private final Elevator m_Elevator = new Elevator();
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     private final WristSubsystem m_wristSubsystem = new WristSubsystem();
+    private final SuperWristSubsystem m_superWristSubsystem = new SuperWristSubsystem();
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -87,6 +90,7 @@ public class RobotContainer {
             m_limeLightSubsystem
         ));
         NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1));
+        NamedCommands.registerCommand("WristCommand", new SuperWristCommand(m_superWristSubsystem, 90));
         // NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, new Angle(90)));
         
         Pose2d target = new Pose2d(drivetrain.getState().Pose.getX() + 1.0, drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation());
