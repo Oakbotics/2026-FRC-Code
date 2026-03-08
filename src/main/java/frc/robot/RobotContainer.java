@@ -36,6 +36,7 @@ import frc.robot.shooter.KickerSubsystem;
 import frc.robot.shooter.LeftShooterSubsystem;
 import frc.robot.shooter.RightShooterSubsystem;
 import frc.robot.shooter.ShootFarCommandGroup;
+import frc.robot.shooter.ShootOnMoveAutoCommandGroup;
 import frc.robot.shooter.ShootOnMoveToHub;
 
 public class RobotContainer {
@@ -67,11 +68,19 @@ public class RobotContainer {
     public RobotContainer() {
         NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
         NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
-                drivetrain,
-                m_limeLightSubsystem,
-                () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
-                () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
-            ));
+            drivetrain,
+            m_limeLightSubsystem,
+            () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
+            () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
+        ));
+        NamedCommands.registerCommand("ShootOnMoveAuto", new ShootOnMoveAutoCommandGroup(
+            m_rightShooterSubsystem,
+            m_leftShooterSubsystem,
+            m_kickerSubsystem,
+            drivetrain,
+            m_limeLightSubsystem
+        ));
+        
         Pose2d target = new Pose2d(drivetrain.getState().Pose.getX() + 1.0, drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation());
 
         m_autoChooser = AutoBuilder.buildAutoChooser();
