@@ -67,17 +67,18 @@ public class LEDSubsystem extends SubsystemBase {
         if (timeRemainingOptional.isPresent() &&
             timeRemainingOptional.get().in(Units.Seconds) <= 5) {
 
-            setRumble(1.0);
-
+           
             if (Timer.getFPGATimestamp() - lastBlinkTime > 0.1) {
                 blinkState = !blinkState;
                 lastBlinkTime = Timer.getFPGATimestamp();
             }
 
             if (blinkState) {
-                setLED(255,0,255); // purple
+                setLED(255, 0, 255);   
+                setRumble(1.0);   
             } else {
-                setLED(0,0,0);
+                setLED(0, 0, 0);
+                setRumble(0);    
             }
 
             return;
