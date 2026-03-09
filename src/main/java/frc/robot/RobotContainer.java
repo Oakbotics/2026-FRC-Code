@@ -73,7 +73,8 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     final SendableChooser<Command> m_autoChooser;
-    private final LEDSubsystem leds = new LEDSubsystem(() -> drivetrain.getPose());
+    private final LEDSubsystem leds = new LEDSubsystem(() -> drivetrain.getPose(), joystick.getHID());
+
     public RobotContainer() {
         NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
         NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 

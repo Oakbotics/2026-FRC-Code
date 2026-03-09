@@ -13,7 +13,6 @@ public class WristConstants {
     public static final double maxPosition = 225;
     public static final double minPositon = 5;
 
-    // Added feedforward and limits for configs
     public static final double supplyCurrentLimit = 30.0; // TODO: set actual wrist current limit
     public static final double statorCurrentLimit = 30.0; // TODO: set actual wrist stator limit
     public static final double kV = 0.0; // TODO: tune feedforward V

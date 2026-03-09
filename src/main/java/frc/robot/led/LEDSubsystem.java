@@ -7,23 +7,28 @@ import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.signals.RGBWColor;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import edu.wpi.first.math.geometry.Pose2d;
 
+import edu.wpi.first.units.Units;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.util.HubTracker;
-import frc.robot.vision.VisionConstants;
 
 public class LEDSubsystem extends SubsystemBase {
 
     private final CANdle candle;
     private final Supplier<Pose2d> poseSupplier;
+    private final XboxController controller;
 
-    private static final double HUB_X = VisionConstants.hubPosition().getX();
-    private static final double HUB_Y = VisionConstants.hubPosition().getY();
+    private static final double HUB_X = 8.27;
+    private static final double HUB_Y = 4.10;
 
     public static final double SHOOT_LINE_DISTANCE = 4.0;
 
@@ -32,9 +37,10 @@ public class LEDSubsystem extends SubsystemBase {
     private boolean blinkState = false;
     private double lastBlinkTime = 0;
 
-    public LEDSubsystem(Supplier<Pose2d> poseSupplier) {
+    public LEDSubsystem(Supplier<Pose2d> poseSupplier, XboxController controller) {
         candle = new CANdle(0);
         this.poseSupplier = poseSupplier;
+        this.controller = controller;
     }
 
     @Override
@@ -44,6 +50,7 @@ public class LEDSubsystem extends SubsystemBase {
 
         if (allianceOptional.isEmpty()) {
             setLED(0,0,0);
+            setRumble(0);
             return;
         }
 
@@ -51,8 +58,32 @@ public class LEDSubsystem extends SubsystemBase {
 
         if (!HubTracker.isActive(alliance)) {
             setLED(0,0,0);
+            setRumble(0);
             return;
         }
+
+        var timeRemainingOptional = HubTracker.timeRemainingInCurrentShift();
+
+        if (timeRemainingOptional.isPresent() &&
+            timeRemainingOptional.get().in(Units.Seconds) <= 5) {
+
+            setRumble(1.0);
+
+            if (Timer.getFPGATimestamp() - lastBlinkTime > 0.1) {
+                blinkState = !blinkState;
+                lastBlinkTime = Timer.getFPGATimestamp();
+            }
+
+            if (blinkState) {
+                setLED(255,0,255); // purple
+            } else {
+                setLED(0,0,0);
+            }
+
+            return;
+        }
+
+        setRumble(0);
 
         int r = 0;
         int g = 0;
@@ -91,6 +122,7 @@ public class LEDSubsystem extends SubsystemBase {
             setLED(r,g,b);
 
         }
+
     }
 
     private void setLED(int r, int g, int b) {
@@ -101,4 +133,9 @@ public class LEDSubsystem extends SubsystemBase {
         );
 
     }
+
+    private void setRumble(double strength) {
+        controller.setRumble(GenericHID.RumbleType.kBothRumble, strength);
+    }
+
 }
