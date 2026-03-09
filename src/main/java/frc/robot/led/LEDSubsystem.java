@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.controls.RainbowAnimation;
 import com.ctre.phoenix6.signals.RGBWColor;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -37,6 +38,9 @@ public class LEDSubsystem extends SubsystemBase {
     private boolean blinkState = false;
     private double lastBlinkTime = 0;
 
+    private boolean wasInsideRange = false;
+    private double rumbleEndTime = 0;
+
     public LEDSubsystem(Supplier<Pose2d> poseSupplier, XboxController controller) {
         candle = new CANdle(0);
         this.poseSupplier = poseSupplier;
@@ -47,6 +51,16 @@ public class LEDSubsystem extends SubsystemBase {
     public void periodic() {
 
         Optional<Alliance> allianceOptional = DriverStation.getAlliance();
+
+        if (DriverStation.getMatchTime() < 0) {
+            var rainbow = new RainbowAnimation(0, 0)
+                .withBrightness(0.7) 
+                .withFrameRate(30);    
+
+            candle.setControl(rainbow);            
+            setRumble(0);
+            return;
+        }
 
         if (allianceOptional.isEmpty()) {
             setLED(0,0,0);
@@ -62,30 +76,6 @@ public class LEDSubsystem extends SubsystemBase {
             return;
         }
 
-        var timeRemainingOptional = HubTracker.timeRemainingInCurrentShift();
-
-        if (timeRemainingOptional.isPresent() &&
-            timeRemainingOptional.get().in(Units.Seconds) <= 5) {
-
-           
-            if (Timer.getFPGATimestamp() - lastBlinkTime > 0.1) {
-                blinkState = !blinkState;
-                lastBlinkTime = Timer.getFPGATimestamp();
-            }
-
-            if (blinkState) {
-                setLED(255, 0, 255);   
-                setRumble(1.0);   
-            } else {
-                setLED(0, 0, 0);
-                setRumble(0);    
-            }
-
-            return;
-        }
-
-        setRumble(0);
-
         int r = 0;
         int g = 0;
         int b = 0;
@@ -94,6 +84,26 @@ public class LEDSubsystem extends SubsystemBase {
             r = 255;
         } else {
             b = 255;
+        }
+
+        var timeRemainingOptional = HubTracker.timeRemainingInCurrentShift();
+
+        if (timeRemainingOptional.isPresent() &&
+            timeRemainingOptional.get().in(Units.Seconds) <= 5) {
+
+            if (Timer.getFPGATimestamp() - lastBlinkTime > 0.08) {
+                blinkState = !blinkState;
+                lastBlinkTime = Timer.getFPGATimestamp();
+            }
+
+            if (blinkState) {
+                setLED(r,g,b);
+            } else {
+                setLED(0,0,0);
+            }
+
+            setRumble(0);
+            return;
         }
 
         Pose2d robotPose = poseSupplier.get();
@@ -105,38 +115,29 @@ public class LEDSubsystem extends SubsystemBase {
 
         boolean insideShootRange = distance <= SHOOT_LINE_DISTANCE;
 
-        if (insideShootRange) {
-
-            if (Timer.getFPGATimestamp() - lastBlinkTime > 0.25) {
-                blinkState = !blinkState;
-                lastBlinkTime = Timer.getFPGATimestamp();
-            }
-
-            if (blinkState) {
-                setLED(r,g,b);
-            } else {
-                setLED(0,0,0);
-            }
-
-        } else {
-
-            setLED(r,g,b);
-
+        if (insideShootRange && !wasInsideRange) {
+            rumbleEndTime = Timer.getFPGATimestamp() + 0.25;
         }
 
+        wasInsideRange = insideShootRange;
+
+        if (Timer.getFPGATimestamp() < rumbleEndTime) {
+            setRumble(1);
+        } else {
+            setRumble(0);
+        }
+
+        setLED(r,g,b);
     }
 
     private void setLED(int r, int g, int b) {
-
         candle.setControl(
             new SolidColor(0, LED_COUNT)
-                .withColor(new RGBWColor(r, g, b))
+                .withColor(new RGBWColor(r,g,b))
         );
-
     }
 
     private void setRumble(double strength) {
         controller.setRumble(GenericHID.RumbleType.kBothRumble, strength);
     }
-
 }
