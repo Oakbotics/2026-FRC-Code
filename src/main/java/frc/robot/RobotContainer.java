@@ -73,7 +73,7 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     final SendableChooser<Command> m_autoChooser;
-    private final LEDSubsystem leds = new LEDSubsystem(() -> drivetrain.getPose(), joystick.getHID());
+    // private final LEDSubsystem leds = new LEDSubsystem(() -> drivetrain.getPose(), joystick.getHID());
 
     public RobotContainer() {
         NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
@@ -148,7 +148,7 @@ public class RobotContainer {
         joystick.rightBumper().whileTrue(new KickerCommand(m_kickerSubsystem, 100));
 
         joystick.y().onTrue(m_Elevator.goToSetpoint(() -> Elevator.Setpoint.Top));
-        joystick.a().onTrue(m_Elevator.goToSetpoint(() -> Elevator.Setpoint.Ground));
+        joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, 6));
  
         joystick.povDown().onTrue(new ResetOdometryLimelight(drivetrain));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 1));

@@ -33,8 +33,8 @@ public class LeftShooterSubsystem extends SubsystemBase {
     /** Creates a new ExampleSubsystem. */
   public LeftShooterSubsystem() {
 
-    shooterMotorOne = new TalonFX(ShooterConstants.shooterMotorOneID);
-    shooterMotorTwo = new TalonFX(ShooterConstants.shooterMotorTwoID);
+    shooterMotorOne = new TalonFX(ShooterConstants.leftShooterMotorOneID);
+    shooterMotorTwo = new TalonFX(ShooterConstants.leftShooterMotorTwoID);
     configs = new ShooterConfigs();
       m_SysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null,

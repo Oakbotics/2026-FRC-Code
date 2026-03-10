@@ -13,12 +13,12 @@ public class ShooterConstants {
 
     // public static final int velocityTorque = 40;
 
-    public static final int shooterMotorOneID = 3;
-    public static final int shooterMotorTwoID = 4;
-    public static final int shooterMotorThreeID = 5;
-    public static final int shooterMotorFourID = 6;
+    public static final int leftShooterMotorOneID = 4;
+    public static final int leftShooterMotorTwoID = 2;
+    public static final int rightShooterMotorOneID = 6;
+    public static final int rightShooterMotorTwoID = 5;
 
-    public static final int kickerMotorID = 7;
+    public static final int kickerMotorID = 3;
 
     public static final InterpolatingDoubleTreeMap DISTANCE_M_TO_RPS = new InterpolatingDoubleTreeMap();
 
