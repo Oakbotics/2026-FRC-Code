@@ -7,6 +7,7 @@ package frc.robot.wrist;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.controls. PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com. ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,19 +16,24 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SuperWristSubsystem extends SubsystemBase {
   private final TalonFX wristMotor;
-
+  private final CANcoder wristEncoder;
   private final PositionVoltage positionRequest = new PositionVoltage(0). withSlot(0);
   private final VoltageOut voltageRequest = new VoltageOut(0);
 
   public SuperWristSubsystem() {
     wristMotor = new TalonFX(WristConstants.wristMotorCANId);
+    wristEncoder = new CANcoder(WristConstants.wristEncoderCANId);
 
     StatusCode status = wristMotor.getConfigurator().apply(WristConfigs.wristConfig);
     if (! status.isOK()) {
       System.err.println("Failed to apply wrist motor config: " + status. toString());
     }
 
-    wristMotor.setPosition(0);
+    double absolutePose = wristEncoder.getAbsolutePosition().getValueAsDouble();
+    double wristDegrees = absolutePose * 360.0;
+    double motorRotations = degreesToRotations(wristDegrees);
+
+    wristMotor.setPosition(motorRotations);
   }
 
   public void wristRotateToPosition(double positionDegrees) {
@@ -39,21 +45,14 @@ public class SuperWristSubsystem extends SubsystemBase {
 
 
   public double getWristAngle() {
-    double rotations = wristMotor.getPosition(). getValueAsDouble();
+    double rotations = wristMotor.getPosition().getValueAsDouble();
     return rotationsToDegrees(rotations);
   }
 
 
   public void printWristPosition() {
-    SmartDashboard. putNumber("Wrist Position", getWristAngle());
-    SmartDashboard.putNumber("Wrist Velocity ", getWristVelocity());
-    SmartDashboard.putNumber("Wrist Current ", wristMotor.getSupplyCurrent(). getValueAsDouble());
-  }
-
-
-  public double getWristVelocity() {
-    double rotationsPerSecond = wristMotor.getVelocity().getValueAsDouble();
-    return rotationsPerSecond * 360.0;
+    SmartDashboard.putNumber("Wrist Position", getWristAngle());
+    SmartDashboard.putNumber("Wrist Current ", wristMotor.getSupplyCurrent().getValueAsDouble());
   }
 
 
