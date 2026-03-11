@@ -37,6 +37,7 @@ public class SuperWristSubsystem extends SubsystemBase {
   }
 
   public void wristRotateToPosition(double positionDegrees) {
+    wristEncoder.setPosition(0);
     double clamped = Math.max(WristConstants.minPositon, Math.min(WristConstants.maxPosition, positionDegrees));
     double targetRotations = degreesToRotations(clamped);
 

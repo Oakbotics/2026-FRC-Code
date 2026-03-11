@@ -31,8 +31,8 @@ public class WristSubsystem extends SubsystemBase {
   
   /** Creates a new ExampleSubsystem. */
   
-    public final int wristMotorId = 3;
-    public final int wristEncoderId = 4;
+    public final int wristMotorId = 7;
+    public final int wristEncoderId = 37;
     private final TalonFX wristMotor;
     public int kNumConfigAttempts = 5;
     final CANcoder encoder;
@@ -46,8 +46,8 @@ public class WristSubsystem extends SubsystemBase {
       CANcoderConfiguration config = new CANcoderConfiguration();
           
       //config.MagnetSensor.SensorDirection = SENSOR_INVERTED;
-      config.MagnetSensor.MagnetOffset = magnetOffset;
-      config.MagnetSensor.SensorDirection = SensorDirectionValue;
+      // config.MagnetSensor.MagnetOffset = magnetOffset;
+      // config.MagnetSensor.SensorDirection = SensorDirectionValue;
     encoder.getConfigurator().apply(config);
 
 

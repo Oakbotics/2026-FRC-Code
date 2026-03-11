@@ -18,6 +18,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -47,19 +48,21 @@ import frc.robot.shooter.ShootOnMoveAutoCommandGroup;
 import frc.robot.shooter.ShootOnMoveToHub;
 
 public class RobotContainer {
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
+    // public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    // private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
     
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     private final LeftShooterSubsystem m_leftShooterSubsystem = new LeftShooterSubsystem();
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
-    private final ShootFromHubDistance shootFromHubDistance = new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem);
+    // private final ShootFromHubDistance shootFromHubDistance = new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem);
     private final KickerSubsystem m_kickerSubsystem = new KickerSubsystem();
-    private final Elevator m_Elevator = new Elevator();
+    // private final Elevator m_Elevator = new Elevator();
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     private final WristSubsystem m_wristSubsystem = new WristSubsystem();
+    private Angle wristAngle = Degrees.of(-10);
     private final SuperWristSubsystem m_superWristSubsystem = new SuperWristSubsystem();
+    private final HopperSubsystem m_hopperSubsystem = new HopperSubsystem();
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -72,92 +75,98 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
-    final SendableChooser<Command> m_autoChooser;
+    // final SendableChooser<Command> m_autoChooser;
     // private final LEDSubsystem leds = new LEDSubsystem(() -> drivetrain.getPose(), joystick.getHID());
 
     public RobotContainer() {
-        NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
-        NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
-            drivetrain,
-            m_limeLightSubsystem,
-            () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
-            () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
-        ));
-        NamedCommands.registerCommand("ShootOnMoveAuto", new ShootOnMoveAutoCommandGroup(
-            m_rightShooterSubsystem,
-            m_leftShooterSubsystem,
-            m_kickerSubsystem,
-            drivetrain,
-            m_limeLightSubsystem
-        ));
-        NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1));
-        NamedCommands.registerCommand("WristCommand", new SuperWristCommand(m_superWristSubsystem, 90));
-        // NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, new Angle(90)));
-        NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
+        // NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
+        // NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
+        //     drivetrain,
+        //     m_limeLightSubsystem,
+        //     () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
+        //     () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
+        // ));
+        // NamedCommands.registerCommand("ShootOnMoveAuto", new ShootOnMoveAutoCommandGroup(
+        //     m_rightShooterSubsystem,
+        //     m_leftShooterSubsystem,
+        //     m_kickerSubsystem,
+        //     drivetrain,
+        //     m_limeLightSubsystem
+        // ));
+        // NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1));
+        // NamedCommands.registerCommand("WristCommand", new SuperWristCommand(m_superWristSubsystem, 90));
+        // // NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, new Angle(90)));
+        // NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
         
-        Pose2d target = new Pose2d(drivetrain.getState().Pose.getX() + 1.0, drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation());
+        // Pose2d target = new Pose2d(drivetrain.getState().Pose.getX() + 1.0, drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation());
 
-        m_autoChooser = AutoBuilder.buildAutoChooser();
-        m_autoChooser.setDefaultOption("LeftDepot1.5CycleAuto", AutoBuilder.buildAuto("LeftDepot1.5CycleAuto"));
+        // m_autoChooser = AutoBuilder.buildAutoChooser();
+        // m_autoChooser.setDefaultOption("LeftDepot1.5CycleAuto", AutoBuilder.buildAuto("LeftDepot1.5CycleAuto"));
         configureBindings();
     }
 
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            )
-        );
+        // drivetrain.setDefaultCommand(
+        //     // Drivetrain will execute this command periodically
+        //     drivetrain.applyRequest(() ->
+        //         drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+        //             .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+        //             .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+        //     )
+        // );
 
-        // Idle while the robot is disabled. This ensures the configured
-        // neutral mode is applied to the drive motors while disabled.
-        final var idle = new SwerveRequest.Idle();
-        RobotModeTriggers.disabled().whileTrue(
-            drivetrain.applyRequest(() -> idle).ignoringDisable(true)
-        );
+        // // Idle while the robot is disabled. This ensures the configured
+        // // neutral mode is applied to the drive motors while disabled.
+        // final var idle = new SwerveRequest.Idle();
+        // RobotModeTriggers.disabled().whileTrue(
+        //     drivetrain.applyRequest(() -> idle).ignoringDisable(true)
+        // );
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        ));
+        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
+        //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        // ));
 
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        // // Run SysId routines when holding back/start and X/Y.
+        // // Note that each routine should be run exactly once in a single log.
+        // joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.rightTrigger().whileTrue(
-            new ShootOnMoveToHub(
-                drivetrain, 
-                m_limeLightSubsystem, 
-                m_leftShooterSubsystem, 
-                m_rightShooterSubsystem, 
-                () -> drivetrain.getState().Speeds.vxMetersPerSecond,
-                () -> drivetrain.getState().Speeds.vyMetersPerSecond
-            )
-        );
+        // joystick.rightTrigger().whileTrue(
+        //     new ShootOnMoveToHub(
+        //         drivetrain, 
+        //         m_limeLightSubsystem, 
+        //         m_leftShooterSubsystem, 
+        //         m_rightShooterSubsystem, 
+        //         () -> drivetrain.getState().Speeds.vxMetersPerSecond,
+        //         () -> drivetrain.getState().Speeds.vyMetersPerSecond
+        //     )
+        // );
 
         // joystick.rightTrigger().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, 40));
-        joystick.rightBumper().whileTrue(new KickerCommand(m_kickerSubsystem, 100));
+        joystick.b().whileTrue(new KickerCommand(m_kickerSubsystem, 10));
 
-        joystick.y().onTrue(m_Elevator.goToSetpoint(() -> Elevator.Setpoint.Top));
-        joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, 6));
+        // joystick.y().onTrue(m_Elevator.goToSetpoint(() -> Elevator.Setpoint.Top));
+        joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, 10));
  
-        joystick.povDown().onTrue(new ResetOdometryLimelight(drivetrain));
-        joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 1));
-        joystick.leftBumper().whileTrue(new ShootFarCommandGroup(m_rightShooterSubsystem, m_leftShooterSubsystem, m_kickerSubsystem));
+        joystick.y().whileTrue(new HopperCommand(m_hopperSubsystem, 0.5));
 
-        drivetrain.registerTelemetry(logger::telemeterize);
+        // joystick.x().whileTrue(new WristCommand(m_wristSubsystem, wristAngle));
+        joystick.x().onTrue(new SuperWristCommand(m_superWristSubsystem, 90));
+
+        // joystick.povDown().onTrue(new ResetOdometryLimelight(drivetrain));
+        joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 0.3));
+        // joystick.leftBumper().whileTrue(new ShootFarCommandGroup(m_rightShooterSubsystem, m_leftShooterSubsystem, m_kickerSubsystem));
+
+        // drivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {  
-        return m_autoChooser.getSelected();
+        // return m_autoChooser.getSelected();
+        return new RunCommand(() -> {});
     }
 }

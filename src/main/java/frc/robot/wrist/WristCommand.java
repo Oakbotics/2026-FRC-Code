@@ -29,7 +29,6 @@ public class WristCommand extends Command {
   @Override
   public void initialize() {
     m_wristSubsystem.goToSetpoint(m_angle);
-    
   }
 
   // Called every time the scheduler runs while the command is scheduled.

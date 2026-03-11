@@ -22,11 +22,11 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public void hopFuel(double speed) {
-    hopperMotor.setControl(dutyCycle.withOutput(speed));
+    hopperMotor.setControl(dutyCycle.withOutput(-speed));
   }
 
   public void outHopFuel(double speed) {
-    hopperMotor.setControl(dutyCycle.withOutput(-speed));
+    hopperMotor.setControl(dutyCycle.withOutput(speed));
   }
 
   @Override

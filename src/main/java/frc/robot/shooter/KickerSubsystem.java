@@ -19,7 +19,7 @@ public class KickerSubsystem extends SubsystemBase {
 
   }
   public void setKickerSpeed(double speed){
-    kickerMotor.setControl(speedRequest.withOutput(speed));
+    kickerMotor.setControl(speedRequest.withOutput(-speed));
   }
 
 
