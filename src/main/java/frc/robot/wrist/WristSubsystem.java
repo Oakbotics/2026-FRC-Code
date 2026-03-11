@@ -31,98 +31,51 @@ public class WristSubsystem extends SubsystemBase {
   
   /** Creates a new ExampleSubsystem. */
   
-    public final int wristMotorId = 7;
-    public final int wristEncoderId = 37;
-    private final TalonFX wristMotor;
-    public int kNumConfigAttempts = 5;
-    final CANcoder encoder;
-    private final MotionMagicVoltage setpointRequest = new MotionMagicVoltage(0);
-    public WristSubsystem() {
   
-      final double magnetOffset = 0.0;
-      final SensorDirectionValue SensorDirectionValue = null;
-          
-      encoder = new CANcoder(wristEncoderId);
-      CANcoderConfiguration config = new CANcoderConfiguration();
-          
-      //config.MagnetSensor.SensorDirection = SENSOR_INVERTED;
-      // config.MagnetSensor.MagnetOffset = magnetOffset;
-      // config.MagnetSensor.SensorDirection = SensorDirectionValue;
+  private final TalonFX wristMotor;
+  public int kNumConfigAttempts = 5;
+  final CANcoder encoder;
+  public final WristConfigs m_WristConfigs = new WristConfigs();
+  public final WristConstants m_WristConstants = new WristConstants();
+  private final MotionMagicVoltage setpointRequest = new MotionMagicVoltage(0);
+
+  public WristSubsystem() {
+    encoder = new CANcoder(m_WristConstants.wristEncoderId);
+    CANcoderConfiguration config = new CANcoderConfiguration();
+   // config.MagnetSensor.SensorDirection = SENSOR_INVERTED;
+   // config.MagnetSensor.MagnetOffset = m_WristConstants.magnetOffset;
+   // config.MagnetSensor.SensorDirection = m_WristConstants.SensorDirectionValue;
     encoder.getConfigurator().apply(config);
 
 
-    //define wrist motor and apply configs
-    wristMotor = new TalonFX(wristMotorId);
-    for (int i = 0; i < 5; ++i) {
-            var status = wristMotor.getConfigurator().apply(wristMotorConfig);
-            if (status.isOK()) break;
-    }
-    wristMotor.setPosition(encoder.getAbsolutePosition().getValueAsDouble());
+  //define wrist motor and apply configs
+  wristMotor = new TalonFX(m_WristConstants.wristMotorId);
+  for (int i = 0; i < 5; ++i) {
+    var status = wristMotor.getConfigurator().apply(m_WristConfigs.wristMotorConfig);
+    if (status.isOK()) break;
   }
+  wristMotor.setPosition(encoder.getAbsolutePosition().getValueAsDouble());
+}
   /** Configs for wristMotor. */
-  private static final TalonFXConfiguration wristMotorInitialConfigs = new TalonFXConfiguration();
-  private final TalonFXConfiguration wristMotorConfig = wristMotorInitialConfigs.clone()
-      .withMotorOutput(
-          wristMotorInitialConfigs.MotorOutput.clone()
-              .withNeutralMode(NeutralModeValue.Coast)
-      )
-      .withCurrentLimits(
-          wristMotorInitialConfigs.CurrentLimits.clone()
-              .withStatorCurrentLimit(Amps.of(120))
-              .withStatorCurrentLimitEnable(true)
-      )
-      .withSlot0(
-          wristMotorInitialConfigs.Slot0.clone()
-              .withKP(500)
-              .withKI(0)
-              .withKD(1)
-              .withKS(0)
-              .withKV(2)
-              .withKA(0)
-              .withKG(0)
-              .withGravityType(GravityTypeValue.Arm_Cosine)
-      )
-      .withFeedback(
-          wristMotorInitialConfigs.Feedback.clone()
-              .withSensorToMechanismRatio(2)
-      )
-      .withHardwareLimitSwitch(
-          wristMotorInitialConfigs.HardwareLimitSwitch.clone()
-              .withForwardLimitEnable(true)
-        
-              .withForwardLimitAutosetPositionEnable(false)
-              .withForwardLimitRemoteSensorID(0)
-              .withForwardLimitSource(ForwardLimitSourceValue.LimitSwitchPin)
-              .withForwardLimitType(ForwardLimitTypeValue.NormallyOpen)
-              .withReverseLimitAutosetPositionEnable(false)
-              .withReverseLimitEnable(true)
-              .withReverseLimitRemoteSensorID(0)
-              .withReverseLimitSource(ReverseLimitSourceValue.LimitSwitchPin)
-              .withReverseLimitType(ReverseLimitTypeValue.NormallyOpen)
-      )
-      .withMotionMagic(
-          wristMotorInitialConfigs.MotionMagic.clone()
-              .withMotionMagicCruiseVelocity(RotationsPerSecond.of(256))
-              .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(1000))
-      );
+  
   public double getVolts() {
-      return wristMotor.getMotorVoltage(true).getValueAsDouble();
+    return wristMotor.getMotorVoltage(true).getValueAsDouble();
   }
   public Angle getPosition() {
-        return wristMotor.getPosition(true).getValue();
+    return wristMotor.getPosition(true).getValue();
   }
   public Command holdPosition() {
-        return runOnce(() ->
-            setpointRequest.withPosition(getPosition())
-        ).andThen(run(() -> {
-            wristMotor.setControl(setpointRequest);
-        }));
+    return runOnce(() ->
+      setpointRequest.withPosition(getPosition())
+      ).andThen(run(() -> {
+        wristMotor.setControl(setpointRequest);
+      }));
     }
 
   public void goToSetpoint(Angle newPos) {
     //SmartDashboard.putNumber("target", setpoint.get().target.magnitude());
     setpointRequest.withPosition(newPos);
-    wristMotor.setControl(setpointRequest); 
+    wristMotor.setControl(setpointRequest);
   }
 
   @Override
@@ -133,9 +86,5 @@ public class WristSubsystem extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
-  }
-  public void wristRotateToPosition(double m_position) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'wristRotateToPosition'");
   }
 }

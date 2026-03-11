@@ -1,44 +1,63 @@
 package frc.robot.wrist;
 
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
-import frc.robot.shooter.ShooterConstants;
-import frc.robot.wrist.WristConstants;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
+import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
+import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
+
 
 public final class WristConfigs {
-        public static final TalonFXConfiguration wristConfig = new TalonFXConfiguration();
-
-        public static final double WRIST_GEAR_RATIO = 1.0;
+    private static final TalonFXConfiguration wristMotorInitialConfigs = new TalonFXConfiguration();
+    public final TalonFXConfiguration wristMotorConfig = wristMotorInitialConfigs.clone()
+    .withMotorOutput(
+        wristMotorInitialConfigs.MotorOutput.clone()
+            .withNeutralMode(NeutralModeValue.Coast)
+    )
+    .withCurrentLimits(
+        wristMotorInitialConfigs.CurrentLimits.clone()
+            .withStatorCurrentLimit(Amps.of(120))
+            .withStatorCurrentLimitEnable(true)
+    )
+    .withSlot0(
+        wristMotorInitialConfigs.Slot0.clone()
+            .withKP(WristConstants.kP)
+            .withKI(WristConstants.kI)
+            .withKD(WristConstants.kD)
+            .withKS(WristConstants.kS)
+            .withKV(WristConstants.kV)
+            .withKA(0)//to do
+            .withKG(0)//to do 
+            .withGravityType(GravityTypeValue.Arm_Cosine)
+    )
+    .withFeedback(
+        wristMotorInitialConfigs.Feedback.clone()
+            .withSensorToMechanismRatio(WristConstants.gearBoxRatio)
+    )
+    .withHardwareLimitSwitch(
+        wristMotorInitialConfigs.HardwareLimitSwitch.clone()
+            .withForwardLimitEnable(true)
         
-        static {
-    
-            wristConfig. MotorOutput.Inverted = InvertedValue. Clockwise_Positive;
-
-            wristConfig. MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
-            wristConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-            wristConfig. CurrentLimits. SupplyCurrentLimit = WristConstants.supplyCurrentLimit;
-
-            wristConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-            wristConfig.CurrentLimits.StatorCurrentLimit = WristConstants.statorCurrentLimit;
-
-
-            wristConfig.Feedback. SensorToMechanismRatio = WRIST_GEAR_RATIO;
-
-            wristConfig.Slot0.kP = WristConstants.kP;
-            wristConfig.Slot0.kI = WristConstants.kI;
-            wristConfig.Slot0.kD = WristConstants.kD;
-            wristConfig.Slot0.kV = WristConstants. kV;
-            wristConfig. Slot0.kS = WristConstants. kS;
-
-            wristConfig. SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-            wristConfig.SoftwareLimitSwitch. ForwardSoftLimitThreshold = WristConstants.maxPosition / 360.0;
-            wristConfig. SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-            wristConfig. SoftwareLimitSwitch.ReverseSoftLimitThreshold = WristConstants.minPositon / 360.0;
-
-            wristConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.1;
-    }
+            .withForwardLimitAutosetPositionEnable(false)
+            .withForwardLimitRemoteSensorID(0)
+            .withForwardLimitSource(ForwardLimitSourceValue.LimitSwitchPin)
+            .withForwardLimitType(ForwardLimitTypeValue.NormallyOpen)
+            .withReverseLimitAutosetPositionEnable(false)
+            .withReverseLimitEnable(true)
+            .withReverseLimitRemoteSensorID(0)
+            .withReverseLimitSource(ReverseLimitSourceValue.LimitSwitchPin)
+            .withReverseLimitType(ReverseLimitTypeValue.NormallyOpen)
+    )
+    .withMotionMagic(
+        wristMotorInitialConfigs.MotionMagic.clone()
+            .withMotionMagicCruiseVelocity(RotationsPerSecond.of(256))
+            .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(1000))
+    );
 }
