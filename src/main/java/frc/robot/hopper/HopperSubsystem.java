@@ -5,7 +5,6 @@
 package frc.robot.hopper;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,7 +13,6 @@ public class HopperSubsystem extends SubsystemBase {
 
   private final TalonFX hopperMotor;
   private final DutyCycleOut dutyCycle = new DutyCycleOut(0); 
-  private final VelocityVoltage voltageRequest = new VelocityVoltage(0).withEnableFOC(true);
   
   /** Creates a new ExampleSubsystem. */
   public HopperSubsystem() {

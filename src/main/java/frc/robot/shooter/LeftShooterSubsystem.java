@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
@@ -24,10 +23,8 @@ public class LeftShooterSubsystem extends SubsystemBase {
     private final TalonFX shooterMotorTwo;
     private final DutyCycleOut dutyCycle = new DutyCycleOut(0); 
     private final VelocityVoltage voltageRequest = new VelocityVoltage(0).withEnableFOC(true);
-    private final VelocityTorqueCurrentFOC velocityTorqueRequest = new VelocityTorqueCurrentFOC(0);
     private final VoltageOut sysIdControl = new VoltageOut(0);
     private final SysIdRoutine m_SysIdRoutine;
-    private final Slot0Configs slot0configs = new Slot0Configs();
     private final ShooterConfigs configs;
 
     /** Creates a new ExampleSubsystem. */
@@ -96,20 +93,11 @@ public class LeftShooterSubsystem extends SubsystemBase {
   
   public void runVelocityTorqueFOC(double rps) {
       double motorRPS = rps; 
-      // double kS_Amps = 0.0; 
-      // double kV_Amps = 0.0;
-      // double feedForwardAmps = (kS_Amps * Math.signum(rps)) + (kV_Amps * rps);
       double actualRPS = shooterMotorOne.getVelocity().refresh().getValueAsDouble();
-      // Create velocity control request
       VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0).withSlot(0);
-      //         .withVelocity(motorRPS)
-      //         .withFeedForwards(feedForwardAmps);
-      // final VelocityVoltage request = new VelocityVoltage(0).withSlot(0);
-
 
       shooterMotorOne.setControl(request.withVelocity(motorRPS).withFeedForward(0));
       shooterMotorTwo.setControl(request.withVelocity(motorRPS).withFeedForward(0));
-
 
       SmartDashboard.putNumber("Motor Target RPS", motorRPS);
       SmartDashboard.putNumber("Motor Actual RPS", actualRPS);
