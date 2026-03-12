@@ -59,14 +59,12 @@ public class RightShooterSubsystem extends SubsystemBase {
     configureMotors();
     SignalLogger.setPath("/home/vuser/logs/");
     
-    
   }
   // 44 inch from hub
   public void configureMotors() {
 
     shooterMotorThree.getConfigurator().apply(configs.shooterMotorConfig());
     shooterMotorFour.getConfigurator().apply(configs.shooterMotorConfig());
-    
 
     shooterMotorThree.getVelocity().setUpdateFrequency(100);
     shooterMotorFour.getVelocity().setUpdateFrequency(100);

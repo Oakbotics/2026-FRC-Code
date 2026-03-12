@@ -35,11 +35,13 @@ import frc.robot.shooter.KickerCommand;
 import frc.robot.shooter.KickerSubsystem;
 import frc.robot.shooter.LeftShooterSubsystem;
 import frc.robot.shooter.RightShooterSubsystem;
+import frc.robot.shooter.ShootOnMoveToHub;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-    private Angle angleDown = Degrees.of(-90);
+    private Angle angleDown = Degrees.of(-0.3);
+    private Angle angleUp = Degrees.of(-0.5);
     private final LeftShooterSubsystem m_leftShooterSubsystem = new LeftShooterSubsystem();
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
     // private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem();
@@ -100,9 +102,11 @@ public class RobotContainer {
 
         joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, 40));
         joystick.b().whileTrue(new KickerCommand(m_kickerSubsystem, 100));
-        joystick.x().onTrue(new WristCommand(m_WristSubsystem, angleDown));
+        //joystick.x().onTrue(new WristCommand(m_WristSubsystem, angleDown));
+        //joystick.povDown().onTrue(new WristCommand(m_WristSubsystem, angleUp));
         joystick.y().whileTrue(new HopperCommand(m_hopperSubsystem, 0.2));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 5));
+        joystick.povDown().onTrue(new ResetOdometryLimelight(drivetrain));
 
         // Reset the field-centric heading on left bumper press.
         // joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
@@ -116,6 +120,16 @@ public class RobotContainer {
         //         () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
         //     )
         // );
+
+        joystick.rightTrigger().whileTrue(
+            new ShootOnMoveToHub(
+                drivetrain, 
+                m_leftShooterSubsystem, 
+                m_rightShooterSubsystem, 
+                () -> drivetrain.getState().Speeds.vxMetersPerSecond,
+                () -> drivetrain.getState().Speeds.vyMetersPerSecond
+            )
+        );
 
         // drivetrain.registerTelemetry(logger::telemeterize);
     }

@@ -19,16 +19,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.drive.CommandSwerveDrivetrain;
 import frc.robot.vision.VisionConstants;
+import frc.robot.shooter.HubShotCalculator;
 import frc.robot.shooter.HubShotCalculator.Solution;
-import frc.robot.vision.LimeLightSubsystem;
-import frc.robot.vision.LimelightHelpers;
-import frc.robot.vision.LimelightHelpers.PoseEstimate;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import frc.robot.shooter.KickerSubsystem;
+import frc.robot.shooter.LeftShooterSubsystem;
+import frc.robot.shooter.RightShooterSubsystem;
+import frc.robot.shooter.ShooterConstants;
 
 public class ShootOnMoveToHub extends Command {
 
   private final CommandSwerveDrivetrain drivetrain;
-  private final LimeLightSubsystem limelight;
   private final LeftShooterSubsystem leftShooter;
   private final RightShooterSubsystem rightShooter;
 
@@ -48,14 +48,12 @@ public class ShootOnMoveToHub extends Command {
 
   public ShootOnMoveToHub(
       CommandSwerveDrivetrain drivetrain,
-      LimeLightSubsystem limelight,
       LeftShooterSubsystem leftShooter,
       RightShooterSubsystem rightShooter,
       DoubleSupplier driverVxMps,
       DoubleSupplier driverVyMps) {
 
     this.drivetrain = drivetrain;
-    this.limelight = limelight;
     this.leftShooter = leftShooter;
     this.rightShooter = rightShooter;
     this.driverVxMps = driverVxMps;
@@ -66,7 +64,7 @@ public class ShootOnMoveToHub extends Command {
     headingPID.setIntegratorRange(
         ShootOnMoveConstants.HEADING_I_MIN, ShootOnMoveConstants.HEADING_I_MAX);
 
-    addRequirements(drivetrain, limelight, leftShooter, rightShooter);
+    addRequirements(drivetrain, leftShooter, rightShooter); 
   }
 
   @Override
@@ -78,18 +76,12 @@ public class ShootOnMoveToHub extends Command {
 
   @Override
   public void execute() {
-    updateVisionOdometryIfHubTagVisible();
+    final double vx = driverVxMps.getAsDouble();
+    final double vy = driverVyMps.getAsDouble();
 
-    // final double vx = driverVxMps.getAsDouble();
-    // final double vy = driverVyMps.getAsDouble();
-
-    //lowkey just realised we were still using controller values... awkward! 🤣
     Pose2d robotPose = drivetrain.getState().Pose;
-    var robotRelative = drivetrain.getState().Speeds;
-    var fieldRelative = edu.wpi.first.math.kinematics.ChassisSpeeds.fromRobotRelativeSpeeds(robotRelative, robotPose.getRotation());
-    Translation2d fieldVelMps = new Translation2d(fieldRelative.vxMetersPerSecond, fieldRelative.vyMetersPerSecond);
 
-    // Translation2d fieldVelMps = new Translation2d(vx, vy);
+    Translation2d fieldVelMps = new Translation2d(vx, vy);
 
     Solution sol =
       HubShotCalculator.calculate(
@@ -115,12 +107,12 @@ public class ShootOnMoveToHub extends Command {
         -ShootOnMoveConstants.MAX_OMEGA_RAD_PER_SEC,
         ShootOnMoveConstants.MAX_OMEGA_RAD_PER_SEC);
 
-    drivetrain.setControl(driveRequest.withVelocityX(fieldRelative.vxMetersPerSecond).withVelocityY(fieldRelative.vyMetersPerSecond).withRotationalRate(omega));
+    drivetrain.setControl(driveRequest.withVelocityX(vx).withVelocityY(vy).withRotationalRate(omega));
 
     double targetRps = sol.isValid() ? sol.targetRps() : 0.0;
 
     leftShooter.runVelocityTorqueFOC(targetRps);
-    rightShooter.runVelocityTorqueFOC(targetRps);
+    rightShooter.runVelocityTorqueFOC(-targetRps);
 
     SmartDashboard.putBoolean("valid", sol.isValid());
     SmartDashboard.putNumber("distanceM", sol.lookaheadDistanceM());
@@ -131,23 +123,6 @@ public class ShootOnMoveToHub extends Command {
       Math.toDegrees(
         Rotation2d.fromRadians(desiredHeadingRad).minus(robotPose.getRotation()).getRadians());
     SmartDashboard.putNumber("headingErrDeg", errDeg);
-  }
-
-  private void updateVisionOdometryIfHubTagVisible() {
-    int tagID = (int) LimelightHelpers.getFiducialID(VisionConstants.LIMELIGHT_NAME);
-    if (tagID == -1 || !VisionConstants.HUB_TAG_IDS.contains(tagID)) {
-      return;
-    }
-
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    PoseEstimate est =
-        (alliance.isPresent() && alliance.get() == Alliance.Blue)
-            ? LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME)
-            : LimelightHelpers.getBotPoseEstimate_wpiRed(VisionConstants.LIMELIGHT_NAME);
-
-    if (est != null) {
-      drivetrain.addVisionMeasurement(est.pose, est.timestampSeconds);
-    }
   }
 
   @Override

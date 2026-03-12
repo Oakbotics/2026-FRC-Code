@@ -13,10 +13,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final TalonFX intakeMotor;
   private final DutyCycleOut dutyCycle = new DutyCycleOut(0); 
+  private final IntakeConfigs configs;
   
   /** Creates a new ExampleSubsystem. */
   public IntakeSubsystem() {
     intakeMotor = new TalonFX(IntakeConstants.intakeMotorID);
+    configs = new IntakeConfigs();
+    configureMotors();
   }
 
   public void intakeFuel(double speed) {
@@ -25,6 +28,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void outakeFuel(double speed) {
     intakeMotor.setControl(dutyCycle.withOutput(-speed));
+  }
+
+  public void configureMotors() {
+    intakeMotor.getConfigurator().apply(configs.intakeMotorConfigs());
   }
 
   @Override

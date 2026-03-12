@@ -23,7 +23,6 @@ public class ShootOnMoveAutoCommandGroup extends SequentialCommandGroup {
 
                 new ShootOnMoveToHub(
                     drivetrain,
-                    m_limeLightSubsystem, 
                     m_leftShooterSubsystem, 
                     m_rightShooterSubsystem, 
                     () -> drivetrain.getState().Speeds.vxMetersPerSecond,
@@ -36,7 +35,6 @@ public class ShootOnMoveAutoCommandGroup extends SequentialCommandGroup {
             
                 new ShootOnMoveToHub(
                     drivetrain,
-                    m_limeLightSubsystem, 
                     m_leftShooterSubsystem, 
                     m_rightShooterSubsystem, 
                     () -> drivetrain.getState().Speeds.vxMetersPerSecond,

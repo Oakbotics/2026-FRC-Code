@@ -12,11 +12,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class HopperSubsystem extends SubsystemBase {
 
   private final TalonFX hopperMotor;
+  private final HopperConfigs configs;
   private final DutyCycleOut dutyCycle = new DutyCycleOut(0); 
   
   /** Creates a new ExampleSubsystem. */
   public HopperSubsystem() {
     hopperMotor = new TalonFX(HopperConstants.hopperMotorID);
+    configs = new HopperConfigs();
+
+    configureMotors();
   }
 
   public void hopFuel(double speed) {
@@ -25,6 +29,10 @@ public class HopperSubsystem extends SubsystemBase {
 
   public void outHopFuel(double speed) {
     hopperMotor.setControl(dutyCycle.withOutput(speed));
+  }
+
+  public void configureMotors() {
+    hopperMotor.getConfigurator().apply(configs.hopperMotorConfigs());
   }
 
   @Override

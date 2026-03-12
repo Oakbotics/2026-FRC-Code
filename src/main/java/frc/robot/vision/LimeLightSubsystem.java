@@ -134,7 +134,7 @@ public class LimeLightSubsystem extends SubsystemBase {
 
   private void updateVisionOdometryIfHubTagVisible() {
     int tagID = (int) LimelightHelpers.getFiducialID(VisionConstants.LIMELIGHT_NAME);
-    if (tagID == -1 || !VisionConstants.HUB_TAG_IDS.contains(tagID)) {
+    if (tagID == -1) {
       return;
     }
 
