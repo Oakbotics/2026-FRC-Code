@@ -28,7 +28,7 @@ public class ShooterCommand extends Command {
     this.m_leftShooterSubsystem = m_leftShooterSubsystem;
     this.m_rightShooterSubsystem = m_rightShooterSubsytem;
     this.speed = speed;
-    addRequirements(m_leftShooterSubsystem);
+    addRequirements(m_leftShooterSubsystem, m_rightShooterSubsytem);
   }
 
   // Called when the command is initially scheduled.

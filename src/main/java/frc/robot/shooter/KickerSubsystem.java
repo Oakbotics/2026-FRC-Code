@@ -16,9 +16,29 @@ public class KickerSubsystem extends SubsystemBase {
   public KickerSubsystem() {
     kickerMotor = new TalonFX(ShooterConstants.kickerMotorID);
 
+    kickerMotor.getVelocity().setUpdateFrequency(100);
+    kickerMotor.getStatorCurrent().setUpdateFrequency(100);
+
   }
+
   public void setKickerSpeed(double speed){
-    kickerMotor.setControl(speedRequest.withOutput(-speed));
+    kickerMotor.setControl(speedRequest.withOutput(speed));
+  }
+
+  public void feedTowardShooter(double percent){
+    kickerMotor.setControl(speedRequest.withOutput(-Math.abs(percent)));
+  }
+
+  public void reverseFromShooter(double percent){
+    kickerMotor.setControl(speedRequest.withOutput(Math.abs(percent)));
+  }
+
+  public double getVelovcityRps(){
+    return kickerMotor.getVelocity().getValueAsDouble();
+  }
+
+  public double getStatorCurrentAmps(){
+    return kickerMotor.getStatorCurrent().getValueAsDouble();
   }
 
 

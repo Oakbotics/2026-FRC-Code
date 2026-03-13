@@ -28,7 +28,7 @@ public class KickerCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_kickerSubsystem.setKickerSpeed(-speed);
+    m_kickerSubsystem.setKickerSpeed(speed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

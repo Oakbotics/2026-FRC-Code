@@ -20,6 +20,19 @@ public class ShooterConstants {
 
     public static final int kickerMotorID = 3;
 
+    public static final double hopperFeedPercent = 0.35;
+    public static final double kickerFeedPercent = 0.70;
+    public static final double hopperReversePercent = 0.20;
+    public static final double kickerReversePercent = 0.45;
+    public static final double hopperRecoveryPercent = 0.20;
+    public static final double kickerRecorveryPercent = 0.85;
+    public static final double kickerJamCurrentAmps = 35.0;
+    public static final double kickerJamMinVelocityRPS = 5.0;
+    public static final double jamDebounceSec = 0.08;
+    public static final double unjamReverseSec = 0.10;
+    public static final double unjamRecoverySec = 0.18;
+
+
     public static final InterpolatingDoubleTreeMap DISTANCE_M_TO_RPS = new InterpolatingDoubleTreeMap();
 
     static {

@@ -31,8 +31,30 @@ public class HopperSubsystem extends SubsystemBase {
     hopperMotor.setControl(dutyCycle.withOutput(speed));
   }
 
+  public void feedTowardShooter(double percent){
+    hopFuel(Math.abs(percent));
+  }
+
+  public void reverseFromShooter(double percent){
+    outHopFuel(Math.abs(percent));
+  }
+
+  public void stop(){
+    hopperMotor.setControl(dutyCycle.withOutput(0));
+  }
+
+  public double getVelovcityRps(){
+    return hopperMotor.getVelocity().getValueAsDouble();
+  }
+
+  public double getStatorCurrentAmps(){
+    return hopperMotor.getStatorCurrent().getValueAsDouble();
+  }
+
   public void configureMotors() {
     hopperMotor.getConfigurator().apply(configs.hopperMotorConfigs());
+    hopperMotor.getVelocity().setUpdateFrequency(100);
+    hopperMotor.getStatorCurrent().setUpdateFrequency(100);
   }
 
   @Override
