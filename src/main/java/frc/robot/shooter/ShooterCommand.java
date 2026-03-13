@@ -4,6 +4,9 @@
 
 package frc.robot.shooter;
 
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
@@ -19,7 +22,7 @@ public class ShooterCommand extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShooterCommand(RightShooterSubsystem m_rightShooterSubsytem, LeftShooterSubsystem m_leftShooterSubsystem, double speed) {
+  public ShooterCommand(RightShooterSubsystem m_rightShooterSubsytem, LeftShooterSubsystem m_leftShooterSubsystem, Double speed) {
     // m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_leftShooterSubsystem = m_leftShooterSubsystem;

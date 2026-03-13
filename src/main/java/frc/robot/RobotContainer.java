@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -21,6 +22,7 @@ import frc.robot.shooter.ShooterCommand;
 import frc.robot.drive.TunerConstants;
 import frc.robot.hopper.HopperCommand;
 import frc.robot.hopper.HopperSubsystem;
+import frc.robot.hopper.KickerCommandGroup;
 import frc.robot.intake.IntakeCommand;
 import frc.robot.intake.IntakeSubsystem;
 //import frc.robot.commands.IntakeCommandGroup;
@@ -44,7 +46,6 @@ public class RobotContainer {
     private Angle angleUp = Degrees.of(-0.5);
     private final LeftShooterSubsystem m_leftShooterSubsystem = new LeftShooterSubsystem();
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
-    // private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem();
     // private final ShootFromHubDistance shootFromHubDistance = new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem);
     private final KickerSubsystem m_kickerSubsystem = new KickerSubsystem();
     private final WristSubsystem m_WristSubsystem = new WristSubsystem();
@@ -63,6 +64,8 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+    private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
 
     public RobotContainer() {
         configureBindings();
@@ -100,12 +103,11 @@ public class RobotContainer {
         // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, 40));
-        joystick.b().whileTrue(new KickerCommand(m_kickerSubsystem, 100));
+        joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, 57.0));
+        joystick.b().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
         //joystick.x().onTrue(new WristCommand(m_WristSubsystem, angleDown));
         //joystick.povDown().onTrue(new WristCommand(m_WristSubsystem, angleUp));
-        joystick.y().whileTrue(new HopperCommand(m_hopperSubsystem, 0.2));
-        joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 5));
+        // joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 5));
         joystick.povDown().onTrue(new ResetOdometryLimelight(drivetrain));
 
         // Reset the field-centric heading on left bumper press.

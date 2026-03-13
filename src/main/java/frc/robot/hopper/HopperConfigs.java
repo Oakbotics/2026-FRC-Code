@@ -7,10 +7,10 @@ public class HopperConfigs {
     public TalonFXConfiguration hopperMotorConfigs() {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
-        config.CurrentLimits.SupplyCurrentLimit = 20;
+        config.CurrentLimits.SupplyCurrentLimit = 40;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-        config.CurrentLimits.StatorCurrentLimit = 40;
+        config.CurrentLimits.StatorCurrentLimit = 60;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
 
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;    
