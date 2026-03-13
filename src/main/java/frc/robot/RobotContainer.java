@@ -8,10 +8,14 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -37,6 +41,7 @@ import frc.robot.shooter.KickerCommand;
 import frc.robot.shooter.KickerSubsystem;
 import frc.robot.shooter.LeftShooterSubsystem;
 import frc.robot.shooter.RightShooterSubsystem;
+import frc.robot.shooter.ShootOnMoveAutoCommandGroup;
 import frc.robot.shooter.ShootOnMoveToHub;
 
 public class RobotContainer {
@@ -48,7 +53,7 @@ public class RobotContainer {
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
     // private final ShootFromHubDistance shootFromHubDistance = new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem);
     private final KickerSubsystem m_kickerSubsystem = new KickerSubsystem();
-    private final WristSubsystem m_WristSubsystem = new WristSubsystem();
+    private final WristSubsystem m_wristSubsystem = new WristSubsystem();
     private final HopperSubsystem m_hopperSubsystem = new HopperSubsystem();
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
@@ -66,8 +71,31 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
+    final SendableChooser<Command> m_autoChooser;
 
     public RobotContainer() {
+        NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
+        NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
+            drivetrain,
+            m_limeLightSubsystem,
+            () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
+            () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
+        ));
+        NamedCommands.registerCommand("ShootOnMoveAuto", new ShootOnMoveAutoCommandGroup(
+            m_rightShooterSubsystem,
+            m_leftShooterSubsystem,
+            m_kickerSubsystem,
+            drivetrain,
+            m_limeLightSubsystem
+        ));
+        NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1));
+        NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
+        NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
+        
+        Pose2d target = new Pose2d(drivetrain.getState().Pose.getX() + 1.0, drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation());
+
+        m_autoChooser = AutoBuilder.buildAutoChooser();
+        m_autoChooser.setDefaultOption("LeftDepot1.5CycleAuto", AutoBuilder.buildAuto("LeftDepot1.5CycleAuto"));
         configureBindings();
     }
 
@@ -133,25 +161,10 @@ public class RobotContainer {
             )
         );
 
-        // drivetrain.registerTelemetry(logger::telemeterize);
+        drivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
-        // Simple drive forward auton
-        final var idle = new SwerveRequest.Idle();
-        return Commands.sequence(
-            // Reset our field centric heading to match the robot
-            // facing away from our alliance station wall (0 deg).
-            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-            // Then slowly drive forward (away from us) for 5 seconds.
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(0.5)
-                    .withVelocityY(0)
-                    .withRotationalRate(0)
-            )
-            .withTimeout(5.0),
-            // Finally idle for the rest of auton
-            drivetrain.applyRequest(() -> idle)
-        );
+        return m_autoChooser.getSelected();
     }
 }
