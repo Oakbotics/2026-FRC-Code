@@ -27,13 +27,13 @@ public class AlignRotationToHubOdometry extends Command {
 
   private final CommandSwerveDrivetrain drivetrain;
   private final LimeLightSubsystem limelight;
+  final Optional<Alliance> alliance = DriverStation.getAlliance();
 
   private final DoubleSupplier driverVx;
   private final DoubleSupplier driverVy;
 
   private final PIDController headingPID;
-
-  final Optional<Alliance> alliance = DriverStation.getAlliance();
+  
   PoseEstimate estimatePoseMT1;
 
   double currentHeading;
@@ -62,6 +62,8 @@ public class AlignRotationToHubOdometry extends Command {
   
   @Override
   public void initialize() {
+    final Optional<Alliance> alliance = DriverStation.getAlliance();
+    
     headingPID.reset();
   }
 

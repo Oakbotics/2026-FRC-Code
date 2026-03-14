@@ -40,22 +40,7 @@ public class LimeLightSubsystem extends SubsystemBase {
 
     this.drivetrain = drivetrain;
   }
-  public Pose2d getBotPoseRightLL(){
-    if(DriverStation.getAlliance().get() == Alliance.Red)
-      m_limeLightRightTable.getEntry("pipeline").setNumber(0);
-    else
-      m_limeLightRightTable.getEntry("pipeline").setNumber(1);
 
-
-    double[] botRotArray = m_limeLightRightTable.getEntry("botpose").getDoubleArray(new double[10]);
-    double[] botPoseArray = m_limeLightRightTable.getEntry("botpose_orb").getDoubleArray(new double[10]);
-    Pose2d botPose;
-      if(DriverStation.getAlliance().get() == Alliance.Red)  botPose = new Pose2d(botPoseArray[0]+8.7736, botPoseArray[1]+4.0257, Rotation2d.fromDegrees(botRotArray[5] + 180));
-      else botPose = new Pose2d(botPoseArray[0] + 8.7736, botPoseArray[1] + 4.0257, Rotation2d.fromDegrees(botRotArray[5]));
-      return botPose;
-
-
-  }
   public Pose2d getBotPoseRightWpiBlue() {
     var est = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
     if (est != null && LimelightHelpers.validPoseEstimate(est)) {
@@ -107,15 +92,6 @@ public class LimeLightSubsystem extends SubsystemBase {
   public int getLeftIDCount(){
     return ((int) m_limeLightLeftTable.getEntry("botpose_orb").getDoubleArray(new double[10])[7]);
   }
-  public double getRightLimelightTime(){
-    return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right").timestampSeconds;
-  }
-  public double getLeftLimelightTime(){
-    return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left").timestampSeconds;
-  }
-  public double getTopLimelightTime(){
-    return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelihgt-top").timestampSeconds;
-  }
 
   public boolean hasHubTarget() {
     int tid = getRightID();
@@ -123,14 +99,14 @@ public class LimeLightSubsystem extends SubsystemBase {
   }
 
   public double getDistanceToHubMeters() {
-    Pose2d botPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME).pose;
+    Optional<Alliance> alliance = DriverStation.getAlliance();
 
-    if (DriverStation.getAlliance().get() == Alliance.Red){
-      botPose = LimelightHelpers.getBotPoseEstimate_wpiRed(VisionConstants.LIMELIGHT_NAME).pose; 
-    }
-   
-    return botPose.getTranslation().getDistance(VisionConstants.hubPosition());
-  }
+    PoseEstimate est = (alliance.isPresent() && alliance.get() == Alliance.Blue)
+      ? LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME)
+      : LimelightHelpers.getBotPoseEstimate_wpiRed(VisionConstants.LIMELIGHT_NAME);
+    if (est == null) return Double.NaN;
+    return est.pose.getTranslation().getDistance(VisionConstants.hubPosition());
+}
 
   private void updateVisionOdometryIfHubTagVisible() {
     int tagID = (int) LimelightHelpers.getFiducialID(VisionConstants.LIMELIGHT_NAME);
