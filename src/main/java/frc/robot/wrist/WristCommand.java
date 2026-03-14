@@ -4,49 +4,44 @@
 
 package frc.robot.wrist;
 
+import static edu.wpi.first.units.Units.Rotations;
+
 import frc.robot.wrist.WristSubsystem;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
-/** An example command that uses an example subsystem. */
 public class WristCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
    private final WristSubsystem m_subsystem;
    private final Angle m_angle; 
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
   public WristCommand(WristSubsystem subsystem, Angle angle) {
     this.m_subsystem = subsystem;
     this.m_angle = angle;
+    addRequirements(subsystem);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     m_subsystem.goToSetpoint(m_angle);
-    
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-     SmartDashboard.putNumber("currentWristAngle: ", m_subsystem.getPosition().magnitude());
+    m_subsystem.goToSetpoint(m_angle);
+    SmartDashboard.putNumber("currentWristAngle: ", m_subsystem.getPosition().magnitude());
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    // Motor holds position via Brake mode — no action needed
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    double currentRotations = m_subsystem.getPosition().in(Rotations);
+    double targetRotations = m_angle.in(Rotations);
+    return Math.abs(currentRotations - targetRotations) < WristConstants.positionToleranceRotations;
   }
 }

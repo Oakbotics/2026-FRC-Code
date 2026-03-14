@@ -7,7 +7,7 @@ public class WristConstants {
     
     public static final double kP = 50; // Also test 250
     public static final double kI = 0;
-    public static final double kD = 0;
+    public static final double kD = 5.0;
     public static final double kA = 0;
     public static final double kG = 0;
 
@@ -32,5 +32,5 @@ public class WristConstants {
     final SensorDirectionValue SensorDirectionValue = null;
     public final int wristMotorId = 7;
     public final int wristEncoderId = 37;
-    
+    public static final double positionToleranceRotations = 0.01;
   }

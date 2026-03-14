@@ -63,8 +63,15 @@ public class RightShooterSubsystem extends SubsystemBase {
   // 44 inch from hub
   public void configureMotors() {
 
-    shooterMotorThree.getConfigurator().apply(configs.shooterMotorConfig());
-    shooterMotorFour.getConfigurator().apply(configs.shooterMotorConfig());
+    for (int i = 0; i < 5; i++) {
+      var status = shooterMotorThree.getConfigurator().apply(configs.shooterMotorConfig());
+      if (status.isOK()) break;
+    }
+
+    for (int i = 0; i < 5; i++) {
+      var status = shooterMotorFour.getConfigurator().apply(configs.shooterMotorConfig());
+      if (status.isOK()) break;
+    }
 
     shooterMotorThree.getVelocity().setUpdateFrequency(100);
     shooterMotorFour.getVelocity().setUpdateFrequency(100);
@@ -89,18 +96,19 @@ public class RightShooterSubsystem extends SubsystemBase {
     shooterMotorThree.setControl(voltageRequest); 
   }
   
+  private final VelocityTorqueCurrentFOC torqueFocRequest = new VelocityTorqueCurrentFOC(0).withSlot(0);  
+
   public void runVelocityTorqueFOC(double rps) {
-      double motorRPS = rps; 
+      double motorRPS = -rps; 
       double actualRPS = shooterMotorThree.getVelocity().refresh().getValueAsDouble();
-      VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0).withSlot(0);
 
 
-      shooterMotorThree.setControl(request.withVelocity(motorRPS).withFeedForward(0));
-      shooterMotorFour.setControl(request.withVelocity(motorRPS).withFeedForward(0));
+      shooterMotorThree.setControl(torqueFocRequest.withVelocity(rps));
+      shooterMotorFour.setControl(torqueFocRequest.withVelocity(rps));
 
-
-      SmartDashboard.putNumber("Motor Target RPS", motorRPS);
-      SmartDashboard.putNumber("Motor Actual RPS", actualRPS);
+      
+      SmartDashboard.putNumber("RIGHT Motor Target RPS", motorRPS);
+      SmartDashboard.putNumber("RIGHT Motor Actual RPS", actualRPS);
   }
 
 

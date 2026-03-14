@@ -114,7 +114,7 @@ public class Elevator extends SubsystemBase {
     private final TalonFXConfiguration motor_id_1Configs = leaderInitialConfigs.clone()
         .withMotorOutput(
             leaderInitialConfigs.MotorOutput.clone()
-                .withNeutralMode(NeutralModeValue.Coast)
+                .withNeutralMode(NeutralModeValue.Brake)
         )
         .withCurrentLimits(
             leaderInitialConfigs.CurrentLimits.clone()
@@ -159,7 +159,7 @@ public class Elevator extends SubsystemBase {
     private final TalonFXConfiguration motor_id_2Configs = motorInitialConfigs.clone()
         .withMotorOutput(
             motorInitialConfigs.MotorOutput.clone()
-                .withNeutralMode(NeutralModeValue.Coast)
+                .withNeutralMode(NeutralModeValue.Brake)
         )
         .withCurrentLimits(
             motorInitialConfigs.CurrentLimits.clone()

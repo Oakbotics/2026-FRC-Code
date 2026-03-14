@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.util.HubTracker;
+import frc.robot.vision.VisionConstants;
+import frc.robot.shooter.ShootOnMoveConstants;
 
 public class LEDSubsystem extends SubsystemBase {
 
@@ -28,12 +30,21 @@ public class LEDSubsystem extends SubsystemBase {
     private final Supplier<Pose2d> poseSupplier;
     private final XboxController controller;
 
-    private static final double HUB_X = 8.27;
-    private static final double HUB_Y = 4.10;
+    private static final double HUB_X = VisionConstants.hubPosition().getX();
+    private static final double HUB_Y = VisionConstants.hubPosition().getY();
 
     public static final double SHOOT_LINE_DISTANCE = 4.0;
 
     private static final int LED_COUNT = 120;
+
+    private final SolidColor solidColorRequest = new SolidColor(0, LED_COUNT);
+    private final RainbowAnimation rainbowRequest = new RainbowAnimation(0, 0)
+        .withBrightness(0.7)
+        .withFrameRate(30);
+
+    private static final RGBWColor COLOR_RED = new RGBWColor(255, 0, 0);
+    private static final RGBWColor COLOR_BLUE = new RGBWColor(0, 0, 255);
+    private static final RGBWColor COLOR_OFF = new RGBWColor(0, 0, 0);
 
     private boolean blinkState = false;
     private double lastBlinkTime = 0;
@@ -41,8 +52,10 @@ public class LEDSubsystem extends SubsystemBase {
     private boolean wasInsideRange = false;
     private double rumbleEndTime = 0;
 
+    private static final int CANDLE_CAN_ID = 40;
+
     public LEDSubsystem(Supplier<Pose2d> poseSupplier, XboxController controller) {
-        candle = new CANdle(0);
+        candle = new CANdle(CANDLE_CAN_ID);
         this.poseSupplier = poseSupplier;
         this.controller = controller;
     }
@@ -52,18 +65,25 @@ public class LEDSubsystem extends SubsystemBase {
 
         Optional<Alliance> allianceOptional = DriverStation.getAlliance();
 
-        if (DriverStation.getMatchTime() < 0) {
-            var rainbow = new RainbowAnimation(0, 0)
-                .withBrightness(0.7) 
-                .withFrameRate(30);    
+        Pose2d robotPose = poseSupplier.get();
+        double dx = robotPose.getX() - HUB_X;
+        double dy = robotPose.getY() - HUB_Y;
+        double distance = Math.hypot(dx, dy);
+        boolean insideShootRange = distance <= SHOOT_LINE_DISTANCE;
 
-            candle.setControl(rainbow);            
+        if (insideShootRange && !wasInsideRange) {
+            rumbleEndTime = Timer.getFPGATimestamp() + 0.25;
+        }
+        wasInsideRange = insideShootRange;
+
+        if (DriverStation.getMatchTime() < 0) {
+            candle.setControl(rainbowRequest); 
             setRumble(0);
             return;
         }
 
         if (allianceOptional.isEmpty()) {
-            setLED(0,0,0);
+            setLED(COLOR_OFF);
             setRumble(0);
             return;
         }
@@ -71,20 +91,12 @@ public class LEDSubsystem extends SubsystemBase {
         Alliance alliance = allianceOptional.get();
 
         if (!HubTracker.isActive(alliance)) {
-            setLED(0,0,0);
+            setLED(COLOR_OFF);
             setRumble(0);
             return;
         }
 
-        int r = 0;
-        int g = 0;
-        int b = 0;
-
-        if (alliance == Alliance.Red) {
-            r = 255;
-        } else {
-            b = 255;
-        }
+        RGBWColor allianceColor = (alliance == Alliance.Red) ? COLOR_RED : COLOR_BLUE;
 
         var timeRemainingOptional = HubTracker.timeRemainingInCurrentShift();
 
@@ -97,29 +109,14 @@ public class LEDSubsystem extends SubsystemBase {
             }
 
             if (blinkState) {
-                setLED(r,g,b);
+                setLED(allianceColor);
             } else {
-                setLED(0,0,0);
+                setLED(COLOR_OFF);
             }
 
             setRumble(0);
             return;
         }
-
-        Pose2d robotPose = poseSupplier.get();
-
-        double dx = robotPose.getX() - HUB_X;
-        double dy = robotPose.getY() - HUB_Y;
-
-        double distance = Math.hypot(dx, dy);
-
-        boolean insideShootRange = distance <= SHOOT_LINE_DISTANCE;
-
-        if (insideShootRange && !wasInsideRange) {
-            rumbleEndTime = Timer.getFPGATimestamp() + 0.25;
-        }
-
-        wasInsideRange = insideShootRange;
 
         if (Timer.getFPGATimestamp() < rumbleEndTime) {
             setRumble(1);
@@ -127,14 +124,11 @@ public class LEDSubsystem extends SubsystemBase {
             setRumble(0);
         }
 
-        setLED(r,g,b);
+        setLED(allianceColor);
     }
 
-    private void setLED(int r, int g, int b) {
-        candle.setControl(
-            new SolidColor(0, LED_COUNT)
-                .withColor(new RGBWColor(r,g,b))
-        );
+    private void setLED(RGBWColor color) {
+        candle.setControl(solidColorRequest.withColor(color));
     }
 
     private void setRumble(double strength) {

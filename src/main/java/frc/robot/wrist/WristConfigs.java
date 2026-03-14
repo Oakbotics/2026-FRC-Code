@@ -19,13 +19,13 @@ public final class WristConfigs {
     public final TalonFXConfiguration wristMotorConfig = wristMotorInitialConfigs.clone()
     .withMotorOutput(
         wristMotorInitialConfigs.MotorOutput.clone()
-            .withNeutralMode(NeutralModeValue.Coast)
+            .withNeutralMode(NeutralModeValue.Brake)
     )
     .withCurrentLimits(
         wristMotorInitialConfigs.CurrentLimits.clone()
-            .withStatorCurrentLimit(Amps.of(5))
+            .withStatorCurrentLimit(Amps.of(40))
             .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(Amps.of(10))
+            .withSupplyCurrentLimit(Amps.of(30))
             .withSupplyCurrentLimitEnable(true)
     )
     .withSlot0(
@@ -36,7 +36,7 @@ public final class WristConfigs {
             .withKS(WristConstants.kS)
             .withKV(WristConstants.kV)
             .withKA(0)//to do
-            .withKG(0)//to do 
+            .withKG(0.20)//to do 
             .withGravityType(GravityTypeValue.Arm_Cosine)
     )
     .withFeedback(
@@ -59,7 +59,7 @@ public final class WristConfigs {
     )
     .withMotionMagic(
         wristMotorInitialConfigs.MotionMagic.clone()
-            .withMotionMagicCruiseVelocity(RotationsPerSecond.of(256))
-            .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(1000))
+            .withMotionMagicCruiseVelocity(RotationsPerSecond.of(20))
+            .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(40))
     );
 }

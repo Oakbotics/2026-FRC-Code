@@ -64,8 +64,15 @@ public class LeftShooterSubsystem extends SubsystemBase {
   // 44 inch from hub
   public void configureMotors() {
 
-    shooterMotorOne.getConfigurator().apply(configs.shooterMotorConfig());
-    shooterMotorTwo.getConfigurator().apply(configs.shooterMotorConfig());
+    for (int i = 0; i < 5; i++) {
+      var status = shooterMotorOne.getConfigurator().apply(configs.shooterMotorConfig());
+      if (status.isOK()) break;
+    }
+
+    for (int i = 0; i < 5; i++) {
+      var status = shooterMotorTwo.getConfigurator().apply(configs.shooterMotorConfig());
+      if (status.isOK()) break;
+    }
     
 
     shooterMotorOne.getVelocity().setUpdateFrequency(100);
@@ -90,17 +97,18 @@ public class LeftShooterSubsystem extends SubsystemBase {
     voltageRequest.Velocity = rps;
     shooterMotorOne.setControl(voltageRequest); 
   }
-  
+
+  private final VelocityTorqueCurrentFOC torqueFocRequest = new VelocityTorqueCurrentFOC(0).withSlot(0);  
+
   public void runVelocityTorqueFOC(double rps) {
       double motorRPS = rps; 
       double actualRPS = shooterMotorOne.getVelocity().refresh().getValueAsDouble();
-      VelocityTorqueCurrentFOC request = new VelocityTorqueCurrentFOC(0).withSlot(0);
 
-      shooterMotorOne.setControl(request.withVelocity(motorRPS).withFeedForward(0));
-      shooterMotorTwo.setControl(request.withVelocity(motorRPS).withFeedForward(0));
+    shooterMotorOne.setControl(torqueFocRequest.withVelocity(rps));
+    shooterMotorTwo.setControl(torqueFocRequest.withVelocity(rps));
 
-      SmartDashboard.putNumber("Motor Target RPS", motorRPS);
-      SmartDashboard.putNumber("Motor Actual RPS", actualRPS);
+      SmartDashboard.putNumber("LEFT Motor Target RPS", motorRPS);
+      SmartDashboard.putNumber("LEFT Motor Actual RPS", actualRPS);
   }
 
 
