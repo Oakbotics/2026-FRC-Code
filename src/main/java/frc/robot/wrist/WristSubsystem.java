@@ -42,8 +42,8 @@ public class WristSubsystem extends SubsystemBase {
   public WristSubsystem() {
     encoder = new CANcoder(m_WristConstants.wristEncoderId);
     CANcoderConfiguration config = new CANcoderConfiguration();
-    // config.MagnetSensor.MagnetOffset = m_WristConstants.magnetOffset;
-    // config.MagnetSensor.SensorDirection = m_WristConstants.SensorDirectionValue;
+    config.MagnetSensor.MagnetOffset = m_WristConstants.magnetOffset;
+    config.MagnetSensor.SensorDirection = m_WristConstants.sensorDirectionValue;
     encoder.getConfigurator().apply(config);
 
 
