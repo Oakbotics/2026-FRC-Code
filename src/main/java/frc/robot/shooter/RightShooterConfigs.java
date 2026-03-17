@@ -4,15 +4,15 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-public class ShooterConfigs {
+public class RightShooterConfigs {
     public TalonFXConfiguration shooterMotorConfig() {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
-        config.Slot0.kP = ShooterConstants.kP;
-        config.Slot0.kI = ShooterConstants.kI;
-        config.Slot0.kD = ShooterConstants.kD;
-        config.Slot0.kV = ShooterConstants.kV;
-        config.Slot0.kS = ShooterConstants.kS;
+        config.Slot0.kP = ShooterConstants.rightKP;
+        config.Slot0.kI = ShooterConstants.rightKI;
+        config.Slot0.kD = ShooterConstants.rightKD;
+        config.Slot0.kV = ShooterConstants.rightKV;
+        config.Slot0.kS = ShooterConstants.rightKS;
 
         config.Feedback.SensorToMechanismRatio = 1.0;
         

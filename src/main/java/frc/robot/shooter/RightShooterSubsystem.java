@@ -25,14 +25,14 @@ public class RightShooterSubsystem extends SubsystemBase {
     private final VelocityVoltage voltageRequest = new VelocityVoltage(0).withEnableFOC(true);
     private final VoltageOut sysIdControl = new VoltageOut(0);
     private final SysIdRoutine m_SysIdRoutine;
-    private final ShooterConfigs configs;
+    private final RightShooterConfigs configs;
 
     /** Creates a new ExampleSubsystem. */
   public RightShooterSubsystem() {
 
     shooterMotorThree = new TalonFX(ShooterConstants.rightShooterMotorOneID);
     shooterMotorFour = new TalonFX(ShooterConstants.rightShooterMotorTwoID);
-    configs = new ShooterConfigs();
+    configs = new RightShooterConfigs();
       m_SysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null,
       Volts.of(4),
@@ -103,8 +103,8 @@ public class RightShooterSubsystem extends SubsystemBase {
       double actualRPS = shooterMotorThree.getVelocity().refresh().getValueAsDouble();
 
 
-      shooterMotorThree.setControl(torqueFocRequest.withVelocity(rps));
-      shooterMotorFour.setControl(torqueFocRequest.withVelocity(rps));
+      shooterMotorThree.setControl(torqueFocRequest.withVelocity(motorRPS));
+      shooterMotorFour.setControl(torqueFocRequest.withVelocity(motorRPS));
 
       
       SmartDashboard.putNumber("RIGHT Motor Target RPS", motorRPS);
@@ -122,7 +122,7 @@ public class RightShooterSubsystem extends SubsystemBase {
 
     shooterMotorThree.setControl(voltageRequest.withOutput(12));
 
-    printRPM();
+    printRightRPM();
   }
 
   public void printVoltageOutput() {
@@ -139,10 +139,10 @@ public class RightShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Supply Current", shooterMotorThree.getSupplyCurrent().getValueAsDouble());
   }
 
-  public void printRPM() {
+  public void printRightRPM() {
     double motorRPS = shooterMotorThree.getVelocity().getValueAsDouble();
     double shooterRPM = motorRPS * 60.0;
-    SmartDashboard.putNumber("Shooter Motor RPM", shooterRPM);
+    SmartDashboard.putNumber("Right Shooter RPM", Math.abs(shooterRPM));
   }
 
   @Override

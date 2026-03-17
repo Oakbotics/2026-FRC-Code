@@ -42,8 +42,8 @@ public class WristSubsystem extends SubsystemBase {
   public WristSubsystem() {
     encoder = new CANcoder(m_WristConstants.wristEncoderId);
     CANcoderConfiguration config = new CANcoderConfiguration();
-    config.MagnetSensor.MagnetOffset = m_WristConstants.magnetOffset;
-    config.MagnetSensor.SensorDirection = m_WristConstants.SensorDirectionValue;
+    // config.MagnetSensor.MagnetOffset = m_WristConstants.magnetOffset;
+    // config.MagnetSensor.SensorDirection = m_WristConstants.SensorDirectionValue;
     encoder.getConfigurator().apply(config);
 
 
@@ -72,7 +72,6 @@ public class WristSubsystem extends SubsystemBase {
     }
 
   public void goToSetpoint(Angle newPos) {
-    //SmartDashboard.putNumber("target", setpoint.get().target.magnitude());
     setpointRequest.withPosition(newPos);
     wristMotor.setControl(setpointRequest);
   }

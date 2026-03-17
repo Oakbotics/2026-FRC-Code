@@ -16,13 +16,13 @@ public class ShooterCommand extends Command {
   private final LeftShooterSubsystem m_leftShooterSubsystem;
   private final RightShooterSubsystem m_rightShooterSubsystem;
 
-  private final double speed;
+  private final DoubleSupplier speed;
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShooterCommand(RightShooterSubsystem m_rightShooterSubsytem, LeftShooterSubsystem m_leftShooterSubsystem, Double speed) {
+  public ShooterCommand(RightShooterSubsystem m_rightShooterSubsytem, LeftShooterSubsystem m_leftShooterSubsystem, DoubleSupplier speed) {
     // m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_leftShooterSubsystem = m_leftShooterSubsystem;
@@ -40,10 +40,12 @@ public class ShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_leftShooterSubsystem.runVelocityTorqueFOC(speed);
-    m_rightShooterSubsystem.runVelocityTorqueFOC(speed);
-    m_leftShooterSubsystem.printRPM();
-    m_leftShooterSubsystem.printVoltageOutput();
+    double rps = speed.getAsDouble();
+
+    m_leftShooterSubsystem.runVelocityTorqueFOC(rps);
+    m_rightShooterSubsystem.runVelocityTorqueFOC(rps);
+    m_leftShooterSubsystem.printLeftRPM();
+    m_rightShooterSubsystem.printRightRPM();
   }
 
   // Called once the command ends or is interrupted.

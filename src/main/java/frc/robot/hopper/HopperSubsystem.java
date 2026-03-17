@@ -32,11 +32,11 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public void feedTowardShooter(double percent){
-    hopFuel(Math.abs(percent));
+    hopFuel(percent);
   }
 
   public void reverseFromShooter(double percent){
-    outHopFuel(Math.abs(percent));
+    outHopFuel(percent);
   }
 
   public void stop(){

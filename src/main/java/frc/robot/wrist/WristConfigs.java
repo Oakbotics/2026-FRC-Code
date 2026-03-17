@@ -19,13 +19,13 @@ public final class WristConfigs {
     public final TalonFXConfiguration wristMotorConfig = wristMotorInitialConfigs.clone()
     .withMotorOutput(
         wristMotorInitialConfigs.MotorOutput.clone()
-            .withNeutralMode(NeutralModeValue.Brake)
+            .withNeutralMode(NeutralModeValue.Coast)
     )
     .withCurrentLimits(
         wristMotorInitialConfigs.CurrentLimits.clone()
-            .withStatorCurrentLimit(Amps.of(40))
+            .withStatorCurrentLimit(Amps.of(5))//40
             .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(Amps.of(30))
+            .withSupplyCurrentLimit(Amps.of(5))//30
             .withSupplyCurrentLimitEnable(true)
     )
     .withSlot0(

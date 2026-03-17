@@ -37,7 +37,7 @@ public class KickerCommandGroup extends Command {
 
     private void sendStateToSmartDashboard(){
         SmartDashboard.putString("Current State", state.name());
-        SmartDashboard.putNumber("Amount of Times Jammed 😞", jamCount);
+        SmartDashboard.putNumber("Amount of Times Jammed: ", jamCount);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class KickerCommandGroup extends Command {
 
     @Override
     public void execute(){
-        boolean jamDetected = superCoderJamDebouncer.calculate(Math.abs(m_kickerSubsystem.getVelovcityRps()) < ShooterConstants.kickerJamMinVelocityRPS && m_kickerSubsystem.getStatorCurrentAmps() > ShooterConstants.kickerJamCurrentAmps);
+        boolean jamDetected = superCoderJamDebouncer.calculate(m_hopperSubsystem.getStatorCurrentAmps() > ShooterConstants.hopperJamCurrentAmps);
 
         //Super coder smart dahsboard stuff for super coder debugging
         SmartDashboard.putBoolean("DoWeHaveJam?????", jamDetected);
@@ -74,7 +74,6 @@ public class KickerCommandGroup extends Command {
             
             case unjamReverse:
                 m_hopperSubsystem.reverseFromShooter(ShooterConstants.hopperReversePercent);
-                m_kickerSubsystem.reverseFromShooter(ShooterConstants.kickerReversePercent);
 
                 if (superCoderTimer.hasElapsed(ShooterConstants.unjamReverseSec)){
                     state = FeedState.unjamRecovery;

@@ -37,6 +37,7 @@ public class LimeLightSubsystem extends SubsystemBase {
     m_limeLightLeftTable = NetworkTableInstance.getDefault().getTable("limelight-left");
     m_limeLightRightTable.getEntry("pipeline").setNumber(0);
     // SmartDashboard.putData("Field", m_field);
+    SmartDashboard.putNumber("Shooter RPS", 50.5);
 
     this.drivetrain = drivetrain;
   }

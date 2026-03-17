@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -73,7 +74,9 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
-    private final LEDSubsystem m_ledSubsystem = new LEDSubsystem(() -> drivetrain.getState().Pose,joystick.getHID());    final SendableChooser<Command> m_autoChooser;
+    private final LEDSubsystem m_ledSubsystem = new LEDSubsystem(() -> drivetrain.getState().Pose,joystick.getHID());   
+    private final SendableChooser<Command> m_autoChooser;
+
 
     public RobotContainer() {
         NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
@@ -97,7 +100,7 @@ public class RobotContainer {
         Pose2d target = new Pose2d(drivetrain.getState().Pose.getX() + 1.0, drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation());
 
         m_autoChooser = AutoBuilder.buildAutoChooser();
-        m_autoChooser.setDefaultOption("LeftDepot1.5CycleAuto", AutoBuilder.buildAuto("LeftDepot1.5CycleAuto"));
+        m_autoChooser.setDefaultOption("MoveBack", AutoBuilder.buildAuto("MoveBack"));
         configureBindings();
     }
 
@@ -133,11 +136,11 @@ public class RobotContainer {
         // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, 57.0));
-        joystick.b().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
-        //joystick.x().onTrue(new WristCommand(m_WristSubsystem, angleDown));
-        //joystick.povDown().onTrue(new WristCommand(m_WristSubsystem, angleUp));
-        // joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 5));
+        joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, () -> m_limeLightSubsystem.getRPSSmartDashboard()));
+       joystick.b().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
+        joystick.x().onTrue(new WristCommand(m_wristSubsystem, angleDown));
+        // joystick.b().onTrue(new WristCommand(m_wristSubsystem, angleUp));
+        joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 5));
         joystick.povDown().onTrue(new ResetOdometryLimelight(drivetrain));
 
         // Reset the field-centric heading on left bumper press.

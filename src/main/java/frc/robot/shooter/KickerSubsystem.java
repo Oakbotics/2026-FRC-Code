@@ -26,11 +26,11 @@ public class KickerSubsystem extends SubsystemBase {
   }
 
   public void feedTowardShooter(double percent){
-    kickerMotor.setControl(speedRequest.withOutput(-Math.abs(percent)));
+    kickerMotor.setControl(speedRequest.withOutput(percent));
   }
 
   public void reverseFromShooter(double percent){
-    kickerMotor.setControl(speedRequest.withOutput(Math.abs(percent)));
+    kickerMotor.setControl(speedRequest.withOutput(percent));
   }
 
   public double getVelovcityRps(){

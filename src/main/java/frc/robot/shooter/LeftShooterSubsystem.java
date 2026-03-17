@@ -25,14 +25,14 @@ public class LeftShooterSubsystem extends SubsystemBase {
     private final VelocityVoltage voltageRequest = new VelocityVoltage(0).withEnableFOC(true);
     private final VoltageOut sysIdControl = new VoltageOut(0);
     private final SysIdRoutine m_SysIdRoutine;
-    private final ShooterConfigs configs;
+    private final LeftShooterConfigs configs;
 
     /** Creates a new ExampleSubsystem. */
   public LeftShooterSubsystem() {
 
     shooterMotorOne = new TalonFX(ShooterConstants.leftShooterMotorOneID);
     shooterMotorTwo = new TalonFX(ShooterConstants.leftShooterMotorTwoID);
-    configs = new ShooterConfigs();
+    configs = new LeftShooterConfigs();
       m_SysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null,
       Volts.of(4),
@@ -122,7 +122,7 @@ public class LeftShooterSubsystem extends SubsystemBase {
 
     shooterMotorOne.setControl(voltageRequest.withOutput(12));
 
-    printRPM();
+    printLeftRPM();
   }
 
   public void printVoltageOutput() {
@@ -139,7 +139,7 @@ public class LeftShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Supply Current", shooterMotorOne.getSupplyCurrent().getValueAsDouble());
   }
 
-  public void printRPM() {
+  public void printLeftRPM() {
     double motorRPS = shooterMotorOne.getVelocity().getValueAsDouble();
     double shooterRPM = motorRPS * 60.0;
     SmartDashboard.putNumber("Shooter Motor RPM", shooterRPM);
