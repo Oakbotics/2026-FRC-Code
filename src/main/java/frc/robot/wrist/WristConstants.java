@@ -29,7 +29,7 @@ public class WristConstants {
     */
     
     final double magnetOffset = 0.14;
-    final SensorDirectionValue sensorDirectionValue = SensorDirectionValue.CounterClockwise_Positive;
+    final SensorDirectionValue sensorDirectionValue = SensorDirectionValue.Clockwise_Positive;
     public final int wristMotorId = 7;
     public final int wristEncoderId = 37;
     public static final double positionToleranceRotations = 0.01;
