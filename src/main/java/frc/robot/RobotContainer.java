@@ -8,7 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
+// import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
@@ -75,7 +75,7 @@ public class RobotContainer {
 
     private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
     private final LEDSubsystem m_ledSubsystem = new LEDSubsystem(() -> drivetrain.getState().Pose,joystick.getHID());   
-    private final SendableChooser<Command> m_autoChooser;
+    // private final SendableChooser<Command> m_autoChooser;
 
 
     public RobotContainer() {
@@ -99,8 +99,8 @@ public class RobotContainer {
         
         Pose2d target = new Pose2d(drivetrain.getState().Pose.getX() + 1.0, drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation());
 
-        m_autoChooser = AutoBuilder.buildAutoChooser();
-        m_autoChooser.setDefaultOption("MoveBack", AutoBuilder.buildAuto("MoveBack"));
+        // m_autoChooser = AutoBuilder.buildAutoChooser();
+        // m_autoChooser.setDefaultOption("MoveBack", AutoBuilder.buildAuto("MoveBack"));
         configureBindings();
     }
 
@@ -170,6 +170,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return m_autoChooser.getSelected();
+        return Commands.none();
     }
 }
