@@ -33,10 +33,8 @@ public final class WristConfigs {
             .withKP(WristConstants.kP)
             .withKI(WristConstants.kI)
             .withKD(WristConstants.kD)
-            .withKS(WristConstants.kS)
-            .withKV(WristConstants.kV)
-            .withKA(0)//to do
-            .withKG(0.20)//to do 
+            .withKA(WristConstants.kA)
+            .withKG(WristConstants.kG)
             .withGravityType(GravityTypeValue.Arm_Cosine)
     )
     .withFeedback(

@@ -5,14 +5,11 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 public class WristConstants {
    // public static final int wristMotorCANId = 3;//Temp
     
-    public static final double kP = 60; // Also test 250
-    public static final double kI = 0;
+    public static final double kP = 90.0; // Also test 250
+    public static final double kI = 0.0;
     public static final double kD = 5.0;
-    public static final double kA = 0;
-    public static final double kG = 0;
-
-    public static final double kV = 0.0; // TODO: tune feedforward V
-    public static final double kS = 0.0; // TODO: tune feedforward S
+    public static final double kA = 0.0;
+    public static final double kG = 0.0;
 
     public static final int gearBoxRatio = 128;
 

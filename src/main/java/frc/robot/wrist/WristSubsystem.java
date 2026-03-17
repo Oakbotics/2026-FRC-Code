@@ -81,7 +81,6 @@ public class WristSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Wrist Position (deg)", getPosition().in(Degrees));
     SmartDashboard.putNumber("Wrist Voltage", getVolts());
     SmartDashboard.putNumber("Wrist Current", wristMotor.getStatorCurrent().getValueAsDouble());
-
   }
 
   @Override
