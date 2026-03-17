@@ -19,7 +19,7 @@ public final class WristConfigs {
     public final TalonFXConfiguration wristMotorConfig = wristMotorInitialConfigs.clone()
     .withMotorOutput(
         wristMotorInitialConfigs.MotorOutput.clone()
-            .withNeutralMode(NeutralModeValue.Coast)
+            .withNeutralMode(NeutralModeValue.Brake)
     )
     .withCurrentLimits(
         wristMotorInitialConfigs.CurrentLimits.clone()
