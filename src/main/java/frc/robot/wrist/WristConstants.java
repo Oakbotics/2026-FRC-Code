@@ -11,7 +11,7 @@ public class WristConstants {
     public static final double kA = 0.0;
     public static final double kG = 0.0;
 
-    public static final int gearBoxRatio = 128;
+    public static final int gearBoxRatio = 128 / 2;
 
    /*  public static final double minOutput = -1;
     public static final double maxOutput = 1;
