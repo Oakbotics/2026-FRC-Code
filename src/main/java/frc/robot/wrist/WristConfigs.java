@@ -37,6 +37,8 @@ public final class WristConfigs {
             .withKD(WristConstants.kD)
             .withKA(WristConstants.kA)
             .withKG(WristConstants.kG)
+            .withKS(WristConstants.kS)
+            .withKV(WristConstants.kV)
             .withGravityType(GravityTypeValue.Arm_Cosine)
     )
     .withFeedback(
