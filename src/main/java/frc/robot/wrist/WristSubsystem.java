@@ -53,7 +53,7 @@ public class WristSubsystem extends SubsystemBase {
     var status = wristMotor.getConfigurator().apply(m_WristConfigs.wristMotorConfig);
     if (status.isOK()) break;
   }
-  wristMotor.setPosition(encoder.getAbsolutePosition().getValueAsDouble() / 2);
+  wristMotor.setPosition(encoder.getAbsolutePosition().getValueAsDouble());
   }
   /** Configs for wristMotor. */
   
