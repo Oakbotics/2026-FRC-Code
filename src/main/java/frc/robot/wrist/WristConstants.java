@@ -10,7 +10,7 @@ public class WristConstants {
     public static final double kD = 0.0;
     public static final double kA = 0.0;
     public static final double kG = 2.0;
-    public static final double kS = 0.0;
+    public static final double kS = 0.5;
     public static final double kV = 0.1;
 
     public static final int gearBoxRatio = 4 * 4 * 4 * (40 / 20);
