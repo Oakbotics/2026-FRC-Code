@@ -25,9 +25,9 @@ public final class WristConfigs {
     )
     .withCurrentLimits(
         wristMotorInitialConfigs.CurrentLimits.clone()
-            .withStatorCurrentLimit(Amps.of(10))//40
+            .withStatorCurrentLimit(Amps.of(20))//40
             .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(Amps.of(10))//30
+            .withSupplyCurrentLimit(Amps.of(20))//30
             .withSupplyCurrentLimitEnable(true)
     )
     .withSlot0(
