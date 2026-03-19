@@ -46,7 +46,7 @@ public final class WristConfigs {
             .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
             .withFeedbackRemoteSensorID(WristConstants.wristEncoderId)
             .withSensorToMechanismRatio(2.0)
-            .withRotorToSensorRatio(WristConstants.gearBoxRatio)
+            .withRotorToSensorRatio(WristConstants.gearBoxRatio / 2.0)
     )
     .withHardwareLimitSwitch(
         wristMotorInitialConfigs.HardwareLimitSwitch.clone()
