@@ -74,6 +74,7 @@ public class WristSubsystem extends SubsystemBase {
   public void goToSetpoint(Angle newPos) {
     setpointRequest.withPosition(newPos);
     wristMotor.setControl(setpointRequest);
+    SmartDashboard.putNumber("Desired Angle: ", newPos.magnitude());
   }
 
   @Override
