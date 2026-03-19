@@ -5,7 +5,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 public class WristConstants {
    // public static final int wristMotorCANId = 3;//Temp
     
-    public static final double kP = 0.0; // Also test 250
+    public static final double kP = 10.0; // Also test 250
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kA = 0.0;
