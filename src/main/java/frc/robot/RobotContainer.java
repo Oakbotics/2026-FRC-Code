@@ -138,7 +138,7 @@ public class RobotContainer {
 
         joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, () -> m_limeLightSubsystem.getRPSSmartDashboard()));
         joystick.b().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
-        joystick.x().onTrue(new WristCommand(m_wristSubsystem, angleDown));
+        joystick.x().whileTrue(new WristCommand(m_wristSubsystem, angleDown));
         joystick.y().onTrue(new WristCommand(m_wristSubsystem, angleUp));
         // joystick.b().onTrue(new WristCommand(m_wristSubsystem, angleUp));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 5));
