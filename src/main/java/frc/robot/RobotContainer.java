@@ -38,6 +38,7 @@ import frc.robot.vision.AlignRotationToHubOdometry;
 import frc.robot.vision.LimeLightSubsystem;
 import frc.robot.vision.ResetOdometryLimelight;
 import frc.robot.vision.ShootFromHubDistance;
+import frc.robot.wrist.WristAgitateCommandGroup;
 import frc.robot.wrist.WristCommand;
 import frc.robot.wrist.WristSubsystem;
 import frc.robot.shooter.KickerCommand;
@@ -140,6 +141,7 @@ public class RobotContainer {
         joystick.b().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
         joystick.x().whileTrue(new WristCommand(m_wristSubsystem, angleDown));
         joystick.y().onTrue(new WristCommand(m_wristSubsystem, angleUp));
+        joystick.leftBumper().whileTrue(new WristAgitateCommandGroup(m_wristSubsystem));
         // joystick.b().onTrue(new WristCommand(m_wristSubsystem, angleUp));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 5));
         joystick.povDown().onTrue(new ResetOdometryLimelight(drivetrain));
