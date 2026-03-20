@@ -44,6 +44,7 @@ public class WristSubsystem extends SubsystemBase {
     CANcoderConfiguration config = new CANcoderConfiguration();
     config.MagnetSensor.MagnetOffset = m_WristConstants.magnetOffset;
     config.MagnetSensor.SensorDirection = m_WristConstants.sensorDirectionValue;
+    config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.85;
     encoder.getConfigurator().apply(config);
 
 
