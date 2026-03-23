@@ -27,6 +27,12 @@ public class LeftShooterSubsystem extends SubsystemBase {
     private final SysIdRoutine m_SysIdRoutine;
     private final LeftShooterConfigs configs;
 
+    private double lastKP = ShooterConstants.leftKP;
+    private double lastKI = ShooterConstants.leftKI;
+    private double lastKD = ShooterConstants.leftKD;
+    private double lastKS = ShooterConstants.leftKS;
+    private double lastKV = ShooterConstants.leftKV;
+
     /** Creates a new ExampleSubsystem. */
   public LeftShooterSubsystem() {
 
@@ -58,6 +64,13 @@ public class LeftShooterSubsystem extends SubsystemBase {
       this));
     configureMotors();
     SignalLogger.setPath("/home/vuser/logs/");
+    
+
+    SmartDashboard.putNumber("Left Shooter kP", ShooterConstants.leftKP);
+    SmartDashboard.putNumber("Left Shooter kI", ShooterConstants.leftKI);
+    SmartDashboard.putNumber("Left Shooter kD", ShooterConstants.leftKD);
+    SmartDashboard.putNumber("Left Shooter kS", ShooterConstants.leftKS);
+    SmartDashboard.putNumber("Left Shooter kV", ShooterConstants.leftKV);
     
     
   }
@@ -147,7 +160,25 @@ public class LeftShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    double newKP = SmartDashboard.getNumber("Left Shooter kP", ShooterConstants.leftKP);
+    double newKI = SmartDashboard.getNumber("Left Shooter kI", ShooterConstants.leftKI);
+    double newKD = SmartDashboard.getNumber("Left Shooter kD", ShooterConstants.leftKD);
+    double newKS = SmartDashboard.getNumber("Left Shooter kS", ShooterConstants.leftKS);
+    double newKV = SmartDashboard.getNumber("Left Shooter kV", ShooterConstants.leftKV);
+
+    if (newKP != lastKP || newKI != lastKI || newKD != lastKD || newKS != lastKS || newKV != lastKV){
+      ShooterConstants.leftKP = newKP;
+      ShooterConstants.leftKI = newKI;
+      ShooterConstants.leftKD = newKD;
+      ShooterConstants.leftKS = newKS;
+      ShooterConstants.leftKV = newKV;
+      configureMotors();
+      lastKP = newKP;
+      lastKI = newKI;
+      lastKD = newKD;
+      lastKS = newKS;
+      lastKV = newKV;
+    }
     
   }
 

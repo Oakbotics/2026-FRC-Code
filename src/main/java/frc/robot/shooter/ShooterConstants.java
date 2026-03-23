@@ -3,19 +3,20 @@ package frc.robot.shooter;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 public class ShooterConstants {
-    public static final double rightKP = 9.0;
-    public static final double rightKI = 0.8;
-    public static final double rightKD = 0.05;
+    public static double rightKP = 9.0;
+    public static double rightKI = 0.8;
+    public static double rightKD = 0.05;
 
-    public static final double leftKP = 5.75;
-    public static final double leftKI = 0.65;
-    public static final double leftKD = 0.05;
+    public static double leftKP = 5.75;
+    public static double leftKI = 0.65;
+    public static double leftKD = 0.05;
 
-    public static final double rightKS = 17.5;
-    public static final double rightKV = 0.16;
+    public static double rightKS = 17.5;
+    public static double rightKV = 0.16;
 
-    public static final double leftKS = 17.5;
-    public static final double leftKV = 0.04;
+    public static double leftKS = 17.5;
+    public static double leftKV = 0.04;
+    
     public static final double minOutput = -1;
     public static final double maxOutput = 12;
 

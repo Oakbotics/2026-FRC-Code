@@ -27,6 +27,12 @@ public class RightShooterSubsystem extends SubsystemBase {
     private final SysIdRoutine m_SysIdRoutine;
     private final RightShooterConfigs configs;
 
+    private double lastKP = ShooterConstants.rightKP;
+    private double lastKI = ShooterConstants.rightKI;
+    private double lastKD = ShooterConstants.rightKD;
+    private double lastKS = ShooterConstants.rightKS;
+    private double lastKV = ShooterConstants.rightKV;
+
     /** Creates a new ExampleSubsystem. */
   public RightShooterSubsystem() {
 
@@ -58,6 +64,12 @@ public class RightShooterSubsystem extends SubsystemBase {
       this));
     configureMotors();
     SignalLogger.setPath("/home/vuser/logs/");
+
+    SmartDashboard.putNumber("Right Shooter kP", ShooterConstants.rightKP);
+    SmartDashboard.putNumber("Right Shooter kI", ShooterConstants.rightKI);
+    SmartDashboard.putNumber("Right Shooter kD", ShooterConstants.rightKD);
+    SmartDashboard.putNumber("Right Shooter kS", ShooterConstants.rightKS);
+    SmartDashboard.putNumber("Right Shooter kV", ShooterConstants.rightKV);
     
   }
   // 44 inch from hub
@@ -147,7 +159,25 @@ public class RightShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    double newKP = SmartDashboard.getNumber("Right Shooter kP", ShooterConstants.rightKP);
+    double newKI = SmartDashboard.getNumber("Right Shooter kI", ShooterConstants.rightKI);
+    double newKD = SmartDashboard.getNumber("Right Shooter kD", ShooterConstants.rightKD);
+    double newKS = SmartDashboard.getNumber("Right Shooter kS", ShooterConstants.rightKS);
+    double newKV = SmartDashboard.getNumber("Right Shooter kV", ShooterConstants.rightKV);
+
+    if (newKP != lastKP || newKI != lastKI || newKD != lastKD || newKS != lastKS || newKV != lastKV){
+      ShooterConstants.rightKP = newKP;
+      ShooterConstants.rightKI = newKI;
+      ShooterConstants.rightKD = newKD;
+      ShooterConstants.rightKS = newKS;
+      ShooterConstants.rightKV = newKV;
+      configureMotors();
+      lastKP = newKP;
+      lastKI = newKI;
+      lastKD = newKD;
+      lastKS = newKS;
+      lastKV = newKV;
+    }
     
   }
 
