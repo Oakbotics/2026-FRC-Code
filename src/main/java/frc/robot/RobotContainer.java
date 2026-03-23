@@ -8,7 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-// import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
@@ -75,7 +75,7 @@ public class RobotContainer {
 
     private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
     private final LEDSubsystem m_ledSubsystem = new LEDSubsystem(() -> drivetrain.getState().Pose,joystick.getHID());   
-    // private final SendableChooser<Command> m_autoChooser;
+    private final SendableChooser<Command> m_autoChooser;
 
 
     public RobotContainer() {
@@ -99,8 +99,8 @@ public class RobotContainer {
         
         Pose2d target = new Pose2d(drivetrain.getState().Pose.getX() + 1.0, drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation());
 
-        // m_autoChooser = AutoBuilder.buildAutoChooser();
-        // m_autoChooser.setDefaultOption("MoveBack", AutoBuilder.buildAuto("MoveBack"));
+        m_autoChooser = AutoBuilder.buildAutoChooser("MoveBack");
+        SmartDashboard.putData("Auto Chooser", m_autoChooser);
         configureBindings();
     }
 
@@ -137,7 +137,7 @@ public class RobotContainer {
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, () -> m_limeLightSubsystem.getRPSSmartDashboard()));
-       joystick.b().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
+        joystick.b().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
         joystick.x().onTrue(new WristCommand(m_wristSubsystem, angleDown));
         // joystick.b().onTrue(new WristCommand(m_wristSubsystem, angleUp));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 5));
@@ -170,6 +170,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.none();
+        return m_autoChooser.getSelected();
     }
 }
