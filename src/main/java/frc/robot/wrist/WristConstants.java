@@ -27,7 +27,7 @@ public class WristConstants {
     public static final double statorCurrentLimit = 30.0; // TODO: set actual wrist stator limit
     */
     
-    final double magnetOffset = 0.25;
+    final double magnetOffset = 0.3;
     final SensorDirectionValue sensorDirectionValue = SensorDirectionValue.CounterClockwise_Positive;
     public final int wristMotorId = 7;
     public final static int wristEncoderId = 37;
