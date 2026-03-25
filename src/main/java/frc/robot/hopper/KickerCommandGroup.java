@@ -64,33 +64,33 @@ public class KickerCommandGroup extends Command {
                 m_hopperSubsystem.feedTowardShooter(ShooterConstants.hopperFeedPercent);
                 m_kickerSubsystem.feedTowardShooter(ShooterConstants.kickerFeedPercent);
 
-                if (jamDetected){
-                    jamCount++;
-                    state = FeedState.unjamReverse;
-                    restartTimer();
-                    sendStateToSmartDashboard();
-                }
-                break;
+                // if (jamDetected){
+                //     jamCount++;
+                //     state = FeedState.unjamReverse;
+                //     restartTimer();
+                //     sendStateToSmartDashboard();
+                // }
+                // break;
             
-            case unjamReverse:
-                m_hopperSubsystem.reverseFromShooter(ShooterConstants.hopperReversePercent);
+            // case unjamReverse:
+            //     m_hopperSubsystem.reverseFromShooter(ShooterConstants.hopperReversePercent);
 
-                if (superCoderTimer.hasElapsed(ShooterConstants.unjamReverseSec)){
-                    state = FeedState.unjamRecovery;
-                    restartTimer();
-                    sendStateToSmartDashboard();
-                }
-                break;
+            //     if (superCoderTimer.hasElapsed(ShooterConstants.unjamReverseSec)){
+            //         state = FeedState.unjamRecovery;
+            //         restartTimer();
+            //         sendStateToSmartDashboard();
+            //     }
+            //     break;
 
-            case unjamRecovery:
-                m_hopperSubsystem.feedTowardShooter(ShooterConstants.hopperRecoveryPercent);
-                m_kickerSubsystem.feedTowardShooter(ShooterConstants.kickerRecorveryPercent);
+            // case unjamRecovery:
+            //     m_hopperSubsystem.feedTowardShooter(ShooterConstants.hopperRecoveryPercent);
+            //     m_kickerSubsystem.feedTowardShooter(ShooterConstants.kickerRecorveryPercent);
 
-                if (superCoderTimer.hasElapsed(ShooterConstants.unjamRecoverySec)){
-                    state = FeedState.feeding;
-                    sendStateToSmartDashboard();
-                }
-                break;
+            //     if (superCoderTimer.hasElapsed(ShooterConstants.unjamRecoverySec)){
+            //         state = FeedState.feeding;
+            //         sendStateToSmartDashboard();
+            //     }
+            //     break;
 
         }
 

@@ -35,7 +35,7 @@ public class WristCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    // Motor holds position via Brake mode — no action needed
+      
   }
 
   @Override

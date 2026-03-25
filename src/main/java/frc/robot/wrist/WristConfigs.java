@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -24,9 +25,9 @@ public final class WristConfigs {
     )
     .withCurrentLimits(
         wristMotorInitialConfigs.CurrentLimits.clone()
-            .withStatorCurrentLimit(Amps.of(5))//40
+            .withStatorCurrentLimit(Amps.of(20))//40
             .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(Amps.of(5))//30
+            .withSupplyCurrentLimit(Amps.of(20))//30
             .withSupplyCurrentLimitEnable(true)
     )
     .withSlot0(
@@ -36,11 +37,16 @@ public final class WristConfigs {
             .withKD(WristConstants.kD)
             .withKA(WristConstants.kA)
             .withKG(WristConstants.kG)
+            .withKS(WristConstants.kS)
+            .withKV(WristConstants.kV)
             .withGravityType(GravityTypeValue.Arm_Cosine)
     )
     .withFeedback(
         wristMotorInitialConfigs.Feedback.clone()
-            .withSensorToMechanismRatio(WristConstants.gearBoxRatio)
+            .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+            .withFeedbackRemoteSensorID(WristConstants.wristEncoderId)
+            .withSensorToMechanismRatio(2.0)
+            .withRotorToSensorRatio(WristConstants.gearBoxRatio / 2.0)
     )
     .withHardwareLimitSwitch(
         wristMotorInitialConfigs.HardwareLimitSwitch.clone()

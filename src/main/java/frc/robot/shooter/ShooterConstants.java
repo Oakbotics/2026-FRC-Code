@@ -3,19 +3,26 @@ package frc.robot.shooter;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 public class ShooterConstants {
-    public static double rightKP = 9.0;
-    public static double rightKI = 0.8;
-    public static double rightKD = 0.05;
+    public static double rightKP = 8.5;
+    public static double rightKI = 0.0;
+    public static double rightKD = 0.0;
 
-    public static double leftKP = 5.75;
-    public static double leftKI = 0.65;
-    public static double leftKD = 0.05;
+    public static double leftKP = 8.0;
+    public static double leftKI = 0.0;
+    public static double leftKD = 0.0;
 
     public static double rightKS = 17.5;
-    public static double rightKV = 0.16;
+    public static double rightKV = 0.013;
 
     public static double leftKS = 17.5;
-    public static double leftKV = 0.04;
+    public static double leftKV = 0.013;
+
+    public static double kickerKP = 5.75;
+    public static double kickerKI = 0.65;
+    public static double kickerKD = 0.05;
+
+    public static double kickerKS = 17.5;
+    public static double kickerKV = 0.16;
     
     public static final double minOutput = -1;
     public static final double maxOutput = 12;
@@ -30,11 +37,11 @@ public class ShooterConstants {
     public static final int kickerMotorID = 3;
 
     public static final double hopperFeedPercent = 0.35;
-    public static final double kickerFeedPercent = 0.85;
+    public static final double kickerFeedPercent = 8.0;
     public static final double hopperReversePercent = 0.20;
-    public static final double kickerReversePercent = 0.45;
+    public static final double kickerReversePercent = 8.0;
     public static final double hopperRecoveryPercent = 0.20;
-    public static final double kickerRecorveryPercent = 0.85;
+    public static final double kickerRecorveryPercent = 8.0;
 
     public static final double hopperJamCurrentAmps = 35.0;
 

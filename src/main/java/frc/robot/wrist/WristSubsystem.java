@@ -44,6 +44,7 @@ public class WristSubsystem extends SubsystemBase {
     CANcoderConfiguration config = new CANcoderConfiguration();
     config.MagnetSensor.MagnetOffset = m_WristConstants.magnetOffset;
     config.MagnetSensor.SensorDirection = m_WristConstants.sensorDirectionValue;
+    config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.85;
     encoder.getConfigurator().apply(config);
 
 
@@ -53,7 +54,7 @@ public class WristSubsystem extends SubsystemBase {
     var status = wristMotor.getConfigurator().apply(m_WristConfigs.wristMotorConfig);
     if (status.isOK()) break;
   }
-  wristMotor.setPosition(encoder.getAbsolutePosition().getValueAsDouble());
+
   }
   /** Configs for wristMotor. */
   
@@ -72,8 +73,13 @@ public class WristSubsystem extends SubsystemBase {
     }
 
   public void goToSetpoint(Angle newPos) {
-    setpointRequest.withPosition(newPos);
-    wristMotor.setControl(setpointRequest);
+    // setpointRequest.withPosition(newPos);
+    double rotations = newPos.in(Rotations);
+    
+    wristMotor.setControl(setpointRequest.withPosition(rotations));
+    SmartDashboard.putNumber("Desired Angle: ", newPos.magnitude());
+    SmartDashboard.putNumber("Desired Voltage: ", setpointRequest.Position);
+    SmartDashboard.putNumber("Desired Rotations: ", rotations);
   }
 
   @Override

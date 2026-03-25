@@ -5,13 +5,15 @@
 package frc.robot.shooter;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class KickerSubsystem extends SubsystemBase {
   private final TalonFX kickerMotor;
-  private final DutyCycleOut speedRequest = new DutyCycleOut(0);
+  private final VoltageOut speedRequest = new VoltageOut(0);
   /** Creates a new ExampleSubsystem. */
   public KickerSubsystem() {
     kickerMotor = new TalonFX(ShooterConstants.kickerMotorID);
