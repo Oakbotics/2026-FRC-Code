@@ -32,8 +32,10 @@ import frc.robot.hopper.KickerCommandGroup;
 import frc.robot.intake.IntakeCommand;
 import frc.robot.intake.IntakeSubsystem;
 import frc.robot.led.LEDSubsystem;
+import frc.robot.util.ElasticDashboard;
 //import frc.robot.commands.IntakeCommandGroup;
 import frc.robot.drive.CommandSwerveDrivetrain;
+import frc.robot.drive.DrivePIDTunerCommand;
 import frc.robot.vision.AlignRotationToHubOdometry;
 import frc.robot.vision.LimeLightSubsystem;
 import frc.robot.vision.ResetOdometryLimelight;
@@ -56,7 +58,7 @@ public class RobotContainer {
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
     // private final ShootFromHubDistance shootFromHubDistance = new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem);
     private final KickerSubsystem m_kickerSubsystem = new KickerSubsystem();
-    // private final WristSubsystem m_wristSubsystem = new WristSubsystem();
+    private final WristSubsystem m_wristSubsystem = new WristSubsystem();
     private final HopperSubsystem m_hopperSubsystem = new HopperSubsystem();
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
@@ -74,33 +76,32 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
-    private final LEDSubsystem m_ledSubsystem = new LEDSubsystem(() -> drivetrain.getState().Pose,joystick.getHID());   
-    // private final SendableChooser<Command> m_autoChooser;
-
+    private final LEDSubsystem m_ledSubsystem = new LEDSubsystem(() -> drivetrain.getState().Pose,joystick.getHID());  
+    private final ElasticDashboard elastic_dashboard = new frc.robot.util.ElasticDashboard(drivetrain, m_limeLightSubsystem);
+    private final SendableChooser<Command> m_autoChooser;
 
     public RobotContainer() {
-        // NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
-        // NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
-        //     drivetrain,
-        //     m_limeLightSubsystem,
-        //     () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
-        //     () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
-        // ));
-        // NamedCommands.registerCommand("ShootOnMoveAuto", new ShootOnMoveAutoCommandGroup(
-        //     m_rightShooterSubsystem,
-        //     m_leftShooterSubsystem,
-        //     m_kickerSubsystem,
-        //     drivetrain,
-        //     m_limeLightSubsystem
-        // ));
-        // NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1));
-        // NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
-        // NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
-        
-        // Pose2d target = new Pose2d(drivetrain.getState().Pose.getX() + 1.0, drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation());
+        NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
+        NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
+            drivetrain,
+            m_limeLightSubsystem,
+            () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
+            () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
+        ));
+        NamedCommands.registerCommand("ShootOnMoveAuto", new ShootOnMoveAutoCommandGroup(
+            m_rightShooterSubsystem,
+            m_leftShooterSubsystem,
+            m_kickerSubsystem,
+            drivetrain,
+            m_limeLightSubsystem
+        ));
+        NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1));
+        NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
+        NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
 
-        // // m_autoChooser = AutoBuilder.buildAutoChooser("MoveBack");
-        // SmartDashboard.putData("Auto Chooser", m_autoChooser);
+        m_autoChooser = AutoBuilder.buildAutoChooser("MoveBack");
+        SmartDashboard.putData("Auto Chooser", m_autoChooser);
+        
         configureBindings();
     }
 
@@ -138,6 +139,7 @@ public class RobotContainer {
 
         joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, () -> m_limeLightSubsystem.getRPSSmartDashboard()));
         joystick.b().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
+        joystick.y().whileTrue(new DrivePIDTunerCommand(drivetrain));
         // joystick.x().onTrue(new WristCommand(m_wristSubsystem, angleDown));
         // joystick.b().onTrue(new WristCommand(m_wristSubsystem, angleUp));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 5));
@@ -170,7 +172,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // return m_autoChooser.getSelected();
-        return Commands.none();
+        return m_autoChooser.getSelected();
+        // return Commands.none();
     }
 }

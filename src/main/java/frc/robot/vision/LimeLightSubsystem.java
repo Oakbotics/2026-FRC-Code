@@ -106,7 +106,8 @@ public class LimeLightSubsystem extends SubsystemBase {
       ? LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME)
       : LimelightHelpers.getBotPoseEstimate_wpiRed(VisionConstants.LIMELIGHT_NAME);
     if (est == null) return Double.NaN;
-    return est.pose.getTranslation().getDistance(VisionConstants.hubPosition());
+    // return est.pose.getTranslation().getDistance(VisionConstants.hubPosition());
+    return drivetrain.getState().Pose.getTranslation().getDistance(VisionConstants.hubPosition());
 }
 
   private void updateVisionOdometryIfHubTagVisible() {
