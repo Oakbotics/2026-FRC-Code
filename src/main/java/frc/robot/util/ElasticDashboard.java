@@ -1,14 +1,16 @@
 package frc.robot.util;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import frc.robot.drive.CommandSwerveDrivetrain;
@@ -20,82 +22,73 @@ public class ElasticDashboard {
 
     private final CommandSwerveDrivetrain drivetrain;
     private final LimeLightSubsystem limelight;
+    private final Field2d m_field = new Field2d();
 
     public ElasticDashboard(CommandSwerveDrivetrain drivetrain, LimeLightSubsystem limelight) {
         this.drivetrain = drivetrain;
         this.limelight = limelight;
+
+        SmartDashboard.putData("Elastic/RobotField", m_field);
     }
 
     public void update() {
-
-        //health tab
+        //health
         SmartDashboard.putBoolean("Elastic/DSConnected", DriverStation.isDSAttached());
         SmartDashboard.putNumber("Elastic/BatteryVoltage", RobotController.getBatteryVoltage());
         SmartDashboard.putBoolean("Elastic/BrownedOut", RobotController.isBrownedOut());
         SmartDashboard.putNumber("Elastic/CANUtilization", RobotController.getCANStatus().percentBusUtilization * 100.0);
         SmartDashboard.putBoolean("Elastic/Enabled", DriverStation.isEnabled());
 
-        
-
-
-        //match tab
+        //match
         Pose2d pose = drivetrain.getState().Pose;
+        m_field.setRobotPose(pose); // Updates the 2D Map
+
         SmartDashboard.putNumber("Elastic/PoseX", pose.getX());
         SmartDashboard.putNumber("Elastic/PoseY", pose.getY());
         SmartDashboard.putNumber("Elastic/HeadingDeg", pose.getRotation().getDegrees());
         SmartDashboard.putString("Elastic/RobotMode", getCurrentMode());
+        
         Optional<Alliance> alliance = DriverStation.getAlliance();
-        SmartDashboard.putString("Elastic/Alliance", alliance.isPresent() ? alliance.get().name() : "UNKNOWN");
-        //we should also add hubstatus, hubactiveforus, shiftsecsleft, 
+        String allianceStr = alliance.isPresent() ? alliance.get().name() : "UNKNOWN";
+        SmartDashboard.putString("Elastic/Alliance", allianceStr);
+        
+        //direction
+        double heading = pose.getRotation().getDegrees();
+        String direction = (Math.abs(heading) < 90) ? "FACING RED" : "FACING BLUE";
+        SmartDashboard.putString("Elastic/RobotDirection", direction);
 
-
-
-
-
-        //vison tab
+        //vision
         SmartDashboard.putNumber("Elastic/DistToHub", pose.getTranslation().getDistance(VisionConstants.hubPosition()));
         int rightTagId = limelight.getRightID();
         SmartDashboard.putNumber("Elastic/LimelightTagID", rightTagId);
         SmartDashboard.putBoolean("Elastic/SeesHubTag", rightTagId != -1 && VisionConstants.HUB_TAG_IDS.contains(rightTagId));
 
         updateHubShiftInfo(alliance);
-
-        SmartDashboard.putString("Elastic/ActiveCommands",CommandScheduler.getInstance().isScheduled() ? "Commands running" : "Idle");
     }
 
+
     private void updateHubShiftInfo(Optional<Alliance> alliance) {
-        //Who won auto
         Optional<Alliance> autoWinner = HubTracker.getAutoWinner();
-        SmartDashboard.putString("Elastic/AutoWinner",
-            autoWinner.isPresent() ? autoWinner.get().name() : "NONE");
+        SmartDashboard.putString("Elastic/AutoWinner", autoWinner.isPresent() ? autoWinner.get().name() : "NONE");
 
         Optional<Shift> currentShift = HubTracker.getCurrentShift();
-        SmartDashboard.putString("Elastic/CurrentShift",
-            currentShift.isPresent() ? currentShift.get().name() : "---");
+        SmartDashboard.putString("Elastic/CurrentShift", currentShift.isPresent() ? currentShift.get().name() : "---");
 
-        //Is hub active for US right now
         boolean hubActiveForUs = alliance.isPresent() && HubTracker.isActive(alliance.get());
         SmartDashboard.putBoolean("Elastic/HubActiveForUs", hubActiveForUs);
 
-        //Seconds remaining in current shift
         var timeRemaining = HubTracker.timeRemainingInCurrentShift();
-        SmartDashboard.putNumber("Elastic/ShiftSecsLeft",
-            timeRemaining.isPresent() ? timeRemaining.get().in(Units.Seconds) : -1);
+        SmartDashboard.putNumber("Elastic/ShiftSecsLeft", timeRemaining.isPresent() ? timeRemaining.get().in(Units.Seconds) : -1);
 
-        //Next shift info
         Optional<Shift> nextShift = HubTracker.getNextShift();
-        SmartDashboard.putString("Elastic/NextShift",
-            nextShift.isPresent() ? nextShift.get().name() : "---");
+        SmartDashboard.putString("Elastic/NextShift", nextShift.isPresent() ? nextShift.get().name() : "---");
 
-        //Will hub be active for us NEXT shift
         boolean hubActiveNext = alliance.isPresent() && HubTracker.isActiveNext(alliance.get());
         SmartDashboard.putBoolean("Elastic/HubActiveNextShift", hubActiveNext);
 
-        //Seconds until next shift starts
         double matchTime = HubTracker.getMatchTime();
         if (nextShift.isPresent() && matchTime >= 0) {
-            SmartDashboard.putNumber("Elastic/SecsUntilNextShift",
-                nextShift.get().startTime - matchTime);
+            SmartDashboard.putNumber("Elastic/SecsUntilNextShift", nextShift.get().startTime - matchTime);
         } else {
             SmartDashboard.putNumber("Elastic/SecsUntilNextShift", -1);
         }
@@ -103,20 +96,12 @@ public class ElasticDashboard {
         SmartDashboard.putString("Elastic/HubStatus", buildHubStatusString(alliance, hubActiveForUs, timeRemaining, hubActiveNext));
     }
 
-    private String buildHubStatusString(
-            Optional<Alliance> alliance,
-            boolean hubActiveForUs,
-            Optional<edu.wpi.first.units.measure.Time> timeRemaining,
-            boolean hubActiveNext) {
-
+    private String buildHubStatusString(Optional<Alliance> alliance, boolean hubActiveForUs, Optional<edu.wpi.first.units.measure.Time> timeRemaining, boolean hubActiveNext) {
         if (alliance.isEmpty()) return "No alliance";
-
         double secsLeft = timeRemaining.isPresent() ? timeRemaining.get().in(Units.Seconds) : -1;
 
         if (hubActiveForUs) {
-            if (secsLeft >= 0 && secsLeft <= 5) {
-                return "HUB OURS - ENDING IN " + String.format("%.0f", secsLeft) + "s!";
-            }
+            if (secsLeft >= 0 && secsLeft <= 5) return "HUB OURS - ENDING IN " + String.format("%.0f", secsLeft) + "s!";
             return "HUB OURS" + (secsLeft >= 0 ? " (" + String.format("%.0f", secsLeft) + "s left)" : "");
         } else {
             if (hubActiveNext) {

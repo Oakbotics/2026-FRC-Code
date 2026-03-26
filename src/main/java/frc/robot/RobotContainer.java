@@ -80,29 +80,31 @@ public class RobotContainer {
     private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
     private final LEDSubsystem m_ledSubsystem = new LEDSubsystem(() -> drivetrain.getState().Pose,joystick.getHID());  
     private final ElasticDashboard elastic_dashboard = new frc.robot.util.ElasticDashboard(drivetrain, m_limeLightSubsystem);
-    // private final SendableChooser<Command> m_autoChooser;
+    private final SendableChooser<Command> m_autoChooser;
 
     public RobotContainer() {
-        // NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
-        // NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
-        //     drivetrain,
-        //     m_limeLightSubsystem,
-        //     () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
-        //     () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
-        // ));
-        // NamedCommands.registerCommand("ShootOnMoveAuto", new ShootOnMoveAutoCommandGroup(
-        //     m_rightShooterSubsystem,
-        //     m_leftShooterSubsystem,
-        //     m_kickerSubsystem,
-        //     drivetrain,
-        //     m_limeLightSubsystem
-        // ));
-        // NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1));
-        // NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
-        // NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
+        NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
+        NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
+            drivetrain,
+            m_limeLightSubsystem,
+            () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
+            () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
+        ));
+        NamedCommands.registerCommand("ShootOnMoveAuto", new ShootOnMoveAutoCommandGroup(
+            m_rightShooterSubsystem,
+            m_leftShooterSubsystem,
+            m_kickerSubsystem,
+            drivetrain,
+            m_limeLightSubsystem
+        ));
+        NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1));
+        NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
+        NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
 
-        // m_autoChooser = AutoBuilder.buildAutoChooser("MoveBack");
-        // SmartDashboard.putData("Auto Chooser", m_autoChooser);
+        m_autoChooser = AutoBuilder.buildAutoChooser();
+        m_autoChooser.setDefaultOption("MoveBack", AutoBuilder.buildAuto("MoveBack"));
+
+        SmartDashboard.putData("Auto Chooser", m_autoChooser);
         
         configureBindings();
     }
@@ -175,8 +177,8 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // return m_autoChooser.getSelected();
+        return m_autoChooser.getSelected();
         // return Commands.none();
-        return new PathPlannerAuto("MoveBack");
+        // return new PathPlannerAuto("MoveBack");
     }
 }
