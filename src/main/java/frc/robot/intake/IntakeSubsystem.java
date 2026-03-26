@@ -5,6 +5,7 @@
 package frc.robot.intake;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class IntakeSubsystem extends SubsystemBase {
 
   private final TalonFX intakeMotor;
-  private final DutyCycleOut dutyCycle = new DutyCycleOut(0); 
+  private final VoltageOut voltageOut = new VoltageOut(0); 
   private final IntakeConfigs configs;
   
   /** Creates a new ExampleSubsystem. */
@@ -23,11 +24,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void intakeFuel(double speed) {
-    intakeMotor.setControl(dutyCycle.withOutput(speed));
+    intakeMotor.setControl(voltageOut.withOutput(speed));
   }
 
   public void outakeFuel(double speed) {
-    intakeMotor.setControl(dutyCycle.withOutput(-speed));
+    intakeMotor.setControl(voltageOut.withOutput(-speed));
   }
 
   public void configureMotors() {

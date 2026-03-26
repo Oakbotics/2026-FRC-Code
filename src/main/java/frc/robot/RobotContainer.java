@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -52,7 +54,7 @@ import frc.robot.shooter.ShootOnMoveToHub;
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-    private Angle angleDown = Degrees.of(120);
+    private Angle angleDown = Degrees.of(138);
     private Angle angleUp = Degrees.of(10);
     private final LeftShooterSubsystem m_leftShooterSubsystem = new LeftShooterSubsystem();
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
@@ -78,29 +80,29 @@ public class RobotContainer {
     private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
     private final LEDSubsystem m_ledSubsystem = new LEDSubsystem(() -> drivetrain.getState().Pose,joystick.getHID());  
     private final ElasticDashboard elastic_dashboard = new frc.robot.util.ElasticDashboard(drivetrain, m_limeLightSubsystem);
-    private final SendableChooser<Command> m_autoChooser;
+    // private final SendableChooser<Command> m_autoChooser;
 
     public RobotContainer() {
-        NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
-        NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
-            drivetrain,
-            m_limeLightSubsystem,
-            () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
-            () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
-        ));
-        NamedCommands.registerCommand("ShootOnMoveAuto", new ShootOnMoveAutoCommandGroup(
-            m_rightShooterSubsystem,
-            m_leftShooterSubsystem,
-            m_kickerSubsystem,
-            drivetrain,
-            m_limeLightSubsystem
-        ));
-        NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1));
-        NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
-        NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
+        // NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
+        // NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
+        //     drivetrain,
+        //     m_limeLightSubsystem,
+        //     () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
+        //     () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
+        // ));
+        // NamedCommands.registerCommand("ShootOnMoveAuto", new ShootOnMoveAutoCommandGroup(
+        //     m_rightShooterSubsystem,
+        //     m_leftShooterSubsystem,
+        //     m_kickerSubsystem,
+        //     drivetrain,
+        //     m_limeLightSubsystem
+        // ));
+        // NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1));
+        // NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
+        // NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
 
-        m_autoChooser = AutoBuilder.buildAutoChooser("MoveBack");
-        SmartDashboard.putData("Auto Chooser", m_autoChooser);
+        // m_autoChooser = AutoBuilder.buildAutoChooser("MoveBack");
+        // SmartDashboard.putData("Auto Chooser", m_autoChooser);
         
         configureBindings();
     }
@@ -139,11 +141,12 @@ public class RobotContainer {
 
         joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, () -> m_limeLightSubsystem.getRPSSmartDashboard()));
         joystick.b().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
-        joystick.y().whileTrue(new DrivePIDTunerCommand(drivetrain));
-        // joystick.x().onTrue(new WristCommand(m_wristSubsystem, angleDown));
+        joystick.y().onTrue(new DrivePIDTunerCommand(drivetrain));
+        joystick.x().onTrue(new WristCommand(m_wristSubsystem, angleDown));
         // joystick.b().onTrue(new WristCommand(m_wristSubsystem, angleUp));
-        joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 5));
+        joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 8));
         joystick.povDown().onTrue(new ResetOdometryLimelight(drivetrain));
+        joystick.povLeft().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
 
         // Reset the field-centric heading on left bumper press.
         // joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
@@ -172,7 +175,8 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return m_autoChooser.getSelected();
+        // return m_autoChooser.getSelected();
         // return Commands.none();
+        return new PathPlannerAuto("MoveBack");
     }
 }

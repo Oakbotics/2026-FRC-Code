@@ -6,6 +6,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -34,11 +35,11 @@ public class DrivePIDTunerCommand extends Command {
         SmartDashboard.putNumber("TargetY", SmartDashboard.getNumber("TargetY", 0.0));
         SmartDashboard.putNumber("TargetDeg", SmartDashboard.getNumber("TargetDeg", 0.0));
 
-        SmartDashboard.putNumber("Drive_kP", SmartDashboard.getNumber("Drive_kP", 3.8));
+        SmartDashboard.putNumber("Drive_kP", SmartDashboard.getNumber("Drive_kP", 5.0));
         SmartDashboard.putNumber("Drive_kI", SmartDashboard.getNumber("Drive_kI", 0.0));
         SmartDashboard.putNumber("Drive_kD", SmartDashboard.getNumber("Drive_kD", 0.0));
 
-        SmartDashboard.putNumber("Heading_kP", SmartDashboard.getNumber("Heading_kP", 5.0));
+        SmartDashboard.putNumber("Heading_kP", SmartDashboard.getNumber("Heading_kP", 4.0));
         SmartDashboard.putNumber("Heading_kI", SmartDashboard.getNumber("Heading_kI", 0.0));
         SmartDashboard.putNumber("Heading_kD", SmartDashboard.getNumber("Heading_kD", 0.0));
     }
@@ -46,17 +47,13 @@ public class DrivePIDTunerCommand extends Command {
     @Override
     public void initialize() {
         xPID.setPID(
-            SmartDashboard.getNumber("Drive_kP", 3.8),
-            SmartDashboard.getNumber("Drive_kI", 0.0),
-            SmartDashboard.getNumber("Drive_kD", 0.0));
+            5.0,0.0,0.0
+        );
         yPID.setPID(
-            SmartDashboard.getNumber("Drive_kP", 3.8),
-            SmartDashboard.getNumber("Drive_kI", 0.0),
-            SmartDashboard.getNumber("Drive_kD", 0.0));
+            5.0,0.0,0.0);
         headingPID.setPID(
-            SmartDashboard.getNumber("Heading_kP", 5.0),
-            SmartDashboard.getNumber("Heading_kI", 0.0),
-            SmartDashboard.getNumber("Heading_kD", 0.0));
+        4.0,0.0,0.0
+        );
 
         headingPID.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -119,6 +116,6 @@ public class DrivePIDTunerCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return false; // runs until you release the button
+        return Math.abs(goalPose.getRotation().getDegrees() - drivetrain.getState().Pose.getRotation().getDegrees()) <= 2;
     }
 }
