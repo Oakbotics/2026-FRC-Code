@@ -90,19 +90,20 @@ public class RobotContainer {
             () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
             () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
         ));
-        NamedCommands.registerCommand("ShootOnMoveAuto", new ShootOnMoveAutoCommandGroup(
-            m_rightShooterSubsystem,
-            m_leftShooterSubsystem,
-            m_kickerSubsystem,
-            drivetrain,
-            m_limeLightSubsystem
-        ));
+        // NamedCommands.registerCommand("ShootOnMoveAuto", new ShootOnMoveAutoCommandGroup(
+        //     m_rightShooterSubsystem,
+        //     m_leftShooterSubsystem,
+        //     m_kickerSubsystem,
+        //     drivetrain,
+        //     m_limeLightSubsystem
+        // ));
         NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1));
         NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
         NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
+        NamedCommands.registerCommand("RunKickerHopper", new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
 
         m_autoChooser = AutoBuilder.buildAutoChooser();
-        m_autoChooser.setDefaultOption("MoveBack", AutoBuilder.buildAuto("MoveBack"));
+        m_autoChooser.setDefaultOption("LeftTrenchCenter2CycleAuto", AutoBuilder.buildAuto("LeftTrenchCenter2CycleAuto"));
 
         SmartDashboard.putData("Auto Chooser", m_autoChooser);
         
@@ -154,16 +155,16 @@ public class RobotContainer {
         // joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
         // joystick.rightBumper().whileTrue(new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
 
-        // joystick.rightTrigger().whileTrue(
-        //     new AlignRotationToHubOdometry(
-        //         drivetrain,
-        //         m_limeLightSubsystem,
-        //         () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
-        //         () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
-        //     )
-        // );
-
         joystick.rightTrigger().whileTrue(
+            new AlignRotationToHubOdometry(
+                drivetrain,
+                m_limeLightSubsystem,
+                () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
+                () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
+            )
+        );
+
+        joystick.leftTrigger().whileTrue(
             new ShootOnMoveToHub(
                 drivetrain, 
                 m_leftShooterSubsystem, 
