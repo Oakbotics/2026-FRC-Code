@@ -34,6 +34,7 @@ import frc.robot.hopper.HopperSubsystem;
 import frc.robot.hopper.KickerCommandGroup;
 import frc.robot.intake.IntakeCommand;
 import frc.robot.intake.IntakeSubsystem;
+import frc.robot.intake.IntakeWristCommandGroup;
 import frc.robot.led.LEDSubsystem;
 import frc.robot.util.ElasticDashboard;
 //import frc.robot.commands.IntakeCommandGroup;
@@ -170,6 +171,7 @@ public class RobotContainer {
         joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
         joystick.leftBumper().whileTrue(new WristAgitateCommandGroup(m_wristSubsystem, m_intakeSubsystem));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 10));
+        joystick.b().onTrue(new WristCommand(m_wristSubsystem, angleDown));
 
         // Reset the field-centric heading on left bumper press.
         // joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

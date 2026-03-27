@@ -21,12 +21,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "WristCommand"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "RIGHTTrenchToFuel"
