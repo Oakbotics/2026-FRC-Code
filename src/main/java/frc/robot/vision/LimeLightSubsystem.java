@@ -128,16 +128,14 @@ public class LimeLightSubsystem extends SubsystemBase {
   }
 
   public double getRPSSmartDashboard() {
-    return SmartDashboard.getNumber("Shooter RPS", 1.0);
+    return SmartDashboard.getNumber("Shooter RPS", 50.0);
   }
 
   @Override
   public void periodic() {
     updateVisionOdometryIfHubTagVisible();
     
-    SmartDashboard.putNumber("Limelight Left Pipline", m_limeLightLeftTable.getEntry("pipeline").getNumber(-1).doubleValue());
-    SmartDashboard.putNumber("Limelight Right Pipline", m_limeLightRightTable.getEntry("pipeline").getNumber(-1).doubleValue());
-
+   
     SmartDashboard.putNumber("Distance to hub meters", getDistanceToHubMeters());
   }
 

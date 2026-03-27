@@ -35,10 +35,6 @@ public class KickerCommandGroup extends Command {
         superCoderTimer.start();
     }
 
-    private void sendStateToSmartDashboard(){
-        SmartDashboard.putString("Current State", state.name());
-        SmartDashboard.putNumber("Amount of Times Jammed: ", jamCount);
-    }
 
     @Override
     public void initialize(){
@@ -46,18 +42,14 @@ public class KickerCommandGroup extends Command {
         jamCount = 0;
         superCoderTimer.stop();
         superCoderTimer.start();
-        sendStateToSmartDashboard();
+    
     }
 
     @Override
     public void execute(){
-        boolean jamDetected = superCoderJamDebouncer.calculate(m_hopperSubsystem.getStatorCurrentAmps() > ShooterConstants.hopperJamCurrentAmps);
+     //   boolean jamDetected = superCoderJamDebouncer.calculate(m_hopperSubsystem.getStatorCurrentAmps() > ShooterConstants.hopperJamCurrentAmps);
 
         //Super coder smart dahsboard stuff for super coder debugging
-        SmartDashboard.putBoolean("DoWeHaveJam?????", jamDetected);
-        SmartDashboard.putNumber("SuperKickerCurrentAMPS", m_kickerSubsystem.getStatorCurrentAmps());
-        SmartDashboard.putNumber("SuperKickerVelocityRPS", m_kickerSubsystem.getVelovcityRps());
-        SmartDashboard.putNumber("SuperHopperVelocityRPS", m_hopperSubsystem.getVelovcityRps());
 
         switch(state){
             case feeding:

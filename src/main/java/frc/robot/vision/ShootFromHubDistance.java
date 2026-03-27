@@ -62,7 +62,6 @@ public class ShootFromHubDistance extends Command {
     leftShooter.runVelocityTorqueFOC(targetRps);
     rightShooter.runVelocityTorqueFOC(targetRps);
 
-    SmartDashboard.putBoolean("HasHubTarget", hasHubTarget);
     SmartDashboard.putNumber("DistanceToHub_m", distanceM);
     SmartDashboard.putNumber("TargetRPS", targetRps);
   }

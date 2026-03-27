@@ -65,12 +65,6 @@ public class RightShooterSubsystem extends SubsystemBase {
     configureMotors();
     SignalLogger.setPath("/home/vuser/logs/");
 
-    SmartDashboard.putNumber("Right Shooter kP", ShooterConstants.rightKP);
-    SmartDashboard.putNumber("Right Shooter kI", ShooterConstants.rightKI);
-    SmartDashboard.putNumber("Right Shooter kD", ShooterConstants.rightKD);
-    SmartDashboard.putNumber("Right Shooter kS", ShooterConstants.rightKS);
-    SmartDashboard.putNumber("Right Shooter kV", ShooterConstants.rightKV);
-    
   }
   // 44 inch from hub
   public void configureMotors() {
@@ -137,19 +131,6 @@ public class RightShooterSubsystem extends SubsystemBase {
     printRightRPM();
   }
 
-  public void printVoltageOutput() {
-    double motorVoltage = shooterMotorThree.getMotorVoltage().getValueAsDouble();
-    SmartDashboard.putNumber("Motor Voltage", motorVoltage);
-  }
-
-  public void resetVoltageOutput() {
-    SmartDashboard.putNumber("Motor Voltage", 0);
-  }
-
-  public void printCurrentLimits() {
-    SmartDashboard.putNumber("Shooter Stator Current", shooterMotorThree.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter Supply Current", shooterMotorThree.getSupplyCurrent().getValueAsDouble());
-  }
 
   public void printRightRPM() {
     double motorRPS = shooterMotorThree.getVelocity().getValueAsDouble();
@@ -159,26 +140,7 @@ public class RightShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double newKP = SmartDashboard.getNumber("Right Shooter kP", ShooterConstants.rightKP);
-    double newKI = SmartDashboard.getNumber("Right Shooter kI", ShooterConstants.rightKI);
-    double newKD = SmartDashboard.getNumber("Right Shooter kD", ShooterConstants.rightKD);
-    double newKS = SmartDashboard.getNumber("Right Shooter kS", ShooterConstants.rightKS);
-    double newKV = SmartDashboard.getNumber("Right Shooter kV", ShooterConstants.rightKV);
-
-    if (newKP != lastKP || newKI != lastKI || newKD != lastKD || newKS != lastKS || newKV != lastKV){
-      ShooterConstants.rightKP = newKP;
-      ShooterConstants.rightKI = newKI;
-      ShooterConstants.rightKD = newKD;
-      ShooterConstants.rightKS = newKS;
-      ShooterConstants.rightKV = newKV;
-      configureMotors();
-      lastKP = newKP;
-      lastKI = newKI;
-      lastKD = newKD;
-      lastKS = newKS;
-      lastKV = newKV;
-    }
-    
+   
   }
 
   @Override

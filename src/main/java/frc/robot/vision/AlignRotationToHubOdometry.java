@@ -107,9 +107,6 @@ public class AlignRotationToHubOdometry extends Command {
         .withRotationalRate(omega)
     );
 
-    SmartDashboard.putBoolean("TV", LimelightHelpers.getTV(VisionConstants.LIMELIGHT_NAME));
-    SmartDashboard.putNumber("OmegaCmd", omega);
-    SmartDashboard.putNumber("DesiredDeg", Math.toDegrees(desiredHeading));
   }
 
   @Override

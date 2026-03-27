@@ -64,13 +64,7 @@ public class LeftShooterSubsystem extends SubsystemBase {
       this));
     configureMotors();
     SignalLogger.setPath("/home/vuser/logs/");
-    
-
-    SmartDashboard.putNumber("Left Shooter kP", ShooterConstants.leftKP);
-    SmartDashboard.putNumber("Left Shooter kI", ShooterConstants.leftKI);
-    SmartDashboard.putNumber("Left Shooter kD", ShooterConstants.leftKD);
-    SmartDashboard.putNumber("Left Shooter kS", ShooterConstants.leftKS);
-    SmartDashboard.putNumber("Left Shooter kV", ShooterConstants.leftKV);
+  
     
     
   }
@@ -143,43 +137,17 @@ public class LeftShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Motor Voltage", motorVoltage);
   }
 
-  public void resetVoltageOutput() {
-    SmartDashboard.putNumber("Motor Voltage", 0);
-  }
 
-  public void printCurrentLimits() {
-    SmartDashboard.putNumber("Shooter Stator Current", shooterMotorOne.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter Supply Current", shooterMotorOne.getSupplyCurrent().getValueAsDouble());
-  }
 
   public void printLeftRPM() {
     double motorRPS = shooterMotorOne.getVelocity().getValueAsDouble();
     double shooterRPM = motorRPS * 60.0;
-    SmartDashboard.putNumber("Shooter Motor RPM", shooterRPM);
+    SmartDashboard.putNumber("Left Shooter Motor RPM", shooterRPM);
   }
 
   @Override
   public void periodic() {
-    double newKP = SmartDashboard.getNumber("Left Shooter kP", ShooterConstants.leftKP);
-    double newKI = SmartDashboard.getNumber("Left Shooter kI", ShooterConstants.leftKI);
-    double newKD = SmartDashboard.getNumber("Left Shooter kD", ShooterConstants.leftKD);
-    double newKS = SmartDashboard.getNumber("Left Shooter kS", ShooterConstants.leftKS);
-    double newKV = SmartDashboard.getNumber("Left Shooter kV", ShooterConstants.leftKV);
-
-    if (newKP != lastKP || newKI != lastKI || newKD != lastKD || newKS != lastKS || newKV != lastKV){
-      ShooterConstants.leftKP = newKP;
-      ShooterConstants.leftKI = newKI;
-      ShooterConstants.leftKD = newKD;
-      ShooterConstants.leftKS = newKS;
-      ShooterConstants.leftKV = newKV;
-      configureMotors();
-      lastKP = newKP;
-      lastKI = newKI;
-      lastKD = newKD;
-      lastKS = newKS;
-      lastKV = newKV;
-    }
-    
+   
   }
 
   @Override

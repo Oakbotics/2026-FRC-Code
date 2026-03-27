@@ -77,16 +77,13 @@ public class WristSubsystem extends SubsystemBase {
     double rotations = newPos.in(Rotations);
     
     wristMotor.setControl(setpointRequest.withPosition(rotations));
-    SmartDashboard.putNumber("Desired Angle: ", newPos.magnitude());
-    SmartDashboard.putNumber("Desired Voltage: ", setpointRequest.Position);
-    SmartDashboard.putNumber("Desired Rotations: ", rotations);
+   
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Wrist Position (deg)", getPosition().in(Degrees));
-    SmartDashboard.putNumber("Wrist Voltage", getVolts());
-    SmartDashboard.putNumber("Wrist Current", wristMotor.getStatorCurrent().getValueAsDouble());
+
   }
 
   @Override
