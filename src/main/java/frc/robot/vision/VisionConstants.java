@@ -35,9 +35,9 @@ public final class VisionConstants {
   }
 
   /** Heading PID (rad, rad/s) */
-  public static final double HEADING_kP = 6.0;
+  public static final double HEADING_kP = 4.0;
   public static final double HEADING_kI = 0.0;
-  public static final double HEADING_kD = 0.35;
+  public static final double HEADING_kD = 0.0;
 
   /** Limit integrator so you don’t “wind up” while driver is moving */
   public static final double HEADING_I_MIN = -0.25;

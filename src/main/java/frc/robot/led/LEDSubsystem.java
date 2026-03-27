@@ -30,8 +30,7 @@ public class LEDSubsystem extends SubsystemBase {
     private final Supplier<Pose2d> poseSupplier;
     private final XboxController controller;
 
-    private static final double HUB_X = VisionConstants.hubPosition().getX();
-    private static final double HUB_Y = VisionConstants.hubPosition().getY();
+    
 
     public static final double SHOOT_LINE_DISTANCE = 4.0;
 
@@ -62,6 +61,9 @@ public class LEDSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        
+        double HUB_X = VisionConstants.hubPosition().getX();
+        double HUB_Y = VisionConstants.hubPosition().getY();
 
         Optional<Alliance> allianceOptional = DriverStation.getAlliance();
 

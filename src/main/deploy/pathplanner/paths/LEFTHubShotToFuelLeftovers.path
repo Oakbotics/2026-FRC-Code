@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.488,
-        "y": 7.395
+        "x": 2.205,
+        "y": 6.854
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.909022727268168,
-        "y": 7.766068181817712
+        "x": 2.321395149786019,
+        "y": 7.136398002853067
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.9607954545408965,
-        "y": 5.395499999999529
+        "x": 4.215819277108434,
+        "y": 7.553722891566265
       },
       "prevControl": {
-        "x": 8.060440482275759,
-        "y": 6.805860392554496
+        "x": 3.626593410707097,
+        "y": 7.6040226606493055
       },
       "nextControl": {
-        "x": 7.826806818177259,
-        "y": 3.4990454545449836
+        "x": 6.0079638554216865,
+        "y": 7.400734939759036
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.144336661911555,
+        "y": 5.400028530670471
+      },
+      "prevControl": {
+        "x": 7.243981689646417,
+        "y": 6.810388923225438
+      },
+      "nextControl": {
+        "x": 7.010348025547917,
+        "y": 3.503573985215926
       },
       "isLocked": false,
       "linkedName": null
@@ -37,7 +53,7 @@
       },
       "prevControl": {
         "x": 5.713909090904532,
-        "y": 3.457818181817712
+        "y": 3.457818181817716
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,11 +62,19 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.9842767295597664,
+      "waypointRelativePos": 0.3709543568464779,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.1897654584221753,
+      "rotationDegrees": -1.604386426298361
+    },
+    {
+      "waypointRelativePos": 1.9500000000000002,
       "rotationDegrees": -90.0
     },
     {
-      "waypointRelativePos": 1.7547169811320877,
+      "waypointRelativePos": 2.7547169811320877,
       "rotationDegrees": 105.17012600570816
     }
   ],
@@ -73,7 +97,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

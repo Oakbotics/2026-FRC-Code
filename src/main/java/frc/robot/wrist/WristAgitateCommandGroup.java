@@ -10,19 +10,26 @@ import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.intake.IntakeCommand;
+import frc.robot.intake.IntakeSubsystem;
 
 public class WristAgitateCommandGroup extends SequentialCommandGroup {
-    Angle angleUp = Degrees.of(100);
-    Angle angleDown = Degrees.of(140);
+    Angle angleUp = Degrees.of(80);
+    Angle angleDown = Degrees.of(138);
     
-    public WristAgitateCommandGroup(WristSubsystem m_wristSubsystem) {
+    public WristAgitateCommandGroup(WristSubsystem m_wristSubsystem, IntakeSubsystem m_intakeSubsystem) {
         addCommands(
             new RepeatCommand(
-                new SequentialCommandGroup(
-                    new WristCommand(m_wristSubsystem, angleUp),
-                    new WaitCommand(0.3),
-                    new WristCommand(m_wristSubsystem, angleDown),
-                    new WaitCommand(0.3)
+                new ParallelCommandGroup(
+            
+                    new SequentialCommandGroup(
+                        new WristCommand(m_wristSubsystem, angleUp),
+                        new WaitCommand(0.2),
+                        new WristCommand(m_wristSubsystem, angleDown),
+                        new WaitCommand(0.2)
+                    ),
+
+                    new IntakeCommand(m_intakeSubsystem, 10)
                 )
             )
         );
