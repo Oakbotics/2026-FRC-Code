@@ -37,27 +37,17 @@ public class ShootFromHubDistance extends Command {
 
   @Override
   public void execute() {
-    boolean hasHubTarget = limelight.hasHubTarget();
+    // boolean hasHubTarget = limelight.hasHubTarget();
 
-    double distanceM = Double.NaN;
+    double distanceM = 1.0;
     double targetRps = lastTargetRps;
 
-    if (hasHubTarget) {
-      sinceLastVision.reset();
-      sinceLastVision.start();
+    distanceM = limelight.getDistanceToHubMeters();
 
-      distanceM = limelight.getDistanceToHubMeters();
+    double lookupRps = ShooterConstants.DISTANCE_M_TO_RPS.get(distanceM);
+    targetRps = MathUtil.clamp(lookupRps, ShooterConstants.MIN_TARGET_RPS, ShooterConstants.MAX_TARGET_RPS);
 
-      double lookupRps = ShooterConstants.DISTANCE_M_TO_RPS.get(distanceM);
-      targetRps = MathUtil.clamp(lookupRps, ShooterConstants.MIN_TARGET_RPS, ShooterConstants.MAX_TARGET_RPS);
-
-      lastTargetRps = targetRps;
-    } else {
-      if (sinceLastVision.get() > ShooterConstants.VISION_HOLD_LAST_SEC) {
-        targetRps = 0.0;
-        lastTargetRps = 0.0;
-      }
-    }
+    lastTargetRps = targetRps;
 
     leftShooter.runVelocityTorqueFOC(targetRps);
     rightShooter.runVelocityTorqueFOC(targetRps);
