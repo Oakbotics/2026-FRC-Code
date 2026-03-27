@@ -42,6 +42,7 @@ import frc.robot.vision.AlignRotationToHubOdometry;
 import frc.robot.vision.LimeLightSubsystem;
 import frc.robot.vision.ResetOdometryLimelight;
 import frc.robot.vision.ShootFromHubDistance;
+import frc.robot.wrist.WristAgitateCommandGroup;
 import frc.robot.wrist.WristCommand;
 import frc.robot.wrist.WristSubsystem;
 import frc.robot.shooter.KickerCommand;
@@ -97,7 +98,7 @@ public class RobotContainer {
         //     drivetrain,
         //     m_limeLightSubsystem
         // ));
-        NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1));
+        NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1).withTimeout(4));
         NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
         NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
         NamedCommands.registerCommand("RunKickerHopper", new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
@@ -142,12 +143,13 @@ public class RobotContainer {
         // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, () -> m_limeLightSubsystem.getRPSSmartDashboard()));
+        // joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, () -> m_limeLightSubsystem.getRPSSmartDashboard()));
+        joystick.a().whileTrue(new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
         joystick.b().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
         joystick.y().onTrue(new DrivePIDTunerCommand(drivetrain));
         joystick.x().onTrue(new WristCommand(m_wristSubsystem, angleDown));
         // joystick.b().onTrue(new WristCommand(m_wristSubsystem, angleUp));
-        joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 8));
+        joystick.rightBumper().whileTrue(new IntakeCommand(m_intakeSubsystem, 10));
         joystick.povDown().onTrue(new ResetOdometryLimelight(drivetrain));
         joystick.povLeft().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
 
@@ -173,6 +175,8 @@ public class RobotContainer {
                 () -> drivetrain.getState().Speeds.vyMetersPerSecond
             )
         );
+
+        joystick.leftBumper().whileTrue(new WristAgitateCommandGroup(m_wristSubsystem, m_intakeSubsystem));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
