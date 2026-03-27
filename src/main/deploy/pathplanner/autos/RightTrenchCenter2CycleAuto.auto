@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LEFTTrenchToFuel"
+                  "pathName": "RIGHTTrenchToFuel"
                 }
               },
               {
@@ -44,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LEFTFuelToHubShot"
+            "pathName": "RIGHTFuelToHubShot"
           }
         },
         {
@@ -110,7 +110,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LEFTHubShotToFuelLeftovers"
+                  "pathName": "RIGHTHubShotToFuelLeftovers"
                 }
               },
               {
@@ -125,7 +125,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LEFTFuelLeftoversToHubShot"
+            "pathName": "RIGHTFuelLeftoversToHubShot"
           }
         },
         {

@@ -81,7 +81,7 @@ public class ShootOnMoveToHub extends Command {
 
     Pose2d robotPose = drivetrain.getState().Pose;
 
-    Translation2d fieldVelMps = new Translation2d(vx, vy);
+    Translation2d fieldVelMps = new Translation2d(drivetrain.getState().Speeds.vxMetersPerSecond, drivetrain.getState().Speeds.vyMetersPerSecond);
 
     Solution sol =
       HubShotCalculator.calculate(

@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -98,7 +99,7 @@ public class RobotContainer {
         //     drivetrain,
         //     m_limeLightSubsystem
         // ));
-        NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 1).withTimeout(4));
+        NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 10).withTimeout(4));
         NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
         NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
         NamedCommands.registerCommand("RunKickerHopper", new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
@@ -144,39 +145,57 @@ public class RobotContainer {
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, () -> m_limeLightSubsystem.getRPSSmartDashboard()));
-        joystick.a().whileTrue(new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
-        joystick.b().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
-        joystick.y().onTrue(new DrivePIDTunerCommand(drivetrain));
-        joystick.x().onTrue(new WristCommand(m_wristSubsystem, angleDown));
-        // joystick.b().onTrue(new WristCommand(m_wristSubsystem, angleUp));
-        joystick.rightBumper().whileTrue(new IntakeCommand(m_intakeSubsystem, 10));
-        joystick.povDown().onTrue(new ResetOdometryLimelight(drivetrain));
-        joystick.povLeft().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+        joystick.rightTrigger().whileTrue(
+            new ParallelCommandGroup(
+
+                new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
+                new AlignRotationToHubOdometry(
+                    drivetrain,
+                    m_limeLightSubsystem,
+                    () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
+                    () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
+                )
+            )
+        );
+
+        joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
+        joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
+        joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+        joystick.leftBumper().whileTrue(new WristAgitateCommandGroup(m_wristSubsystem, m_intakeSubsystem));
+        joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 10));
+
+        joystick.povRight().whileTrue(
+            drivetrain.applyRequest(() ->
+                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * 0.5) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * 0.5) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * 0.5) // Drive counterclockwise with negative X (left)
+            )
+        );
 
         // Reset the field-centric heading on left bumper press.
         // joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
         // joystick.rightBumper().whileTrue(new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
 
-        joystick.rightTrigger().whileTrue(
-            new AlignRotationToHubOdometry(
-                drivetrain,
-                m_limeLightSubsystem,
-                () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
-                () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
-            )
-        );
+        // joystick.rightTrigger().whileTrue(
+        //     new AlignRotationToHubOdometry(
+        //         drivetrain,
+        //         m_limeLightSubsystem,
+        //         () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
+        //         () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
+        //     )
+        // );
 
-        joystick.leftTrigger().whileTrue(
-            new ShootOnMoveToHub(
-                drivetrain, 
-                m_leftShooterSubsystem, 
-                m_rightShooterSubsystem, 
-                () -> drivetrain.getState().Speeds.vxMetersPerSecond,
-                () -> drivetrain.getState().Speeds.vyMetersPerSecond
-            )
-        );
+        // joystick.leftTrigger().whileTrue(
+        //     new ShootOnMoveToHub(
+        //         drivetrain, 
+        //         m_leftShooterSubsystem, 
+        //         m_rightShooterSubsystem, 
+        //         () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
+        //         () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
+        //     )
+        // );
 
-        joystick.leftBumper().whileTrue(new WristAgitateCommandGroup(m_wristSubsystem, m_intakeSubsystem));
+        // joystick.leftBumper().whileTrue(new WristAgitateCommandGroup(m_wristSubsystem, m_intakeSubsystem));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
