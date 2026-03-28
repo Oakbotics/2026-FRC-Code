@@ -35,8 +35,8 @@ import frc.robot.hopper.KickerCommandGroup;
 import frc.robot.intake.IntakeCommand;
 import frc.robot.intake.IntakeSubsystem;
 import frc.robot.intake.IntakeWristCommandGroup;
-import frc.robot.led.LEDSubsystem;
-import frc.robot.util.ElasticDashboard;
+// import frc.robot.led.LEDSubsystem;
+// import frc.robot.util.ElasticDashboard;
 //import frc.robot.commands.IntakeCommandGroup;
 import frc.robot.drive.CommandSwerveDrivetrain;
 import frc.robot.drive.DrivePIDTunerCommand;
@@ -82,8 +82,8 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
-    private final LEDSubsystem m_ledSubsystem = new LEDSubsystem(() -> drivetrain.getState().Pose,joystick.getHID());  
-    private final ElasticDashboard elastic_dashboard = new frc.robot.util.ElasticDashboard(drivetrain, m_limeLightSubsystem);
+    // private final LEDSubsystem m_ledSubsystem = new LEDSubsystem(() -> drivetrain.getState().Pose,joystick.getHID());  
+    // private final ElasticDashboard elastic_dashboard = new frc.robot.util.ElasticDashboard(drivetrain, m_limeLightSubsystem);
     private final SendableChooser<Command> m_autoChooser;
 
     public RobotContainer() {
@@ -201,9 +201,9 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
     }
     
-    public void updateDashboard() {
-        elastic_dashboard.update();
-    }
+    // public void updateDashboard() {
+    //     elastic_dashboard.update();
+    // }
 
     public Command getAutonomousCommand() {
         return m_autoChooser.getSelected();

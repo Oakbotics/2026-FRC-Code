@@ -5,6 +5,7 @@
 
 package frc.robot.vision;
 
+import java.lang.StackWalker.Option;
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -98,18 +99,24 @@ public class LimeLightSubsystem extends SubsystemBase {
     return frc.robot.vision.VisionConstants.HUB_TAG_IDS.contains(tid);
   }
 
-  public double getDistanceToHubMeters() {
-    return drivetrain.getState().Pose.getTranslation().getDistance(VisionConstants.hubPosition());
+  public double getDistanceToHubMeters(Optional<Alliance> alliance) {
+    return drivetrain.getState().Pose.getTranslation().getDistance(VisionConstants.hubPosition(alliance));
 }
 
   private void updateVisionOdometryIfHubTagVisible() {
+    Optional<Alliance> alliance = DriverStation.getAlliance();
     int tagID = (int) LimelightHelpers.getFiducialID(VisionConstants.LIMELIGHT_NAME);
     if (tagID == -1) {
       return;
     }
 
-    PoseEstimate est =
-        LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME);
+    PoseEstimate est = null;
+    if(alliance.isPresent() && alliance.get() == Alliance.Blue){
+        est = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME);
+    } else if (alliance.isPresent() && alliance.get() == Alliance.Red){
+        est = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME);
+        est.pose = new Pose2d(est.pose.getX(), est.pose.getY(), Rotation2d.fromDegrees(est.pose.getRotation().getDegrees() + 180));
+    }
 
     if (est != null) {
       drivetrain.addVisionMeasurement(est.pose, est.timestampSeconds);
@@ -125,7 +132,7 @@ public class LimeLightSubsystem extends SubsystemBase {
     updateVisionOdometryIfHubTagVisible();
     
    
-    SmartDashboard.putNumber("Distance to hub meters", getDistanceToHubMeters());
+    SmartDashboard.putNumber("Distance to hub meters", getDistanceToHubMeters(DriverStation.getAlliance()));
   }
 
 

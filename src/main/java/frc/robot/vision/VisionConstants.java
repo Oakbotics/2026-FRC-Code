@@ -6,6 +6,7 @@ import java.util.Set;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public final class VisionConstants {
 
@@ -25,12 +26,14 @@ public final class VisionConstants {
       24, 25, 26, 27
   );
 
-  public static Translation2d hubPosition() {
-    final Optional<Alliance> alliance = DriverStation.getAlliance();
+  public static Translation2d hubPosition(Optional<Alliance> alliance) {
+    // final Optional<Alliance> alliance = DriverStation.getAlliance();
 
     if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
+      SmartDashboard.putString("Alliance", "blue");
       return new Translation2d(4.625467, 4.034663);
     }
+    SmartDashboard.putString("Alliance", "red");
     return new Translation2d(11.915521, 4.034663);
   }
 

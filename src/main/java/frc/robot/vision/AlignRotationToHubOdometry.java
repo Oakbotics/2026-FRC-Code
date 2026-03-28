@@ -66,7 +66,7 @@ public class AlignRotationToHubOdometry extends Command {
 
   @Override
   public void execute() {
-
+    Optional<Alliance> alliance = DriverStation.getAlliance(); 
     
     Pose2d robotPose = drivetrain.getState().Pose;
     currentHeading = robotPose.getRotation().getRadians();
@@ -74,8 +74,8 @@ public class AlignRotationToHubOdometry extends Command {
     final double vx = driverVx.getAsDouble();
     final double vy = driverVy.getAsDouble();
 
-    double distanceX = VisionConstants.hubPosition().getX() - robotPose.getX();
-    double distanceY = VisionConstants.hubPosition().getY() - robotPose.getY();
+    double distanceX = VisionConstants.hubPosition(alliance).getX() - robotPose.getX();
+    double distanceY = VisionConstants.hubPosition(alliance).getY() - robotPose.getY();
 
     desiredHeading = Math.atan2(distanceY, distanceX);
     double omega = headingPID.calculate(currentHeading, desiredHeading);

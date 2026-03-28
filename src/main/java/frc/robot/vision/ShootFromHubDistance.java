@@ -1,6 +1,10 @@
 package frc.robot.vision;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,12 +41,13 @@ public class ShootFromHubDistance extends Command {
 
   @Override
   public void execute() {
+    Optional<Alliance> alliance = DriverStation.getAlliance(); 
     // boolean hasHubTarget = limelight.hasHubTarget();
 
     double distanceM = 1.0;
     double targetRps = lastTargetRps;
 
-    distanceM = limelight.getDistanceToHubMeters();
+    distanceM = limelight.getDistanceToHubMeters(alliance);
 
     double lookupRps = ShooterConstants.DISTANCE_M_TO_RPS.get(distanceM);
     targetRps = MathUtil.clamp(lookupRps, ShooterConstants.MIN_TARGET_RPS, ShooterConstants.MAX_TARGET_RPS);
