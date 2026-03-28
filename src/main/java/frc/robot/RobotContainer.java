@@ -32,6 +32,7 @@ import frc.robot.drive.TunerConstants;
 import frc.robot.hopper.HopperCommand;
 import frc.robot.hopper.HopperSubsystem;
 import frc.robot.hopper.KickerCommandGroup;
+import frc.robot.intake.IntakeAutoStartCommandGroup;
 import frc.robot.intake.IntakeCommand;
 import frc.robot.intake.IntakeSubsystem;
 import frc.robot.intake.IntakeWristCommandGroup;
@@ -102,6 +103,7 @@ public class RobotContainer {
         //     m_limeLightSubsystem
         // ));
         NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 10).withTimeout(4));
+        NamedCommands.registerCommand("STARTIntakeCommand", new IntakeAutoStartCommandGroup(m_intakeSubsystem, m_wristSubsystem).withTimeout(4));
         NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
         NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
         NamedCommands.registerCommand("RunKickerHopper", new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
