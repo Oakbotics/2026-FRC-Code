@@ -113,7 +113,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("RunKickerHopper", new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
 
         m_autoChooser = AutoBuilder.buildAutoChooser();
-        m_autoChooser.setDefaultOption("LeftTrenchCenter2CycleAuto", AutoBuilder.buildAuto("LeftTrenchCenter2CycleAuto"));
+        m_autoChooser.setDefaultOption("RightTrenchCenter2CycleAuto", AutoBuilder.buildAuto("RightTrenchCenter2CycleAuto"));
 
         SmartDashboard.putData("Auto Chooser", m_autoChooser);
         
@@ -163,7 +163,7 @@ public class RobotContainer {
                 new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
                 new SequentialCommandGroup(
                     new WaitCommand(3),
-                    new WristCommand(m_wristSubsystem, angleDown)
+                    new WristCommand(m_wristSubsystem, angleUp)
                 ),
                 new AlignRotationToHubOdometry(
                     drivetrain,
