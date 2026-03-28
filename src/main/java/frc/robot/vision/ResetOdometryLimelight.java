@@ -19,7 +19,6 @@ public class ResetOdometryLimelight extends Command {
 
   private final CommandSwerveDrivetrain drivetrain;
 
-  final Optional<Alliance> alliance = DriverStation.getAlliance();
   PoseEstimate estimatePoseMT1;
 
   public ResetOdometryLimelight(CommandSwerveDrivetrain drivetrain ) {
@@ -33,13 +32,9 @@ public class ResetOdometryLimelight extends Command {
   public void initialize() {
     int tagID = (int) LimelightHelpers.getFiducialID(VisionConstants.LIMELIGHT_NAME);
     
-    if(alliance.isPresent() && alliance.get() == Alliance.Blue) {
-      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME);
-    } else {
-      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiRed(VisionConstants.LIMELIGHT_NAME);
-    }
+    estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME);
 
-    if (tagID != -1) {
+    if (tagID != -1 && estimatePoseMT1 != null) {
       drivetrain.resetOdometry(estimatePoseMT1.pose);
     }
   }

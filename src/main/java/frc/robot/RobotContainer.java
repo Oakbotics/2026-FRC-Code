@@ -200,6 +200,10 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
+    
+    public void updateDashboard() {
+        elastic_dashboard.update();
+    }
 
     public Command getAutonomousCommand() {
         return m_autoChooser.getSelected();

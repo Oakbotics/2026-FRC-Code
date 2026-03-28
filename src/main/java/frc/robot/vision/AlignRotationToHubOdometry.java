@@ -27,7 +27,8 @@ public class AlignRotationToHubOdometry extends Command {
 
   private final CommandSwerveDrivetrain drivetrain;
   private final LimeLightSubsystem limelight;
-  final Optional<Alliance> alliance = DriverStation.getAlliance();
+  // FIX: Removed stale field-level alliance. It was captured at construction
+  // time (during robotInit) before the DriverStation knows the real alliance.
 
   private final DoubleSupplier driverVx;
   private final DoubleSupplier driverVy;
@@ -62,25 +63,12 @@ public class AlignRotationToHubOdometry extends Command {
   
   @Override
   public void initialize() {
-    final Optional<Alliance> alliance = DriverStation.getAlliance();
-    
     headingPID.reset();
   }
 
   @Override
   public void execute() {
-     int tagID = (int) LimelightHelpers.getFiducialID(VisionConstants.LIMELIGHT_NAME);
-    
-    if(alliance.isPresent() && alliance.get() == Alliance.Blue) {
-      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME);
-    } else {
-      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiRed(VisionConstants.LIMELIGHT_NAME);
-    }
 
-    if (tagID != -1 && VisionConstants.HUB_TAG_IDS.contains(tagID)) {
-      // drivetrain.resetOdometry(new Pose2d(estimatePoseMT2.pose.getX(), estimatePoseMT2.pose.getY(), estimateRotMT1));
-      drivetrain.addVisionMeasurement(estimatePoseMT1.pose, estimatePoseMT1.timestampSeconds);
-    }
     
     Pose2d robotPose = drivetrain.getState().Pose;
     currentHeading = robotPose.getRotation().getRadians();

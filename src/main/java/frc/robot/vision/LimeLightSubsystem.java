@@ -5,7 +5,6 @@
 
 package frc.robot.vision;
 
-import java.security.AllPermission;
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -100,13 +99,6 @@ public class LimeLightSubsystem extends SubsystemBase {
   }
 
   public double getDistanceToHubMeters() {
-    // Optional<Alliance> alliance = DriverStation.getAlliance();
-
-    // PoseEstimate est = (alliance.isPresent() && alliance.get() == Alliance.Blue)
-    //   ? LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME)
-    //   : LimelightHelpers.getBotPoseEstimate_wpiRed(VisionConstants.LIMELIGHT_NAME);
-    // if (est == null) return Double.NaN;
-    // return est.pose.getTranslation().getDistance(VisionConstants.hubPosition());
     return drivetrain.getState().Pose.getTranslation().getDistance(VisionConstants.hubPosition());
 }
 
@@ -116,11 +108,8 @@ public class LimeLightSubsystem extends SubsystemBase {
       return;
     }
 
-    Optional<Alliance> alliance = DriverStation.getAlliance();
     PoseEstimate est =
-        (alliance.isPresent() && alliance.get() == Alliance.Blue)
-            ? LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME)
-            : LimelightHelpers.getBotPoseEstimate_wpiRed(VisionConstants.LIMELIGHT_NAME);
+        LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME);
 
     if (est != null) {
       drivetrain.addVisionMeasurement(est.pose, est.timestampSeconds);
