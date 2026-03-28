@@ -35,6 +35,7 @@ import frc.robot.hopper.KickerCommandGroup;
 import frc.robot.intake.IntakeCommand;
 import frc.robot.intake.IntakeSubsystem;
 import frc.robot.intake.IntakeWristCommandGroup;
+import frc.robot.drive.AlignToTrench;
 // import frc.robot.led.LEDSubsystem;
 // import frc.robot.util.ElasticDashboard;
 //import frc.robot.commands.IntakeCommandGroup;
@@ -85,6 +86,7 @@ public class RobotContainer {
     // private final LEDSubsystem m_ledSubsystem = new LEDSubsystem(() -> drivetrain.getState().Pose,joystick.getHID());  
     // private final ElasticDashboard elastic_dashboard = new frc.robot.util.ElasticDashboard(drivetrain, m_limeLightSubsystem);
     private final SendableChooser<Command> m_autoChooser;
+    double speedMultiplier;
 
     public RobotContainer() {
         NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
@@ -122,7 +124,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> {
 
                 boolean isPressed = joystick.leftStick().getAsBoolean();
-                double speedMultiplier = isPressed ? 0.3 : 0.8; 
+                speedMultiplier = isPressed ? 0.3 : 0.8; 
                 
                 return drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * speedMultiplier) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * speedMultiplier) // Drive left with negative X (left)
@@ -173,6 +175,7 @@ public class RobotContainer {
         joystick.leftBumper().whileTrue(new WristAgitateCommandGroup(m_wristSubsystem, m_intakeSubsystem));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 10));
         joystick.b().onTrue(new WristCommand(m_wristSubsystem, angleDown));
+        joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
 
         // Reset the field-centric heading on left bumper press.
         // joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
