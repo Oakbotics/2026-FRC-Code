@@ -28,8 +28,8 @@ public class AlignToTrench extends Command {
 
   private Pose2d blueLeftTrenchPosition = new Pose2d(0.0, 7.436, Rotation2d.fromDegrees(0));
   private Pose2d blueRightTrenchPosition = new Pose2d(0, 0.645, Rotation2d.fromDegrees(0));
-  private Pose2d redLeftTrenchPosition = new Pose2d(0, 0.645, Rotation2d.fromDegrees(-180));
-  private Pose2d redRightTrenchPosition = new Pose2d(0, 7.436, Rotation2d.fromDegrees(-180));
+  private Pose2d redLeftTrenchPosition = new Pose2d(0, 0.645, Rotation2d.fromDegrees(180));
+  private Pose2d redRightTrenchPosition = new Pose2d(0, 7.436, Rotation2d.fromDegrees(180));
 
   private Pose2d trenchPos;
   Optional<Alliance> alliance;
