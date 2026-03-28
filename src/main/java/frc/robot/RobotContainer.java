@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -60,7 +62,7 @@ public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     private Angle angleDown = Degrees.of(138);
-    private Angle angleUp = Degrees.of(10);
+    private Angle angleUp = Degrees.of(90);
     boolean isPressed;
     private final LeftShooterSubsystem m_leftShooterSubsystem = new LeftShooterSubsystem();
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
@@ -111,7 +113,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("RunKickerHopper", new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
 
         m_autoChooser = AutoBuilder.buildAutoChooser();
-        m_autoChooser.setDefaultOption("BackAuto", AutoBuilder.buildAuto("BackAuto"));
+        m_autoChooser.setDefaultOption("LeftTrenchCenter2CycleAuto", AutoBuilder.buildAuto("LeftTrenchCenter2CycleAuto"));
 
         SmartDashboard.putData("Auto Chooser", m_autoChooser);
         
@@ -125,7 +127,7 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
 
-                boolean isPressed = joystick.leftStick().getAsBoolean();
+                boolean isPressed = joystick.leftBumper().getAsBoolean();
                 speedMultiplier = isPressed ? 0.3 : 0.8; 
                 
                 return drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * speedMultiplier) // Drive forward with negative Y (forward)
@@ -159,6 +161,10 @@ public class RobotContainer {
             new ParallelCommandGroup(
 
                 new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
+                new SequentialCommandGroup(
+                    new WaitCommand(3),
+                    new WristCommand(m_wristSubsystem, angleDown)
+                ),
                 new AlignRotationToHubOdometry(
                     drivetrain,
                     m_limeLightSubsystem,
@@ -174,7 +180,7 @@ public class RobotContainer {
         joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
         joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
         joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
-        joystick.leftBumper().whileTrue(new WristAgitateCommandGroup(m_wristSubsystem, m_intakeSubsystem));
+        joystick.y().whileTrue(new WristAgitateCommandGroup(m_wristSubsystem, m_intakeSubsystem));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 10));
         joystick.b().onTrue(new WristCommand(m_wristSubsystem, angleDown));
         joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
