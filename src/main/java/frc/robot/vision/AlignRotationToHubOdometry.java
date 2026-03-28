@@ -27,8 +27,6 @@ public class AlignRotationToHubOdometry extends Command {
 
   private final CommandSwerveDrivetrain drivetrain;
   private final LimeLightSubsystem limelight;
-  // FIX: Removed stale field-level alliance. It was captured at construction
-  // time (during robotInit) before the DriverStation knows the real alliance.
 
   private final DoubleSupplier driverVx;
   private final DoubleSupplier driverVy;
