@@ -22,6 +22,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.WristSubsystem;
+import frc.robot.subsystems.RollerSubsystem;
 import frc.robot.shooter.ShooterSubsystem;
 
 import edu.wpi.first.units.measure.Angle;
@@ -33,8 +34,10 @@ public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-    private final WristSubsystem m_WristSubsystem = new WristSubsystem();
+    private final WristSubsystem m_wristSubsystem = new WristSubsystem();
+    private final RollerSubsystem m_rollerSubsystem = new RollerSubsystem();
     //wrist positions
     Angle angleDown = Rotation.of(-0.25); //while down on ground
     Angle angleUp = Rotation.of(-0.5);  // while up and inside robot
@@ -83,13 +86,13 @@ public class RobotContainer {
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        joystick.back().and(joystick.x()).whilddeTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         //joystick.a().whileTrue(new ShooterCommmand(m_shooterSubsystem, 0.5));
-        joystick.b().whileTrue(new IntakeCommand(m_intakeSubsystem, -0.2));
-        joystick.a().whileTrue(new WristCommand(m_WristSubsystem, angleUp));
-        joystick.x().whileTrue(new WristCommand(m_WristSubsystem, angleDown));
+        //pull wrist in
+        joystick.y().onTrue(new WristCommand(m_wristSubsystem, angleUp));
+        joystick.x().whileTrue(new IntakeCommandGroup(m_wristSubsystem, m_intakeSubsystem, m_rollerSubsystem, angleDown));
         // Reset the field-centric heading on left bumper press.
         joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
