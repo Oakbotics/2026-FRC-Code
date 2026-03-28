@@ -51,7 +51,7 @@ import frc.robot.shooter.KickerCommand;
 import frc.robot.shooter.KickerSubsystem;
 import frc.robot.shooter.LeftShooterSubsystem;
 import frc.robot.shooter.RightShooterSubsystem;
-import frc.robot.shooter.ShootOnMoveAutoCommandGroup;
+// import frc.robot.shooter.ShootOnMoveAutoCommandGroup;
 import frc.robot.shooter.ShootOnMoveToHub;
 
 public class RobotContainer {
@@ -107,7 +107,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("RunKickerHopper", new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
 
         m_autoChooser = AutoBuilder.buildAutoChooser();
-        m_autoChooser.setDefaultOption("LeftTrenchCenter2CycleAuto", AutoBuilder.buildAuto("LeftTrenchCenter2CycleAuto"));
+        m_autoChooser.setDefaultOption("BackAuto", AutoBuilder.buildAuto("BackAuto"));
 
         SmartDashboard.putData("Auto Chooser", m_autoChooser);
         
@@ -121,8 +121,8 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
 
-                boolean isPressed = joystick.povRight().getAsBoolean();
-                double speedMultiplier = isPressed ? 0.5 : 1.0; 
+                boolean isPressed = joystick.leftStick().getAsBoolean();
+                double speedMultiplier = isPressed ? 0.3 : 0.8; 
                 
                 return drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * speedMultiplier) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * speedMultiplier) // Drive left with negative X (left)
@@ -164,6 +164,7 @@ public class RobotContainer {
             )
         );
 
+        // joystick.leftStick().onTrue(new InstantCommand(isPressed = false));
         joystick.povUp().whileTrue(new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
 
         joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));

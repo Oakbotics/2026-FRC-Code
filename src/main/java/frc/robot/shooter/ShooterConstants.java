@@ -70,6 +70,7 @@ public class ShooterConstants {
 
     public static final InterpolatingDoubleTreeMap DISTANCE_M_TO_TOF_SEC = new InterpolatingDoubleTreeMap();
 
+    
     static {
         DISTANCE_M_TO_TOF_SEC.put(2.36, 0.35);
         DISTANCE_M_TO_TOF_SEC.put(2.53, 0.40);
@@ -78,11 +79,11 @@ public class ShooterConstants {
         DISTANCE_M_TO_TOF_SEC.put(3.05, 0.58);
         DISTANCE_M_TO_TOF_SEC.put(3.145, 0.64);
         DISTANCE_M_TO_TOF_SEC.put(3.24, 0.70);
-        DISTANCE_M_TO_RPS.put(3.47, 0.76);
-        DISTANCE_M_TO_RPS.put(3.70, 0.8);
-        DISTANCE_M_TO_RPS.put(3.865, 0.82);
-        DISTANCE_M_TO_RPS.put(4.03, 0.87);
-        DISTANCE_M_TO_RPS.put(4.95, 1.2);
+        // DISTANCE_M_TO_RPS.put(3.47, 0.76);
+        // DISTANCE_M_TO_RPS.put(3.70, 0.8);
+        // DISTANCE_M_TO_RPS.put(3.865, 0.82);
+        // DISTANCE_M_TO_RPS.put(4.03, 0.87);
+        // DISTANCE_M_TO_RPS.put(4.95, 1.2);
     }
 
     public static final double MIN_TARGET_RPS = 0.0;

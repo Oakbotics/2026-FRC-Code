@@ -112,7 +112,7 @@ public class ShootOnMoveToHub extends Command {
     double targetRps = sol.isValid() ? sol.targetRps() : 0.0;
 
     leftShooter.runVelocityTorqueFOC(targetRps);
-    rightShooter.runVelocityTorqueFOC(-targetRps);
+    rightShooter.runVelocityTorqueFOC(targetRps);
 
     SmartDashboard.putBoolean("valid", sol.isValid());
     SmartDashboard.putNumber("distanceM", sol.lookaheadDistanceM());

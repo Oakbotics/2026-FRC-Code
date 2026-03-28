@@ -19,25 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "HubStartToOutpost"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 4.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "OutpostToShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ResetOdometryLimelight"
+            "pathName": "MoveBackPath"
           }
         },
         {
@@ -72,13 +54,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "RunKickerHopper"
+                  "name": "ShootFromHubDistance"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootFromHubDistance"
+                  "name": "RunKickerHopper"
                 }
               }
             ]
@@ -87,7 +69,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

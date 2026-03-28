@@ -115,7 +115,7 @@ public class LimeLightSubsystem extends SubsystemBase {
         est = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME);
     } else if (alliance.isPresent() && alliance.get() == Alliance.Red){
         est = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME);
-        est.pose = new Pose2d(est.pose.getX(), est.pose.getY(), Rotation2d.fromDegrees(est.pose.getRotation().getDegrees() + 180));
+        est.pose = new Pose2d(est.pose.getX(), est.pose.getY(), Rotation2d.fromDegrees(est.pose.getRotation().getDegrees()));
     }
 
     if (est != null) {
