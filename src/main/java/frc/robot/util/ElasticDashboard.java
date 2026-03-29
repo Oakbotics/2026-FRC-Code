@@ -1,7 +1,6 @@
 package frc.robot.util;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.Units;
@@ -10,15 +9,14 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.drive.CommandSwerveDrivetrain;
 import frc.robot.util.HubTracker.Shift;
 import frc.robot.vision.LimeLightSubsystem;
 import frc.robot.vision.VisionConstants;
 
-public class ElasticDashboard {
+public class ElasticDashboard extends SubsystemBase {
 
     private final CommandSwerveDrivetrain drivetrain;
     private final LimeLightSubsystem limelight;
@@ -31,41 +29,46 @@ public class ElasticDashboard {
         SmartDashboard.putData("Elastic/RobotField", m_field);
     }
 
-    public void update() {
-        //health
+    @Override
+    public void periodic() {
+        var state = drivetrain.getState();
+        if (state == null || state.Pose == null) return;
+
+        // Health
         SmartDashboard.putBoolean("Elastic/DSConnected", DriverStation.isDSAttached());
         SmartDashboard.putNumber("Elastic/BatteryVoltage", RobotController.getBatteryVoltage());
         SmartDashboard.putBoolean("Elastic/BrownedOut", RobotController.isBrownedOut());
         SmartDashboard.putNumber("Elastic/CANUtilization", RobotController.getCANStatus().percentBusUtilization * 100.0);
         SmartDashboard.putBoolean("Elastic/Enabled", DriverStation.isEnabled());
 
-        //match
-        Pose2d pose = drivetrain.getState().Pose;
-        m_field.setRobotPose(pose); // Updates the 2D Map
+        // Match
+        Pose2d pose = state.Pose;
+        m_field.setRobotPose(pose);
 
         SmartDashboard.putNumber("Elastic/PoseX", pose.getX());
         SmartDashboard.putNumber("Elastic/PoseY", pose.getY());
         SmartDashboard.putNumber("Elastic/HeadingDeg", pose.getRotation().getDegrees());
         SmartDashboard.putString("Elastic/RobotMode", getCurrentMode());
-        
+
         Optional<Alliance> alliance = DriverStation.getAlliance();
         String allianceStr = alliance.isPresent() ? alliance.get().name() : "UNKNOWN";
         SmartDashboard.putString("Elastic/Alliance", allianceStr);
-        
-        //direction
+
+        // Direction
         double heading = pose.getRotation().getDegrees();
         String direction = (Math.abs(heading) < 90) ? "FACING RED" : "FACING BLUE";
         SmartDashboard.putString("Elastic/RobotDirection", direction);
 
-        //vision
-        SmartDashboard.putNumber("Elastic/DistToHub", pose.getTranslation().getDistance(VisionConstants.hubPosition()));
+        // Vision
+        if (alliance.isPresent()) {
+            SmartDashboard.putNumber("Elastic/DistToHub", pose.getTranslation().getDistance(VisionConstants.hubPosition(alliance)));
+        }
         int rightTagId = limelight.getRightID();
         SmartDashboard.putNumber("Elastic/LimelightTagID", rightTagId);
         SmartDashboard.putBoolean("Elastic/SeesHubTag", rightTagId != -1 && VisionConstants.HUB_TAG_IDS.contains(rightTagId));
 
         updateHubShiftInfo(alliance);
     }
-
 
     private void updateHubShiftInfo(Optional<Alliance> alliance) {
         Optional<Alliance> autoWinner = HubTracker.getAutoWinner();

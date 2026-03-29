@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.vision.VisionConstants;
 
 public final class HubShotCalculator {
@@ -41,8 +42,8 @@ public final class HubShotCalculator {
         fieldVelMps.getY() * phaseDelaySec));
 
     Translation2d lookaheadPos = basePos;
-
-    double dist = lookaheadPos.getDistance(VisionConstants.hubPosition());
+    
+    double dist = lookaheadPos.getDistance(VisionConstants.hubPosition(DriverStation.getAlliance()));
     double tof = distanceToTOFSec.get(dist);
 
     for (int i = 0; i < 8; i++) {
@@ -55,11 +56,11 @@ public final class HubShotCalculator {
             fieldVelMps.getX() * tof,
             fieldVelMps.getY() * tof));
 
-      dist = lookaheadPos.getDistance(VisionConstants.hubPosition());
+      dist = lookaheadPos.getDistance(VisionConstants.hubPosition(DriverStation.getAlliance()));
     }
 
   Rotation2d desiredHeading =
-      VisionConstants.hubPosition().minus(lookaheadPos).getAngle();
+      VisionConstants.hubPosition(DriverStation.getAlliance()).minus(lookaheadPos).getAngle();
 
     double rps = distanceToRps.get(dist);
     rps = MathUtil.clamp(rps, minRps, maxRps);

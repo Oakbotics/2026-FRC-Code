@@ -1,6 +1,10 @@
 package frc.robot.vision;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,32 +41,22 @@ public class ShootFromHubDistance extends Command {
 
   @Override
   public void execute() {
-    boolean hasHubTarget = limelight.hasHubTarget();
+    Optional<Alliance> alliance = DriverStation.getAlliance(); 
+    // boolean hasHubTarget = limelight.hasHubTarget();
 
-    double distanceM = Double.NaN;
+    double distanceM = 1.0;
     double targetRps = lastTargetRps;
 
-    if (hasHubTarget) {
-      sinceLastVision.reset();
-      sinceLastVision.start();
+    distanceM = limelight.getDistanceToHubMeters(alliance);
 
-      distanceM = limelight.getDistanceToHubMeters();
+    double lookupRps = ShooterConstants.DISTANCE_M_TO_RPS.get(distanceM);
+    targetRps = MathUtil.clamp(lookupRps, ShooterConstants.MIN_TARGET_RPS, ShooterConstants.MAX_TARGET_RPS);
 
-      double lookupRps = ShooterConstants.DISTANCE_M_TO_RPS.get(distanceM);
-      targetRps = MathUtil.clamp(lookupRps, ShooterConstants.MIN_TARGET_RPS, ShooterConstants.MAX_TARGET_RPS);
-
-      lastTargetRps = targetRps;
-    } else {
-      if (sinceLastVision.get() > ShooterConstants.VISION_HOLD_LAST_SEC) {
-        targetRps = 0.0;
-        lastTargetRps = 0.0;
-      }
-    }
+    lastTargetRps = targetRps;
 
     leftShooter.runVelocityTorqueFOC(targetRps);
     rightShooter.runVelocityTorqueFOC(targetRps);
 
-    SmartDashboard.putBoolean("HasHubTarget", hasHubTarget);
     SmartDashboard.putNumber("DistanceToHub_m", distanceM);
     SmartDashboard.putNumber("TargetRPS", targetRps);
   }

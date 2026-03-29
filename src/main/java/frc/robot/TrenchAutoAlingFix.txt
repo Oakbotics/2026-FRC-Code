@@ -1,0 +1,47 @@
+  @Override
+  public void initialize() {
+    alliance = DriverStation.getAlliance();
+
+    xPID.reset();
+    yPID.reset();
+    headingPID.reset();
+
+    Pose2d robotPose = drivetrain.getState().Pose;
+    if (alliance.isPresent()) {
+      if (alliance.get() == Alliance.Blue && robotPose.getY() >= 4.0) {
+          trenchPos = blueLeftTrenchPosition;
+      } else if (alliance.get() == Alliance.Blue && robotPose.getY() < 4.0) {
+          trenchPos = blueRightTrenchPosition;
+      } else if (alliance.get() == Alliance.Red && robotPose.getY() < 4.0) {
+          trenchPos = redLeftTrenchPosition;
+      } else if (alliance.get() == Alliance.Red && robotPose.getY() >= 4.0) {
+          trenchPos = redRightTrenchPosition;
+      }
+    }
+  }
+
+  @Override
+  public void execute() {
+    Pose2d robotPose = drivetrain.getState().Pose;
+
+    double vx = driverVx.getAsDouble();
+    double vy = yPID.calculate(robotPose.getY(), trenchPos.getY());
+
+    double omega = headingPID.calculate(
+        robotPose.getRotation().getRadians(),
+        trenchPos.getRotation().getRadians());
+
+    vx = MathUtil.clamp(vx, -2.0, 2.0);
+    vy = MathUtil.clamp(vy, -2.0, 2.0);
+
+    omega = MathUtil.clamp(
+        omega,
+        -VisionConstants.MAX_OMEGA_RAD_PER_SEC,
+        VisionConstants.MAX_OMEGA_RAD_PER_SEC);
+
+    drivetrain.setControl(
+        driveRequest
+            .withVelocityX(vx)
+            .withVelocityY(vy)
+            .withRotationalRate(omega));
+  }

@@ -27,7 +27,6 @@ public class AlignRotationToHubOdometry extends Command {
 
   private final CommandSwerveDrivetrain drivetrain;
   private final LimeLightSubsystem limelight;
-  final Optional<Alliance> alliance = DriverStation.getAlliance();
 
   private final DoubleSupplier driverVx;
   private final DoubleSupplier driverVy;
@@ -62,25 +61,12 @@ public class AlignRotationToHubOdometry extends Command {
   
   @Override
   public void initialize() {
-    final Optional<Alliance> alliance = DriverStation.getAlliance();
-    
     headingPID.reset();
   }
 
   @Override
   public void execute() {
-     int tagID = (int) LimelightHelpers.getFiducialID(VisionConstants.LIMELIGHT_NAME);
-    
-    if(alliance.isPresent() && alliance.get() == Alliance.Blue) {
-      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.LIMELIGHT_NAME);
-    } else {
-      estimatePoseMT1 = LimelightHelpers.getBotPoseEstimate_wpiRed(VisionConstants.LIMELIGHT_NAME);
-    }
-
-    if (tagID != -1 && VisionConstants.HUB_TAG_IDS.contains(tagID)) {
-      // drivetrain.resetOdometry(new Pose2d(estimatePoseMT2.pose.getX(), estimatePoseMT2.pose.getY(), estimateRotMT1));
-      drivetrain.addVisionMeasurement(estimatePoseMT1.pose, estimatePoseMT1.timestampSeconds);
-    }
+    Optional<Alliance> alliance = DriverStation.getAlliance(); 
     
     Pose2d robotPose = drivetrain.getState().Pose;
     currentHeading = robotPose.getRotation().getRadians();
@@ -88,8 +74,8 @@ public class AlignRotationToHubOdometry extends Command {
     final double vx = driverVx.getAsDouble();
     final double vy = driverVy.getAsDouble();
 
-    double distanceX = VisionConstants.hubPosition().getX() - robotPose.getX();
-    double distanceY = VisionConstants.hubPosition().getY() - robotPose.getY();
+    double distanceX = VisionConstants.hubPosition(alliance).getX() - robotPose.getX();
+    double distanceY = VisionConstants.hubPosition(alliance).getY() - robotPose.getY();
 
     desiredHeading = Math.atan2(distanceY, distanceX);
     double omega = headingPID.calculate(currentHeading, desiredHeading);
@@ -107,9 +93,6 @@ public class AlignRotationToHubOdometry extends Command {
         .withRotationalRate(omega)
     );
 
-    SmartDashboard.putBoolean("TV", LimelightHelpers.getTV(VisionConstants.LIMELIGHT_NAME));
-    SmartDashboard.putNumber("OmegaCmd", omega);
-    SmartDashboard.putNumber("DesiredDeg", Math.toDegrees(desiredHeading));
   }
 
   @Override
