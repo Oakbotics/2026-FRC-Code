@@ -110,6 +110,8 @@ public class RobotContainer {
         // ));
         NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 15).withTimeout(4));
         NamedCommands.registerCommand("SlowIntakeCommand", new IntakeCommand(m_intakeSubsystem, 6).withTimeout(2));
+        NamedCommands.registerCommand("Outake", new OutakeCommand(m_intakeSubsystem, 15).withTimeout(0.5));
+
         NamedCommands.registerCommand("STARTIntakeCommand", new IntakeAutoStartCommandGroup(m_intakeSubsystem, m_wristSubsystem).withTimeout(4));
         NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
         NamedCommands.registerCommand("DumpWristCommand", new WristCommand(m_wristSubsystem, angleUp));
@@ -238,7 +240,7 @@ public class RobotContainer {
         // return m_autoChooser.getSelected();
         // return Commands.none();
         // return new PathPlannerAuto("RightTrenchCenter2CycleAuto");
-        // return new PathPlannerAuto("LeftTrenchCenter2CycleAuto");
-        return new PathPlannerAuto("BackAuto");
+        return new PathPlannerAuto("LeftTrenchCenter2CycleAuto");
+        // return new PathPlannerAuto("BackAuto");
     }
 }

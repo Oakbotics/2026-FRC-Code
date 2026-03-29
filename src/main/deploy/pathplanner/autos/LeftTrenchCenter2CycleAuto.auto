@@ -112,6 +112,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Outake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "WristCommand"
           }
         },
