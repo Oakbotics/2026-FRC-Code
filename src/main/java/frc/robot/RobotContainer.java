@@ -63,8 +63,8 @@ import frc.robot.shooter.ShootOnMoveToHub;
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-    private Angle angleDown = Degrees.of(120);
-    private Angle angleUp = Degrees.of(45);
+    private Angle angleDown = Degrees.of(131);
+    private Angle angleUp = Degrees.of(54);
     boolean isPressed;
     private final LeftShooterSubsystem m_leftShooterSubsystem = new LeftShooterSubsystem();
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
@@ -108,7 +108,7 @@ public class RobotContainer {
         //     drivetrain,
         //     m_limeLightSubsystem
         // ));
-        NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 10).withTimeout(4));
+        NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 15).withTimeout(4));
         NamedCommands.registerCommand("SlowIntakeCommand", new IntakeCommand(m_intakeSubsystem, 6).withTimeout(2));
         NamedCommands.registerCommand("STARTIntakeCommand", new IntakeAutoStartCommandGroup(m_intakeSubsystem, m_wristSubsystem).withTimeout(4));
         NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
@@ -237,8 +237,8 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // return m_autoChooser.getSelected();
         // return Commands.none();
-        return new PathPlannerAuto("RightTrenchCenter2CycleAuto");
+        // return new PathPlannerAuto("RightTrenchCenter2CycleAuto");
         // return new PathPlannerAuto("LeftTrenchCenter2CycleAuto");
-        // return new PathPlannerAuto("BackAuto");
+        return new PathPlannerAuto("BackAuto");
     }
 }

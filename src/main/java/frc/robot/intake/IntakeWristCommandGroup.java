@@ -15,7 +15,7 @@ import frc.robot.wrist.WristCommand;
 import frc.robot.wrist.WristSubsystem;
 
 public class IntakeWristCommandGroup extends SequentialCommandGroup {
-    Angle angleDown = Degrees.of(138);
+    Angle angleDown = Degrees.of(131);
     public IntakeWristCommandGroup(
         IntakeSubsystem m_intakeSubsystem,
         WristSubsystem m_wristSubsystem
