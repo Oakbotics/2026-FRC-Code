@@ -99,6 +99,12 @@
                 "data": {
                   "name": "DumpWristCommand"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SlowIntakeCommand"
+                }
               }
             ]
           }
@@ -191,6 +197,12 @@
                 "type": "named",
                 "data": {
                   "name": "DumpWristCommand"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SlowIntakeCommand"
                 }
               }
             ]

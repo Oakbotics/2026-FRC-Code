@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.shooter.ShooterCommand;
+import frc.robot.util.ElasticDashboard;
 import frc.robot.drive.TunerConstants;
 import frc.robot.hopper.HopperCommand;
 import frc.robot.hopper.HopperSubsystem;
@@ -38,6 +39,7 @@ import frc.robot.intake.IntakeAutoStartCommandGroup;
 import frc.robot.intake.IntakeCommand;
 import frc.robot.intake.IntakeSubsystem;
 import frc.robot.intake.IntakeWristCommandGroup;
+import frc.robot.intake.OutakeCommand;
 import frc.robot.drive.AlignToTrench;
 // import frc.robot.led.LEDSubsystem;
 // import frc.robot.util.ElasticDashboard;
@@ -62,7 +64,7 @@ public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     private Angle angleDown = Degrees.of(120);
-    private Angle angleUp = Degrees.of(60);
+    private Angle angleUp = Degrees.of(45);
     boolean isPressed;
     private final LeftShooterSubsystem m_leftShooterSubsystem = new LeftShooterSubsystem();
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
@@ -87,7 +89,7 @@ public class RobotContainer {
 
     private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
     // private final LEDSubsystem m_ledSubsystem = new LEDSubsystem(() -> drivetrain.getState().Pose,joystick.getHID());  
-    // private final ElasticDashboard elastic_dashboard = new frc.robot.util.ElasticDashboard(drivetrain, m_limeLightSubsystem);
+    private final ElasticDashboard elastic_dashboard = new frc.robot.util.ElasticDashboard(drivetrain, m_limeLightSubsystem);
     private final SendableChooser<Command> m_autoChooser;
     double speedMultiplier;
 
@@ -107,6 +109,7 @@ public class RobotContainer {
         //     m_limeLightSubsystem
         // ));
         NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 10).withTimeout(4));
+        NamedCommands.registerCommand("SlowIntakeCommand", new IntakeCommand(m_intakeSubsystem, 6).withTimeout(2));
         NamedCommands.registerCommand("STARTIntakeCommand", new IntakeAutoStartCommandGroup(m_intakeSubsystem, m_wristSubsystem).withTimeout(4));
         NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
         NamedCommands.registerCommand("DumpWristCommand", new WristCommand(m_wristSubsystem, angleUp));
@@ -129,7 +132,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> {
 
                 boolean isPressed = joystick.leftBumper().getAsBoolean();
-                speedMultiplier = isPressed ? 0.3 : 0.8; 
+                speedMultiplier = isPressed ? 0.45 : 0.8; 
                 
                 return drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * speedMultiplier) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * speedMultiplier) // Drive left with negative X (left)
@@ -172,18 +175,21 @@ public class RobotContainer {
                     () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
                     () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
                 ),
-                new IntakeCommand(m_intakeSubsystem, 10)
+                new IntakeCommand(m_intakeSubsystem, 6)
             )
         ).onFalse(new WristCommand(m_wristSubsystem, angleDown));
 
         // joystick.leftStick().onTrue(new InstantCommand(isPressed = false));
+
         joystick.povUp().whileTrue(
             new ParallelCommandGroup(
+
                 new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
                 new SequentialCommandGroup(
-                    new WaitCommand(1),
+                    new WaitCommand(1.5),
                     new WristCommand(m_wristSubsystem, angleUp)
-                )
+                ),
+                new IntakeCommand(m_intakeSubsystem, 6)
             )
         );
 
@@ -193,6 +199,7 @@ public class RobotContainer {
         joystick.y().whileTrue(new WristAgitateCommandGroup(m_wristSubsystem, m_intakeSubsystem));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 15));
         joystick.b().onTrue(new WristCommand(m_wristSubsystem, angleDown));
+        joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, 15));
         joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
 
         // Reset the field-centric heading on left bumper press.
@@ -230,8 +237,8 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // return m_autoChooser.getSelected();
         // return Commands.none();
-        // return new PathPlannerAuto("RightTrenchCenter2CycleAuto");
-        return new PathPlannerAuto("LeftTrenchCenter2CycleAuto");
+        return new PathPlannerAuto("RightTrenchCenter2CycleAuto");
+        // return new PathPlannerAuto("LeftTrenchCenter2CycleAuto");
         // return new PathPlannerAuto("BackAuto");
     }
 }
