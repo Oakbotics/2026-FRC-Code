@@ -61,8 +61,8 @@ import frc.robot.shooter.ShootOnMoveToHub;
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-    private Angle angleDown = Degrees.of(138);
-    private Angle angleUp = Degrees.of(90);
+    private Angle angleDown = Degrees.of(120);
+    private Angle angleUp = Degrees.of(60);
     boolean isPressed;
     private final LeftShooterSubsystem m_leftShooterSubsystem = new LeftShooterSubsystem();
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
@@ -98,7 +98,7 @@ public class RobotContainer {
             m_limeLightSubsystem,
             () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
             () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
-        ));
+        ).withTimeout(1.0));
         // NamedCommands.registerCommand("ShootOnMoveAuto", new ShootOnMoveAutoCommandGroup(
         //     m_rightShooterSubsystem,
         //     m_leftShooterSubsystem,
@@ -109,13 +109,14 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 10).withTimeout(4));
         NamedCommands.registerCommand("STARTIntakeCommand", new IntakeAutoStartCommandGroup(m_intakeSubsystem, m_wristSubsystem).withTimeout(4));
         NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, angleDown));
+        NamedCommands.registerCommand("DumpWristCommand", new WristCommand(m_wristSubsystem, angleUp));
         NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
         NamedCommands.registerCommand("RunKickerHopper", new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
 
         m_autoChooser = AutoBuilder.buildAutoChooser();
-        m_autoChooser.setDefaultOption("RightTrenchCenter2CycleAuto", AutoBuilder.buildAuto("RightTrenchCenter2CycleAuto"));
+        // m_autoChooser.setDefaultOption("LeftTrenchCenter2CycleAuto", AutoBuilder.buildAuto("LeftTrenchCenter2CycleAuto"));
 
-        SmartDashboard.putData("Auto Chooser", m_autoChooser);
+        // SmartDashboard.putData("Auto Chooser", m_autoChooser);
         
         configureBindings();
     }
@@ -162,7 +163,7 @@ public class RobotContainer {
 
                 new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
                 new SequentialCommandGroup(
-                    new WaitCommand(3),
+                    new WaitCommand(1),
                     new WristCommand(m_wristSubsystem, angleUp)
                 ),
                 new AlignRotationToHubOdometry(
@@ -172,16 +173,24 @@ public class RobotContainer {
                     () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
                 )
             )
-        );
+        ).onFalse(new WristCommand(m_wristSubsystem, angleDown));
 
         // joystick.leftStick().onTrue(new InstantCommand(isPressed = false));
-        joystick.povUp().whileTrue(new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
+        joystick.povUp().whileTrue(
+            new ParallelCommandGroup(
+                new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
+                new SequentialCommandGroup(
+                    new WaitCommand(1),
+                    new WristCommand(m_wristSubsystem, angleUp)
+                )
+            )
+        );
 
         joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_hopperSubsystem));
         joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
         joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
         joystick.y().whileTrue(new WristAgitateCommandGroup(m_wristSubsystem, m_intakeSubsystem));
-        joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 10));
+        joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 15));
         joystick.b().onTrue(new WristCommand(m_wristSubsystem, angleDown));
         joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
 
@@ -218,8 +227,10 @@ public class RobotContainer {
     // }
 
     public Command getAutonomousCommand() {
-        return m_autoChooser.getSelected();
+        // return m_autoChooser.getSelected();
         // return Commands.none();
-        // return new PathPlannerAuto("MoveBack");
+        // return new PathPlannerAuto("RightTrenchCenter2CycleAuto");
+        return new PathPlannerAuto("LeftTrenchCenter2CycleAuto");
+        // return new PathPlannerAuto("BackAuto");
     }
 }

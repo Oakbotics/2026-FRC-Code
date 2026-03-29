@@ -79,7 +79,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 2.0
                 }
               },
               {
@@ -93,8 +93,20 @@
                 "data": {
                   "name": "ShootFromHubDistance"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DumpWristCommand"
+                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "WristCommand"
           }
         },
         {
@@ -160,7 +172,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 2.0
                 }
               },
               {
@@ -174,8 +186,20 @@
                 "data": {
                   "name": "ShootFromHubDistance"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DumpWristCommand"
+                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "WristCommand"
           }
         }
       ]
