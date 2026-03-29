@@ -163,7 +163,7 @@ public class RobotContainer {
 
                 new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
                 new SequentialCommandGroup(
-                    new WaitCommand(1),
+                    new WaitCommand(1.5),
                     new WristCommand(m_wristSubsystem, angleUp)
                 ),
                 new AlignRotationToHubOdometry(
@@ -171,7 +171,8 @@ public class RobotContainer {
                     m_limeLightSubsystem,
                     () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
                     () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
-                )
+                ),
+                new IntakeCommand(m_intakeSubsystem, 10)
             )
         ).onFalse(new WristCommand(m_wristSubsystem, angleDown));
 

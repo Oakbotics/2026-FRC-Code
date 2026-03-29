@@ -22,7 +22,7 @@ public class WristAgitateCommandGroup extends SequentialCommandGroup {
                 new ParallelCommandGroup(
                     
                     new SequentialCommandGroup(
-                        new WristCommand(m_wristSubsystem, angleUp)
+                        new WristCommand(m_wristSubsystem,  angleUp)
                 
                     ),
                     new IntakeCommand(m_intakeSubsystem, 10)

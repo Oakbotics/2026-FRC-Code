@@ -26,10 +26,10 @@ public class IntakeAutoStartCommandGroup extends SequentialCommandGroup {
             new SequentialCommandGroup(
 
                 new ParallelCommandGroup(
-                    new IntakeCommand(m_intakeSubsystem, 10).withTimeout(1.0)
+                    new IntakeCommand(m_intakeSubsystem, 15).withTimeout(0.75)
                 ),
                 new ParallelCommandGroup(
-                    new IntakeCommand(m_intakeSubsystem, 10),
+                    new IntakeCommand(m_intakeSubsystem, 15),
                     new WristCommand(m_wristSubsystem, angleDown)
                 ) 
             )
