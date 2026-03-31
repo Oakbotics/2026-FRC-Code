@@ -26,6 +26,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.util.ElasticDashboard;
 import frc.robot.drive.TunerConstants;
+import frc.robot.hopper.HopperCommand;
+import frc.robot.hopper.HopperSubsystem;
 import frc.robot.intake.IntakeAutoStartCommandGroup;
 import frc.robot.intake.IntakeCommand;
 import frc.robot.intake.IntakeSubsystem;
@@ -56,6 +58,7 @@ public class RobotContainer {
     private final WristSubsystem m_wristSubsystem = new WristSubsystem();
     private final RollerSubsystem m_rollerSubsystem = new RollerSubsystem();
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+    private final HopperSubsystem m_hopperSubsystem = new HopperSubsystem();
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -144,14 +147,16 @@ public class RobotContainer {
             )
         );
 
-        joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem));
-        joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
-        joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
-        joystick.y().whileTrue(new WristAgitateCommandGroup(m_wristSubsystem, m_intakeSubsystem));
-        joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 15));
-        joystick.b().onTrue(new WristCommand(m_wristSubsystem, WristConstants.angleDown));
-        joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, 15));
-        joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
+        // joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem));
+        // joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
+        // joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+        // joystick.y().whileTrue(new WristAgitateCommandGroup(m_wristSubsystem, m_intakeSubsystem));
+        // joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 15));
+        // joystick.b().onTrue(new WristCommand(m_wristSubsystem, WristConstants.angleDown));
+        // joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, 15));
+        // joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
+        joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, 1));
+
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
