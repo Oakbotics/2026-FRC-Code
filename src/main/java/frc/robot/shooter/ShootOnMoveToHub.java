@@ -1,6 +1,5 @@
 package frc.robot.shooter;
 
-import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -11,20 +10,12 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.drive.CommandSwerveDrivetrain;
-import frc.robot.vision.VisionConstants;
-import frc.robot.shooter.HubShotCalculator;
 import frc.robot.shooter.HubShotCalculator.Solution;
-import frc.robot.shooter.KickerSubsystem;
-import frc.robot.shooter.LeftShooterSubsystem;
-import frc.robot.shooter.RightShooterSubsystem;
-import frc.robot.shooter.ShooterConstants;
 
 public class ShootOnMoveToHub extends Command {
 

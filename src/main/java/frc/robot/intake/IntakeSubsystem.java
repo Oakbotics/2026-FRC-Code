@@ -4,7 +4,6 @@
 
 package frc.robot.intake;
 
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -16,7 +15,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private final VoltageOut voltageOut = new VoltageOut(0); 
   private final IntakeConfigs configs;
   
-  /** Creates a new ExampleSubsystem. */
   public IntakeSubsystem() {
     intakeMotor = new TalonFX(IntakeConstants.intakeMotorID);
     configs = new IntakeConfigs();
@@ -37,11 +35,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
   }
 
   @Override
   public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
   }
 }

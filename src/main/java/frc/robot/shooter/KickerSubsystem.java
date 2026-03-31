@@ -4,8 +4,6 @@
 
 package frc.robot.shooter;
 
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -14,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class KickerSubsystem extends SubsystemBase {
   private final TalonFX kickerMotor;
   private final VoltageOut speedRequest = new VoltageOut(0);
-  /** Creates a new ExampleSubsystem. */
   public KickerSubsystem() {
     kickerMotor = new TalonFX(ShooterConstants.kickerMotorID);
 
@@ -50,11 +47,9 @@ public class KickerSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
   }
 
   @Override
   public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
   }
 }

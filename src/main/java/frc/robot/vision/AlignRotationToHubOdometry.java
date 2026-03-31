@@ -13,21 +13,15 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.drive.CommandSwerveDrivetrain;
 import frc.robot.vision.LimelightHelpers.PoseEstimate;
-import frc.robot.vision.VisionConstants;
 
 public class AlignRotationToHubOdometry extends Command {
 
   private final CommandSwerveDrivetrain drivetrain;
-  private final LimeLightSubsystem limelight;
-
   private final DoubleSupplier driverVx;
   private final DoubleSupplier driverVy;
 
@@ -43,7 +37,6 @@ public class AlignRotationToHubOdometry extends Command {
 
   public AlignRotationToHubOdometry(CommandSwerveDrivetrain drivetrain, LimeLightSubsystem limelight, DoubleSupplier vx, DoubleSupplier vy) {
     this.drivetrain = drivetrain;
-    this.limelight = limelight;
     this.driverVx = vx;
     this.driverVy = vy;
 

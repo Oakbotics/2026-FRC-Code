@@ -5,7 +5,6 @@
 
 package frc.robot.vision;
 
-import java.lang.StackWalker.Option;
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -27,16 +26,12 @@ public class LimeLightSubsystem extends SubsystemBase {
   public NetworkTable m_limeLightTopTable;
   public NetworkTable m_limeLightLeftTable;
   public Pose2d m_closestTagPose;
-  // Limelight Left: http://10.37.39.11:5801/
-  //Limelight Right: http://10.37.39.12:5801/
- 
-  /** Creates a new LimeLightSubsystem. */
+
   public LimeLightSubsystem(CommandSwerveDrivetrain drivetrain) {
     m_limeLightRightTable = NetworkTableInstance.getDefault().getTable("limelight-right");
     m_limeLightTopTable = NetworkTableInstance.getDefault().getTable("limelight-top");
     m_limeLightLeftTable = NetworkTableInstance.getDefault().getTable("limelight-left");
     m_limeLightRightTable.getEntry("pipeline").setNumber(0);
-    // SmartDashboard.putData("Field", m_field);
     SmartDashboard.putNumber("Shooter RPS", 58.5);
 
     this.drivetrain = drivetrain;

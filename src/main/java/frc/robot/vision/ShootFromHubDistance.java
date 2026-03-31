@@ -42,7 +42,6 @@ public class ShootFromHubDistance extends Command {
   @Override
   public void execute() {
     Optional<Alliance> alliance = DriverStation.getAlliance(); 
-    // boolean hasHubTarget = limelight.hasHubTarget();
 
     double distanceM = 1.0;
     double targetRps = lastTargetRps;

@@ -5,8 +5,6 @@
 package frc.robot.wrist;
 
 import static edu.wpi.first.units.Units.Rotations;
-
-import frc.robot.wrist.WristSubsystem;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
