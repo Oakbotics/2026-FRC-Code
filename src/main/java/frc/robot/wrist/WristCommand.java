@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class WristCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
    private final WristSubsystem m_subsystem;
-   private final Angle m_angle; 
+   private final Angle m_angle;
 
   public WristCommand(WristSubsystem subsystem, Angle angle) {
     this.m_subsystem = subsystem;

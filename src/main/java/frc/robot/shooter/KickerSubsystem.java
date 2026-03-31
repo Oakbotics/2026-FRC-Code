@@ -17,19 +17,10 @@ public class KickerSubsystem extends SubsystemBase {
 
     kickerMotor.getVelocity().setUpdateFrequency(100);
     kickerMotor.getStatorCurrent().setUpdateFrequency(100);
-
   }
 
   public void setKickerSpeed(double speed){
     kickerMotor.setControl(speedRequest.withOutput(speed));
-  }
-
-  public void feedTowardShooter(double percent){
-    kickerMotor.setControl(speedRequest.withOutput(percent));
-  }
-
-  public void reverseFromShooter(double percent){
-    kickerMotor.setControl(speedRequest.withOutput(percent));
   }
 
   public double getVelovcityRps(){
@@ -39,7 +30,6 @@ public class KickerSubsystem extends SubsystemBase {
   public double getStatorCurrentAmps(){
     return kickerMotor.getStatorCurrent().getValueAsDouble();
   }
-
 
   public void stop() {
     setKickerSpeed(0.0);
