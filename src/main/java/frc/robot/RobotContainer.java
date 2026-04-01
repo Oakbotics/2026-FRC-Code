@@ -156,7 +156,8 @@ public class RobotContainer {
         // joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, 15));
         // joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
         joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, 1));
-
+        joystick.b().onTrue(new HopperCommand(m_hopperSubsystem, -1));
+        joystick.x().onTrue(new InstantCommand(() -> m_hopperSubsystem.zeroHopper()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
