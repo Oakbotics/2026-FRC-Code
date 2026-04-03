@@ -33,6 +33,13 @@ public class HopperSubsystem extends SubsystemBase {
     elevatorMotor.setControl(setpointRequest.withPosition(targetRotations));
   }
 
+  public void setCruiseVelocity(double rotationsPerSecond) {
+    var mmConfig = new com.ctre.phoenix6.configs.MotionMagicConfigs();
+    mmConfig.MotionMagicCruiseVelocity = rotationsPerSecond;
+    mmConfig.MotionMagicAcceleration = rotationsPerSecond * 2; 
+    elevatorMotor.getConfigurator().apply(mmConfig);
+  }
+
   public void zeroHopper() {
     elevatorMotor.setPosition(0);
   }

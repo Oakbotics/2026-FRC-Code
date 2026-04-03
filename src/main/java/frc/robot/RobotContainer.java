@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -27,7 +29,10 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.util.ElasticDashboard;
 import frc.robot.drive.TunerConstants;
 import frc.robot.hopper.HopperCommand;
+import frc.robot.hopper.HopperConstants;
+import frc.robot.hopper.HopperFeedShootCommand;
 import frc.robot.hopper.HopperSubsystem;
+import frc.robot.hopper.HopperToggleCommand;
 import frc.robot.intake.IntakeAutoStartCommandGroup;
 import frc.robot.intake.IntakeCommand;
 import frc.robot.intake.IntakeSubsystem;
@@ -74,6 +79,7 @@ public class RobotContainer {
     private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
     private final ElasticDashboard elastic_dashboard = new frc.robot.util.ElasticDashboard(drivetrain, m_limeLightSubsystem);
     private final SendableChooser<Command> m_autoChooser;
+    BooleanSupplier isShooting = () -> m_kickerSubsystem.getStatorCurrentAmps() > 15.0;
     double speedMultiplier;
 
     public RobotContainer() {
@@ -117,24 +123,21 @@ public class RobotContainer {
         RobotModeTriggers.disabled().whileTrue(
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
-
+        
+        
         joystick.rightTrigger().whileTrue(
             new ParallelCommandGroup(
-
                 new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
-                new SequentialCommandGroup(
-                    new WaitCommand(1.5),
-                    new WristCommand(m_wristSubsystem, WristConstants.angleUp)
-                ),
                 new AlignRotationToHubOdometry(
                     drivetrain,
                     m_limeLightSubsystem,
                     () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
                     () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
                 ),
-                new IntakeCommand(m_intakeSubsystem, 6)
+                new IntakeCommand(m_intakeSubsystem, 6),
+                new HopperFeedShootCommand(m_hopperSubsystem, isShooting)
             )
-        ).onFalse(new WristCommand(m_wristSubsystem, WristConstants.angleDown));
+        ).onFalse(new InstantCommand(() -> m_hopperSubsystem.goToPosition(HopperConstants.fullyExtended)));
         joystick.povUp().whileTrue(
             new ParallelCommandGroup(
 
@@ -147,17 +150,15 @@ public class RobotContainer {
             )
         );
 
-        // joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem));
-        // joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
-        // joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
-        // joystick.y().whileTrue(new WristAgitateCommandGroup(m_wristSubsystem, m_intakeSubsystem));
-        // joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 15));
-        // joystick.b().onTrue(new WristCommand(m_wristSubsystem, WristConstants.angleDown));
-        // joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, 15));
-        // joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
-        joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, 1));
-        joystick.b().onTrue(new HopperCommand(m_hopperSubsystem, -1));
-        joystick.x().onTrue(new InstantCommand(() -> m_hopperSubsystem.zeroHopper()));
+        joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem));
+        joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
+        joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+        joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 15));
+        joystick.b().onTrue(new WristCommand(m_wristSubsystem, WristConstants.angleDown));
+        joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, 15));
+        joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
+        joystick.y().onTrue(new HopperToggleCommand(m_hopperSubsystem));
+
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
