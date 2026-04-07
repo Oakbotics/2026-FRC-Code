@@ -1,47 +1,36 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.hopper;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
-/** An example command that uses an example subsystem. */
 public class HopperCommand extends Command {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  // private final ExampleSubsystem m_subsystem;
-  private final HopperSubsystem m_hopperSubsystem;
-  private final double speed;
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public HopperCommand(HopperSubsystem m_hopperSubsystem, double speed) {
-    this.m_hopperSubsystem = m_hopperSubsystem;
-    this.speed = speed;
-    addRequirements(m_hopperSubsystem);
-  }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+    private final HopperSubsystem m_hopperSubsystem;
+    private final double m_targetMeters;
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    m_hopperSubsystem.hopFuel(speed);
-  }
+    public HopperCommand(HopperSubsystem hopperSubsystem, double targetMeters) {
+        this.m_hopperSubsystem = hopperSubsystem;
+        this.m_targetMeters = targetMeters;
+        addRequirements(hopperSubsystem);
+    }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    m_hopperSubsystem.hopFuel(0);
-  }
+    @Override
+    public void initialize() {
+        m_hopperSubsystem.goToPosition(m_targetMeters);
+    }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+    @Override
+    public void execute() {
+        m_hopperSubsystem.goToPosition(m_targetMeters);
+        SmartDashboard.putNumber("Elevator Target Meters", m_targetMeters);
+        SmartDashboard.putNumber("Elevator Current Pose Meters", m_hopperSubsystem.getPositionMeters());
+    }
+
+    @Override
+    public void end(boolean interrupted) {}
+
+    @Override
+    public boolean isFinished() {
+        return Math.abs(m_hopperSubsystem.getPositionMeters() - m_targetMeters) < HopperConstants.positionToleranceMeters;
+    }
 }

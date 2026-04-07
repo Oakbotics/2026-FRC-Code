@@ -1,6 +1,10 @@
 package frc.robot.wrist;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+
+import edu.wpi.first.units.measure.Angle;
 
 public class WristConstants {
    // public static final int wristMotorCANId = 3;//Temp
@@ -14,6 +18,9 @@ public class WristConstants {
     public static final double kV = 0.6;
 
     public static final int gearBoxRatio = 4 * 4 * 4 * (40 / 20);
+
+    public static final Angle angleDown = Degrees.of(121);
+    public static final Angle angleUp = Degrees.of(74);
 
    /*  public static final double minOutput = -1;
     public static final double maxOutput = 1;

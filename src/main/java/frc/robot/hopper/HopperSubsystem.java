@@ -1,69 +1,55 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.hopper;
 
-import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class HopperSubsystem extends SubsystemBase {
 
-  private final TalonFX hopperMotor;
+  private final TalonFX elevatorMotor;
   private final HopperConfigs configs;
-  private final DutyCycleOut dutyCycle = new DutyCycleOut(0); 
-  
-  /** Creates a new ExampleSubsystem. */
+  private final MotionMagicVoltage setpointRequest = new MotionMagicVoltage(0);
+
   public HopperSubsystem() {
-    hopperMotor = new TalonFX(HopperConstants.hopperMotorID);
     configs = new HopperConfigs();
-
-    configureMotors();
+    elevatorMotor = new TalonFX(HopperConstants.elevatorMotorID);
+    //we do this because just in case the configs dont get applied the first time
+    for (int i = 0; i < 5; i++) {
+      var status = elevatorMotor.getConfigurator().apply(configs.elevatorMotorConfig());
+      if (status.isOK()) break;
+    }
   }
 
-  public void hopFuel(double speed) {
-    hopperMotor.setControl(dutyCycle.withOutput(-speed));
+  public double getPositionMeters() {
+    double mechanismRotations = elevatorMotor.getPosition(true).getValueAsDouble();
+    return mechanismRotations * HopperConstants.metersPerRotation;
   }
 
-  public void outHopFuel(double speed) {
-    hopperMotor.setControl(dutyCycle.withOutput(speed));
+  public void goToPosition(double meters) {
+    double targetRotations = meters / HopperConstants.metersPerRotation;
+    elevatorMotor.setControl(setpointRequest.withPosition(targetRotations));
   }
 
-  public void feedTowardShooter(double percent){
-    hopFuel(percent);
+  public void setCruiseVelocity(double rotationsPerSecond) {
+    var mmConfig = new com.ctre.phoenix6.configs.MotionMagicConfigs();
+    mmConfig.MotionMagicCruiseVelocity = rotationsPerSecond;
+    mmConfig.MotionMagicAcceleration = rotationsPerSecond * 2; 
+    elevatorMotor.getConfigurator().apply(mmConfig);
   }
 
-  public void reverseFromShooter(double percent){
-    outHopFuel(percent);
-  }
-
-  public void stop(){
-    hopperMotor.setControl(dutyCycle.withOutput(0));
-  }
-
-  public double getVelovcityRps(){
-    return hopperMotor.getVelocity().getValueAsDouble();
-  }
-
-  public double getStatorCurrentAmps(){
-    return hopperMotor.getStatorCurrent().getValueAsDouble();
-  }
-
-  public void configureMotors() {
-    hopperMotor.getConfigurator().apply(configs.hopperMotorConfigs());
-    hopperMotor.getVelocity().setUpdateFrequency(100);
-    hopperMotor.getStatorCurrent().setUpdateFrequency(100);
+  public void zeroHopper() {
+    elevatorMotor.setPosition(0);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Elevator Position Meters", getPositionMeters());
   }
 
   @Override
   public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
   }
 }

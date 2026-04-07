@@ -9,15 +9,13 @@ import frc.robot.intake.IntakeCommand;
 import frc.robot.intake.IntakeSubsystem;
 
 public class WristAgitateCommandGroup extends SequentialCommandGroup {
-    Angle angleUp = Degrees.of(54);
-    
     public WristAgitateCommandGroup(WristSubsystem m_wristSubsystem, IntakeSubsystem m_intakeSubsystem) {
         addCommands(
             
                 new ParallelCommandGroup(
                     
                     new SequentialCommandGroup(
-                        new WristCommand(m_wristSubsystem,  angleUp)
+                        new WristCommand(m_wristSubsystem, WristConstants.angleUp)
                 
                     ),
                     new IntakeCommand(m_intakeSubsystem, 10)

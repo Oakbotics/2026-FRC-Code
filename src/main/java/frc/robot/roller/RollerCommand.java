@@ -2,25 +2,25 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.hopper;
+package frc.robot.roller;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class OutHopCommand extends Command {
+public class RollerCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // private final ExampleSubsystem m_subsystem;
-  private final HopperSubsystem m_hopperSubsystem;
+  private final RollerSubsystem m_rollerSubsystem;
   private final double speed;
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public OutHopCommand(HopperSubsystem m_hopperSubsystem, double speed) {
-    this.m_hopperSubsystem = m_hopperSubsystem;
+  public RollerCommand(RollerSubsystem m_rollerSubsystem, double speed) {
+    this.m_rollerSubsystem = m_rollerSubsystem;
     this.speed = speed;
-    addRequirements(m_hopperSubsystem);
+    addRequirements(m_rollerSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -30,13 +30,13 @@ public class OutHopCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_hopperSubsystem.outHopFuel(speed);
+    m_rollerSubsystem.setSpeed(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_hopperSubsystem.outHopFuel(0);
+    m_rollerSubsystem.setSpeed(0);
   }
 
   // Returns true when the command should end.
