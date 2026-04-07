@@ -33,7 +33,7 @@ import frc.robot.hopper.HopperConstants;
 import frc.robot.hopper.HopperFeedShootCommand;
 import frc.robot.hopper.HopperSubsystem;
 import frc.robot.hopper.HopperToggleCommand;
-import frc.robot.intake.IntakeAutoStartCommandGroup;
+// import frc.robot.intake.IntakeAutoStartCommandGroup;
 import frc.robot.intake.IntakeCommand;
 import frc.robot.intake.IntakeSubsystem;
 import frc.robot.intake.OutakeCommand;
@@ -44,10 +44,6 @@ import frc.robot.vision.AlignRotationToHubOdometry;
 import frc.robot.vision.LimeLightSubsystem;
 import frc.robot.vision.ResetOdometryLimelight;
 import frc.robot.vision.ShootFromHubDistance;
-import frc.robot.wrist.WristAgitateCommandGroup;
-import frc.robot.wrist.WristCommand;
-import frc.robot.wrist.WristConstants;
-import frc.robot.wrist.WristSubsystem;
 import frc.robot.shooter.KickerCommandGroup;
 import frc.robot.shooter.KickerSubsystem;
 import frc.robot.shooter.LeftShooterSubsystem;
@@ -60,7 +56,6 @@ public class RobotContainer {
     private final LeftShooterSubsystem m_leftShooterSubsystem = new LeftShooterSubsystem();
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
     private final KickerSubsystem m_kickerSubsystem = new KickerSubsystem();
-    private final WristSubsystem m_wristSubsystem = new WristSubsystem();
     private final RollerSubsystem m_rollerSubsystem = new RollerSubsystem();
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     private final HopperSubsystem m_hopperSubsystem = new HopperSubsystem();
@@ -93,10 +88,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 15).withTimeout(4));
         NamedCommands.registerCommand("SlowIntakeCommand", new IntakeCommand(m_intakeSubsystem, 6).withTimeout(2));
         NamedCommands.registerCommand("Outake", new OutakeCommand(m_intakeSubsystem, 15).withTimeout(0.5));
-
-        NamedCommands.registerCommand("STARTIntakeCommand", new IntakeAutoStartCommandGroup(m_intakeSubsystem, m_wristSubsystem).withTimeout(4));
-        NamedCommands.registerCommand("WristCommand", new WristCommand(m_wristSubsystem, WristConstants.angleDown));
-        NamedCommands.registerCommand("DumpWristCommand", new WristCommand(m_wristSubsystem, WristConstants.angleUp));
+        NamedCommands.registerCommand("HopperOutCommand", new InstantCommand(()-> m_hopperSubsystem.goToPosition(HopperConstants.fullyExtended)));
+        // NamedCommands.registerCommand("STARTIntakeCommand", new IntakeAutoStartCommandGroup(m_intakeSubsystem, m_wristSubsystem).withTimeout(4));
         NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
         NamedCommands.registerCommand("RunKickerRoller", new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem));
 
@@ -141,12 +134,8 @@ public class RobotContainer {
         joystick.povUp().whileTrue(
             new ParallelCommandGroup(
 
-                new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
-                new SequentialCommandGroup(
-                    new WaitCommand(1.5),
-                    new WristCommand(m_wristSubsystem, WristConstants.angleUp)
-                ),
-                new IntakeCommand(m_intakeSubsystem, 6)
+                new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem)
+                // new HopperFeedShootCommand(m_hopperSubsystem, isShooting)
             )
         );
 
@@ -154,7 +143,6 @@ public class RobotContainer {
         joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
         joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 15));
-        joystick.b().onTrue(new WristCommand(m_wristSubsystem, WristConstants.angleDown));
         joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, 15));
         joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
         joystick.y().onTrue(new HopperToggleCommand(m_hopperSubsystem));
