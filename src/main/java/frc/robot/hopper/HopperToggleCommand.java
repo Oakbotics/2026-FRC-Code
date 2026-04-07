@@ -17,7 +17,7 @@ public class HopperToggleCommand extends Command {
     @Override
     public void initialize() {
         double current = m_hopper.getPositionMeters();
-
+        m_hopper.setCruiseVelocity(HopperConstants.elevatorFeedingRPS);
         if (current <= nearRetracted) {
             m_targetMeters = HopperConstants.fullyExtended;
         } else {
