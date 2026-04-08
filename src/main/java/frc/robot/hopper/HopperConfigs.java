@@ -10,7 +10,7 @@ public final class HopperConfigs {
     public TalonFXConfiguration elevatorMotorConfig() {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
-        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; 
 
         config.CurrentLimits.StatorCurrentLimit = 40; //dont forgor💀
