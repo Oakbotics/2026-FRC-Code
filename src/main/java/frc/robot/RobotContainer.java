@@ -143,8 +143,11 @@ public class RobotContainer {
         joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 15));
         joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, 15));
-        joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
-        joystick.y().onTrue(new HopperToggleCommand(m_hopperSubsystem, HopperConstants.cruiseVelocityRPS));
+        // joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
+        // joystick.y().onTrue(new HopperToggleCommand(m_hopperSubsystem, HopperConstants.cruiseVelocityRPS));
+
+        joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
+        joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
