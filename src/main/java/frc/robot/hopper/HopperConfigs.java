@@ -13,9 +13,9 @@ public final class HopperConfigs {
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; 
 
-        config.CurrentLimits.StatorCurrentLimit = 40; //dont forgor💀
+        config.CurrentLimits.StatorCurrentLimit = 40;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
-        config.CurrentLimits.SupplyCurrentLimit = 30; //dont forgor💀
+        config.CurrentLimits.SupplyCurrentLimit = 30;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
         config.Slot0.kP = HopperConstants.kP; //dont forgor💀

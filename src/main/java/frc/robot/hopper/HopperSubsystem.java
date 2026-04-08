@@ -16,7 +16,7 @@ public class HopperSubsystem extends SubsystemBase {
 
   public HopperSubsystem() {
     configs = new HopperConfigs();
-    elevatorMotor = new TalonFX(HopperConstants.elevatorMotorID);
+    elevatorMotor = new TalonFX(HopperConstants.hopperMotorID);
     //we do this because just in case the configs dont get applied the first time
     for (int i = 0; i < 5; i++) {
       var status = elevatorMotor.getConfigurator().apply(configs.elevatorMotorConfig());
