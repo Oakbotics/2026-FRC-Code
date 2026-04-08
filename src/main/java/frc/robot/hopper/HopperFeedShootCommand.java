@@ -10,16 +10,21 @@ public class HopperFeedShootCommand extends Command {
     private final HopperSubsystem m_hopper;
     private final Timer m_feedTimer = new Timer();
     private boolean m_feeding;
-
+    private final double m_cruiseVelocityRPS;
+    
     public HopperFeedShootCommand(HopperSubsystem hopper) {
+        this(hopper, HopperConstants.elevatorFeedingRPS);
+    }
+
+    public HopperFeedShootCommand(HopperSubsystem hopper, double cruiseVelocityRPS) {
         this.m_hopper = hopper;
+        this.m_cruiseVelocityRPS = cruiseVelocityRPS;
         addRequirements(hopper);
     }
 
     @Override
     public void initialize() {
-        m_hopper.setCruiseVelocity(3);
-        m_hopper.goToPosition(HopperConstants.fullyRetracted);
+        m_hopper.goToPosition(HopperConstants.fullyRetracted, m_cruiseVelocityRPS);
     }
 
     @Override

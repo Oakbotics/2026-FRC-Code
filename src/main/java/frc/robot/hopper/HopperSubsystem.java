@@ -1,5 +1,6 @@
 package frc.robot.hopper;
 
+import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -11,7 +12,7 @@ public class HopperSubsystem extends SubsystemBase {
 
   private final TalonFX elevatorMotor;
   private final HopperConfigs configs;
-  private final MotionMagicVoltage setpointRequest = new MotionMagicVoltage(0);
+  private final DynamicMotionMagicVoltage setpointRequest = new DynamicMotionMagicVoltage(0, HopperConstants.cruiseVelocityRPS, HopperConstants.accelerationRPSS);
 
   public HopperSubsystem() {
     configs = new HopperConfigs();
@@ -28,16 +29,14 @@ public class HopperSubsystem extends SubsystemBase {
     return mechanismRotations * HopperConstants.metersPerRotation;
   }
 
-  public void goToPosition(double meters) {
+  public void goToPosition(double meters, double cruiseVelocityRPS) {
     double targetRotations = meters / HopperConstants.metersPerRotation;
-    elevatorMotor.setControl(setpointRequest.withPosition(targetRotations));
+    double accelerationRPS2 = cruiseVelocityRPS * 2;
+    elevatorMotor.setControl(setpointRequest.withPosition(targetRotations).withVelocity(cruiseVelocityRPS).withAcceleration(accelerationRPS2));
   }
 
-  public void setCruiseVelocity(double rotationsPerSecond) {
-    var mmConfig = new com.ctre.phoenix6.configs.MotionMagicConfigs();
-    mmConfig.MotionMagicCruiseVelocity = rotationsPerSecond;
-    mmConfig.MotionMagicAcceleration = rotationsPerSecond * 2; 
-    elevatorMotor.getConfigurator().apply(mmConfig);
+  public void goToPosition(double meters) {
+    goToPosition(meters, HopperConstants.cruiseVelocityRPS);
   }
 
   public void zeroHopper() {

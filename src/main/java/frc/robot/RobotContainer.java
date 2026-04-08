@@ -89,7 +89,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 15).withTimeout(4));
         NamedCommands.registerCommand("SlowIntakeCommand", new IntakeCommand(m_intakeSubsystem, 6).withTimeout(2));
         NamedCommands.registerCommand("Outake", new OutakeCommand(m_intakeSubsystem, 15).withTimeout(0.5));
-        NamedCommands.registerCommand("HopperOutCommand", new InstantCommand(()-> m_hopperSubsystem.goToPosition(HopperConstants.fullyExtended)));
+        NamedCommands.registerCommand("HopperOutCommand", new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended, HopperConstants.cruiseVelocityRPS));
         NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
         NamedCommands.registerCommand("RunKickerRollerHopper", new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_hopperSubsystem));
 
@@ -129,7 +129,7 @@ public class RobotContainer {
                 ),
                 new IntakeCommand(m_intakeSubsystem, 6)
             )
-        ).onFalse(new InstantCommand(() -> m_hopperSubsystem.goToPosition(HopperConstants.fullyExtended)));
+        ).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended, HopperConstants.cruiseVelocityRPS));
         joystick.povUp().whileTrue(
             new ParallelCommandGroup(
 
@@ -144,8 +144,7 @@ public class RobotContainer {
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 15));
         joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, 15));
         joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
-        joystick.y().onTrue(new HopperToggleCommand(m_hopperSubsystem));
-
+        joystick.y().onTrue(new HopperToggleCommand(m_hopperSubsystem, HopperConstants.cruiseVelocityRPS));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
