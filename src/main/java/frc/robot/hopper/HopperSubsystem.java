@@ -40,7 +40,7 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public void zeroHopper() {
-    elevatorMotor.setPosition(0);
+    elevatorMotor.setPosition(0.0);
   }
 
   @Override

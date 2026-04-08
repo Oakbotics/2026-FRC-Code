@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -142,12 +143,13 @@ public class RobotContainer {
         joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
         joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 15));
-        joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, 15));
+        // joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, 15));
         // joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
         // joystick.y().onTrue(new HopperToggleCommand(m_hopperSubsystem, HopperConstants.cruiseVelocityRPS));
 
         joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
         joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
+        joystick.x().onTrue(new InstantCommand(() -> m_hopperSubsystem.zeroHopper()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

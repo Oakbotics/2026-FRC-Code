@@ -17,12 +17,13 @@ public class HopperCommand extends Command {
         this.m_hopperSubsystem = hopperSubsystem;
         this.m_targetMeters = targetMeters;
         this.m_cruiseVelocityRPS = cruiseVelocityRPS;
+
         addRequirements(hopperSubsystem);
     }
 
     @Override
     public void initialize() {
-        m_hopperSubsystem.goToPosition(m_targetMeters, m_cruiseVelocityRPS);    
+        m_hopperSubsystem.goToPosition(m_targetMeters, m_cruiseVelocityRPS);
     }
 
     @Override
