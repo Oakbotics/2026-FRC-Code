@@ -4,12 +4,12 @@ public class HopperConstants {
 
   public static final int hopperMotorID = 7;
 
-  public static final double kP = 5.0;
+  public static final double kP = 1.0;
   public static final double kI = 0.0;
   public static final double kD = 0.0;
   public static final double kS = 0.0;
-  public static final double kV = 0.0;
-  public static final double kA = 0.0;
+  public static final double kV = 0.13;
+  public static final double kA = 0.01;
   public static final double kG = 0.0; //we set 0 because we are horizontal
 
   public static final double gearRatio = 64.0 / 14.0; // 64 tooth gear is meshing with a 14 tooth gear
