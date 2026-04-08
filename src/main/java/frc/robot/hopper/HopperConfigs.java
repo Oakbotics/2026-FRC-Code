@@ -27,8 +27,6 @@ public final class HopperConfigs {
         config.Slot0.kG = HopperConstants.kG;
         config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
-        config.Feedback.SensorToMechanismRatio = HopperConstants.gearRatio; //dont forgor💀
-
         config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = HopperConstants.forwardSoftLimitMeters / HopperConstants.metersPerRotation; //how far we can come out
         config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
