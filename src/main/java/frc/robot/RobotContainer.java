@@ -45,6 +45,7 @@ import frc.robot.vision.LimeLightSubsystem;
 import frc.robot.vision.ResetOdometryLimelight;
 import frc.robot.vision.ShootFromHubDistance;
 import frc.robot.shooter.KickerCommandGroup;
+import frc.robot.shooter.KickerRollerCommand;
 import frc.robot.shooter.KickerSubsystem;
 import frc.robot.shooter.LeftShooterSubsystem;
 import frc.robot.shooter.RightShooterSubsystem;
@@ -89,9 +90,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("SlowIntakeCommand", new IntakeCommand(m_intakeSubsystem, 6).withTimeout(2));
         NamedCommands.registerCommand("Outake", new OutakeCommand(m_intakeSubsystem, 15).withTimeout(0.5));
         NamedCommands.registerCommand("HopperOutCommand", new InstantCommand(()-> m_hopperSubsystem.goToPosition(HopperConstants.fullyExtended)));
-        // NamedCommands.registerCommand("STARTIntakeCommand", new IntakeAutoStartCommandGroup(m_intakeSubsystem, m_wristSubsystem).withTimeout(4));
         NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
-        NamedCommands.registerCommand("RunKickerRoller", new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem));
+        NamedCommands.registerCommand("RunKickerRollerHopper", new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_hopperSubsystem));
 
         m_autoChooser = AutoBuilder.buildAutoChooser();
         
@@ -127,19 +127,18 @@ public class RobotContainer {
                     () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
                     () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
                 ),
-                new IntakeCommand(m_intakeSubsystem, 6),
-                new HopperFeedShootCommand(m_hopperSubsystem, isShooting)
+                new IntakeCommand(m_intakeSubsystem, 6)
             )
         ).onFalse(new InstantCommand(() -> m_hopperSubsystem.goToPosition(HopperConstants.fullyExtended)));
         joystick.povUp().whileTrue(
             new ParallelCommandGroup(
 
-                new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem)
-                // new HopperFeedShootCommand(m_hopperSubsystem, isShooting)
+                new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
+                new IntakeCommand(m_intakeSubsystem, 15)
             )
         );
 
-        joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem));
+        joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_hopperSubsystem));
         joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
         joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 15));

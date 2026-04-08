@@ -23,12 +23,12 @@ public class HopperToggleCommand extends Command {
         } else {
             m_targetMeters = HopperConstants.fullyRetracted;
         }
+
+        m_hopper.goToPosition(m_targetMeters);
     }
 
     @Override
-    public void execute() {
-        m_hopper.goToPosition(m_targetMeters);
-    }
+    public void execute() {}
 
     @Override
     public void end(boolean interrupted) {

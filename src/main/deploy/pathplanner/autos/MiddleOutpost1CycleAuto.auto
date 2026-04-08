@@ -116,13 +116,19 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "RunKickerHopper"
+                  "name": "RunKickerRollerHopper"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "ShootFromHubDistance"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeCommand"
                 }
               }
             ]

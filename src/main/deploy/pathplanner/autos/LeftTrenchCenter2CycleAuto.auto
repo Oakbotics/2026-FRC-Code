@@ -29,7 +29,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "STARTIntakeCommand"
+                  "name": "HopperOutCommand"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeCommand"
                 }
               }
             ]
@@ -79,13 +85,13 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 3.5
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "RunKickerHopper"
+                  "name": "RunKickerRollerHopper"
                 }
               },
               {
@@ -97,28 +103,10 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DumpWristCommand"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SlowIntakeCommand"
+                  "name": "IntakeCommand"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Outake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "WristCommand"
           }
         },
         {
@@ -184,13 +172,13 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 3.5
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "RunKickerHopper"
+                  "name": "RunKickerRollerHopper"
                 }
               },
               {
@@ -202,22 +190,10 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DumpWristCommand"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SlowIntakeCommand"
+                  "name": "IntakeCommand"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "WristCommand"
           }
         }
       ]
