@@ -15,7 +15,7 @@ public class HopperConstants {
   public static final double gearRatio = 64.0 / 14.0; // 64 tooth gear is meshing with a 14 tooth gear
   //circumfrence
   public static final double sprocketCircumfrence = 0.045466 * Math.PI;
-  public static final double metersPerRotation = gearRatio * sprocketCircumfrence;
+  public static final double metersPerRotation = sprocketCircumfrence / gearRatio;
 
   public static final double positionToleranceMeters = 0.005; //dont forgor💀
 
