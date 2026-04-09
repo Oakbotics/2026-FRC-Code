@@ -7,7 +7,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public final class HopperConfigs {
     //Comments will be placed in places where we have to tune so we dont forgor💀
-    public TalonFXConfiguration elevatorMotorConfig() {
+    public TalonFXConfiguration hopperMotorConfig() {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;

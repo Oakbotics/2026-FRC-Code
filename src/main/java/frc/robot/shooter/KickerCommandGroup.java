@@ -16,7 +16,7 @@ public class KickerCommandGroup extends SequentialCommandGroup {
         addCommands(
             new ParallelCommandGroup(
                 new KickerRollerCommand(m_kickerSubsystem, m_rollerSubsystem),
-                new HopperFeedShootCommand(m_hopperSubsystem, HopperConstants.elevatorFeedingRPS)
+                new HopperFeedShootCommand(m_hopperSubsystem)
             )
         );
         

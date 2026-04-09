@@ -29,8 +29,8 @@ public class HopperCommand extends Command {
 
     @Override
     public void execute() {
-        SmartDashboard.putNumber("Elevator Target Meters", m_targetMeters);
-        SmartDashboard.putNumber("Elevator Current Pose Meters", m_hopperSubsystem.getPositionMeters());
+        SmartDashboard.putNumber("Hopper Target Meters", m_targetMeters);
+        SmartDashboard.putNumber("Hopper Current Pose Meters", m_hopperSubsystem.getPositionMeters());
     }
 
     @Override
