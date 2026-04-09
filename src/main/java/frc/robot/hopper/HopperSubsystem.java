@@ -43,15 +43,6 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public void goToPosition(double meters) {
-    goToPosition(meters, HopperConstants.KVelocity);
-  }
-
-  // expoKV controls peak speed: lower = faster (peak vel ≈ 12V / expoKV).
-  public void goToPosition(double meters, double expoKV) {
-    MotionMagicConfigs mmConfigs = new MotionMagicConfigs();
-    mmConfigs.MotionMagicExpo_kV = expoKV;
-    mmConfigs.MotionMagicExpo_kA = HopperConstants.KAcceleration;
-    hopperMotor.getConfigurator().apply(mmConfigs);
     double targetRotations = meters / HopperConstants.metersPerRotation;
     hopperMotor.setControl(setpointRequest.withPosition(targetRotations));
   }

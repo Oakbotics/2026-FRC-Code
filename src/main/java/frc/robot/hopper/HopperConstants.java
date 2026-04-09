@@ -23,7 +23,8 @@ public class HopperConstants {
   public static final double reverseSoftLimitMeters = 0.0;
 
   public static final double KVelocity = 0.5;
-
+  public static final double maxFowardVolts = 6;
+  public static final double maxBackwardVolts = -6;
   public static final double KAcceleration = 1.0;
 
   public static final double fullyExtended = 0.3;
