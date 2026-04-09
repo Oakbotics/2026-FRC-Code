@@ -147,11 +147,11 @@ public class RobotContainer {
         // joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
         // joystick.y().onTrue(new HopperToggleCommand(m_hopperSubsystem, HopperConstants.cruiseVelocityRPS));
 
-        // joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
-        // joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
+        joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
+        joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
         joystick.x().onTrue(new InstantCommand(() -> m_hopperSubsystem.zeroHopper()));
-        joystick.a().whileTrue(new InstantCommand(() -> m_hopperSubsystem.runHopperFront(6)));
-        joystick.y().whileTrue(new InstantCommand(() -> m_hopperSubsystem.runHopperBack(6)));
+        // joystick.a().whileTrue(new InstantCommand(() -> m_hopperSubsystem.runHopperFront(6)));
+        // joystick.y().whileTrue(new InstantCommand(() -> m_hopperSubsystem.runHopperBack(6)));
 
 
         drivetrain.registerTelemetry(logger::telemeterize);
