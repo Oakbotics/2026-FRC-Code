@@ -11,7 +11,7 @@ public class HopperCommand extends Command {
 
     // Uses default speed from HopperConstants.expoKV
     public HopperCommand(HopperSubsystem hopperSubsystem, double targetMeters) {
-        this(hopperSubsystem, targetMeters, HopperConstants.expoKV);
+        this(hopperSubsystem, targetMeters, HopperConstants.KVelocity);
     }
 
     // expoKV controls peak speed: lower = faster (peak vel ≈ 12V / expoKV)
