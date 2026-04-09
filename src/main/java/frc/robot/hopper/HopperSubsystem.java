@@ -2,8 +2,11 @@ package frc.robot.hopper;
 
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,7 +15,7 @@ public class HopperSubsystem extends SubsystemBase {
 
   private final TalonFX elevatorMotor;
   private final HopperConfigs configs;
-  private final DynamicMotionMagicVoltage setpointRequest = new DynamicMotionMagicVoltage(0, HopperConstants.cruiseVelocityRPS, HopperConstants.accelerationRPSS);
+  private final PositionVoltage setpointRequest = new PositionVoltage(0.0);
 
   public HopperSubsystem() {
     configs = new HopperConfigs();
@@ -31,8 +34,8 @@ public class HopperSubsystem extends SubsystemBase {
 
   public void goToPosition(double meters, double cruiseVelocityRPS) {
     double targetRotations = meters / HopperConstants.metersPerRotation;
-    double accelerationRPS2 = cruiseVelocityRPS * 2;
-    elevatorMotor.setControl(setpointRequest.withPosition(targetRotations).withVelocity(cruiseVelocityRPS).withAcceleration(accelerationRPS2));
+    // double accelerationRPS2 = cruiseVelocityRPS * 2;
+    elevatorMotor.setControl(setpointRequest.withPosition(targetRotations).withVelocity(cruiseVelocityRPS));
   }
 
   public void goToPosition(double meters) {
