@@ -7,7 +7,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public final class HopperConfigs {
     //Comments will be placed in places where we have to tune so we dont forgor💀
-    public TalonFXConfiguration hopperMotorConfig() {
+    public TalonFXConfiguration elevatorMotorConfig() {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
@@ -32,11 +32,8 @@ public final class HopperConfigs {
         config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = HopperConstants.reverseSoftLimitMeters / HopperConstants.metersPerRotation; //how far we can come int
 
-        // config.MotionMagic.MotionMagicExpo_kV = HopperConstants.KVelocity;
-        // config.MotionMagic.MotionMagicExpo_kA = HopperConstants.KAcceleration;
-
-        config.Voltage.PeakForwardVoltage = HopperConstants.maxFowardVolts;
-        config.Voltage.PeakReverseVoltage = HopperConstants.maxBackwardVolts;
+        config.MotionMagic.MotionMagicExpo_kV = HopperConstants.expoKV;
+        config.MotionMagic.MotionMagicExpo_kA = HopperConstants.expoKA;
 
         return config;
     }
