@@ -32,8 +32,8 @@ public final class HopperConfigs {
         config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = HopperConstants.reverseSoftLimitMeters / HopperConstants.metersPerRotation; //how far we can come int
 
-        config.MotionMagic.MotionMagicCruiseVelocity = HopperConstants.cruiseVelocityRPS;
-        config.MotionMagic.MotionMagicAcceleration = HopperConstants.accelerationRPSS;
+        config.MotionMagic.MotionMagicExpo_kV = HopperConstants.expoKV;
+        config.MotionMagic.MotionMagicExpo_kA = HopperConstants.expoKA;
 
         return config;
     }

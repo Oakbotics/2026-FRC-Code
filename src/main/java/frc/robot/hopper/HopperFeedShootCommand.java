@@ -1,7 +1,5 @@
 package frc.robot.hopper;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -10,21 +8,15 @@ public class HopperFeedShootCommand extends Command {
     private final HopperSubsystem m_hopper;
     private final Timer m_feedTimer = new Timer();
     private boolean m_feeding;
-    private final double m_cruiseVelocityRPS;
-    
-    public HopperFeedShootCommand(HopperSubsystem hopper) {
-        this(hopper, HopperConstants.elevatorFeedingRPS);
-    }
 
-    public HopperFeedShootCommand(HopperSubsystem hopper, double cruiseVelocityRPS) {
+    public HopperFeedShootCommand(HopperSubsystem hopper) {
         this.m_hopper = hopper;
-        this.m_cruiseVelocityRPS = cruiseVelocityRPS;
         addRequirements(hopper);
     }
 
     @Override
     public void initialize() {
-        m_hopper.goToPosition(HopperConstants.fullyRetracted, m_cruiseVelocityRPS);
+        m_hopper.goToPosition(HopperConstants.fullyRetracted);
     }
 
     @Override

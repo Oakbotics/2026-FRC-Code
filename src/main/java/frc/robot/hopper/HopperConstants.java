@@ -22,10 +22,13 @@ public class HopperConstants {
   public static final double forwardSoftLimitMeters = 0.4;
   public static final double reverseSoftLimitMeters = 0.0;
 
-  public static final double cruiseVelocityRPS = 5.0;
-  public static final double accelerationRPSS = 5.0;
+  //   Peak velocity ≈ 12V / expoKV. At 0.12 → ~100 rot/s motor speed.
+  public static final double expoKV = 0.12;
+
+  // volts per (motor rot/s²). Controls how hard the motor pushes during acceleration.
+  public static final double expoKA = 0.10;
 
   public static final double fullyExtended = 0.3;
   public static final double fullyRetracted = 0.0;
-  public static final double elevatorFeedingRPS= 3.0;
+  public static final double elevatorFeedingRPS = 3.0;
 }
