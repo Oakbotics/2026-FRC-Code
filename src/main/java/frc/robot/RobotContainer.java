@@ -62,6 +62,7 @@ public class RobotContainer {
     private final RollerSubsystem m_rollerSubsystem = new RollerSubsystem();
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     private final HopperSubsystem m_hopperSubsystem = new HopperSubsystem();
+    // private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -97,6 +98,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
         NamedCommands.registerCommand("RunKickerRollerHopper", new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_hopperSubsystem));
 
+
         m_autoChooser = AutoBuilder.buildAutoChooser();
         
         configureBindings();
@@ -111,7 +113,7 @@ public class RobotContainer {
                 
                 return drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * speedMultiplier) 
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * speedMultiplier) 
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * speedMultiplier);
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate);
             })
         );
 

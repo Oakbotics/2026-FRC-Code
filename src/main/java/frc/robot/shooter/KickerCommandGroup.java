@@ -19,14 +19,19 @@ public class KickerCommandGroup extends SequentialCommandGroup {
                 new KickerRollerCommand(m_kickerSubsystem, m_rollerSubsystem),
 
                 new SequentialCommandGroup(
-                    new HopperCommand(m_hopperSubsystem, 0.25),
-                    new WaitCommand(1),
-                    new HopperCommand(m_hopperSubsystem, 0.20),
-                    new WaitCommand(1),
                     new HopperCommand(m_hopperSubsystem, 0.15),
-                    new WaitCommand(1),
-                    new HopperCommand(m_hopperSubsystem, 0.05)
+                    new WaitCommand(0.25),
+                    new HopperCommand(m_hopperSubsystem, 0.10),
+                    new WaitCommand(0.25),
+                    new HopperCommand(m_hopperSubsystem, 0.15),
+                    new WaitCommand(0.25),
+                    new HopperCommand(m_hopperSubsystem, 0.10),
+                    new WaitCommand(0.25),
+                    new HopperCommand(m_hopperSubsystem, 0.15),
+                    new WaitCommand(0.25),
+                    new HopperCommand(m_hopperSubsystem, 0.10)
                 )
+            
 
             )
         );
