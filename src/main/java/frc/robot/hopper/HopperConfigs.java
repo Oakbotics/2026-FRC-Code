@@ -18,12 +18,12 @@ public final class HopperConfigs {
         config.CurrentLimits.SupplyCurrentLimit = 40;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-        config.Slot0.kP = HopperConstants.kP; //dont forgor💀
-        config.Slot0.kI = HopperConstants.kI; //dont forgor💀
-        config.Slot0.kD = HopperConstants.kD; //dont forgor💀
-        config.Slot0.kS = HopperConstants.kS; //dont forgor💀
-        config.Slot0.kV = HopperConstants.kV; //dont forgor💀
-        config.Slot0.kA = HopperConstants.kA; //dont forgor💀
+        config.Slot0.kP = HopperConstants.kP; 
+        config.Slot0.kI = HopperConstants.kI; 
+        config.Slot0.kD = HopperConstants.kD; 
+        config.Slot0.kS = HopperConstants.kS; 
+        config.Slot0.kV = HopperConstants.kV; 
+        config.Slot0.kA = HopperConstants.kA; 
         config.Slot0.kG = HopperConstants.kG;
 
         config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
