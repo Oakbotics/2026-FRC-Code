@@ -29,7 +29,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AutoStart"
+                  "name": "IntakeHopper"
                 }
               }
             ]
@@ -116,7 +116,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeCommand"
+                  "name": "IntakeHopper"
                 }
               }
             ]
