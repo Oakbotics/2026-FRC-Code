@@ -25,15 +25,14 @@ public final class HopperConfigs {
         config.Slot0.kV = HopperConstants.kV; //dont forgor💀
         config.Slot0.kA = HopperConstants.kA; //dont forgor💀
         config.Slot0.kG = HopperConstants.kG;
-        config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
         config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
         config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = HopperConstants.forwardSoftLimitMeters / HopperConstants.metersPerRotation; //how far we can come out
         config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = HopperConstants.reverseSoftLimitMeters / HopperConstants.metersPerRotation; //how far we can come int
 
-        config.MotionMagic.MotionMagicCruiseVelocity = HopperConstants.cruiseVelocityRPS;
-        config.MotionMagic.MotionMagicAcceleration = HopperConstants.accelerationRPSS;
+        config.MotionMagic.MotionMagicExpo_kV = HopperConstants.expoKV;
+        config.MotionMagic.MotionMagicExpo_kA = HopperConstants.expoKA;
 
         return config;
     }

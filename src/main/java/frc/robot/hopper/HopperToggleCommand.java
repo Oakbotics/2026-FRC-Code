@@ -7,16 +7,10 @@ public class HopperToggleCommand extends Command {
 
     private static final double nearRetracted = HopperConstants.fullyRetracted + HopperConstants.positionToleranceMeters;
     private final HopperSubsystem m_hopper;
-    private final double m_cruiseVelocityRPS;
     private double m_targetMeters;
 
     public HopperToggleCommand(HopperSubsystem hopper) {
-        this(hopper, HopperConstants.elevatorFeedingRPS);
-    }
-
-    public HopperToggleCommand(HopperSubsystem hopper, double cruiseVelocityRPS) {
         this.m_hopper = hopper;
-        this.m_cruiseVelocityRPS = cruiseVelocityRPS;
         addRequirements(hopper);
     }
 
@@ -29,7 +23,7 @@ public class HopperToggleCommand extends Command {
             m_targetMeters = HopperConstants.fullyRetracted;
         }
 
-        m_hopper.goToPosition(m_targetMeters, m_cruiseVelocityRPS);
+        m_hopper.goToPosition(m_targetMeters);
     }
 
     @Override
