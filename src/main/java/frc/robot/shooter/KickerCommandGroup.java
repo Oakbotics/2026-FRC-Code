@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.hopper.HopperCommand;
 import frc.robot.hopper.HopperConstants;
 import frc.robot.hopper.HopperFeedShootCommand;
 import frc.robot.hopper.HopperSubsystem;
@@ -16,7 +17,19 @@ public class KickerCommandGroup extends SequentialCommandGroup {
         addCommands(
             new ParallelCommandGroup(
                 new KickerRollerCommand(m_kickerSubsystem, m_rollerSubsystem),
-                new HopperFeedShootCommand(m_hopperSubsystem)
+
+                new SequentialCommandGroup(
+                    new HopperCommand(m_hopperSubsystem, 0.25),
+                    new WaitCommand(1),
+                    new HopperCommand(m_hopperSubsystem, 0.20),
+                    new WaitCommand(1),
+                    new HopperCommand(m_hopperSubsystem, 0.15),
+                    new WaitCommand(1),
+                    new HopperCommand(m_hopperSubsystem, 0.05),
+                    new WaitCommand(0.5),
+                    new HopperCommand(m_hopperSubsystem, 0.0)
+                )
+
             )
         );
         
