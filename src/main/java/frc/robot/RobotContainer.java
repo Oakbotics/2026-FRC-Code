@@ -130,10 +130,10 @@ public class RobotContainer {
                 ),
                 new IntakeCommand(m_intakeSubsystem, 6)
             )
-        ).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended, HopperConstants.expoKA));
+        ).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
+
         joystick.povUp().whileTrue(
             new ParallelCommandGroup(
-
                 new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
                 new IntakeCommand(m_intakeSubsystem, 15)
             )
@@ -143,15 +143,13 @@ public class RobotContainer {
         joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
         joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 15));
-        // joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, 15));
-        // joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
-        // joystick.y().onTrue(new HopperToggleCommand(m_hopperSubsystem, HopperConstants.cruiseVelocityRPS));
+        joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, 15));
+        joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
+        joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
 
-        joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
-        joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
-        joystick.x().onTrue(new InstantCommand(() -> m_hopperSubsystem.zeroHopper()));
-        // joystick.a().whileTrue(new InstantCommand(() -> m_hopperSubsystem.runHopperFront(6)));
-        // joystick.y().whileTrue(new InstantCommand(() -> m_hopperSubsystem.runHopperBack(6)));
+        // joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
+        // joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
+        // joystick.x().onTrue(new InstantCommand(() -> m_hopperSubsystem.zeroHopper()));
 
 
         drivetrain.registerTelemetry(logger::telemeterize);
