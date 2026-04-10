@@ -25,9 +25,7 @@ public class KickerCommandGroup extends SequentialCommandGroup {
                     new WaitCommand(1),
                     new HopperCommand(m_hopperSubsystem, 0.15),
                     new WaitCommand(1),
-                    new HopperCommand(m_hopperSubsystem, 0.05),
-                    new WaitCommand(0.5),
-                    new HopperCommand(m_hopperSubsystem, 0.0)
+                    new HopperCommand(m_hopperSubsystem, 0.05)
                 )
 
             )

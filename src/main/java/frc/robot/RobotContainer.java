@@ -34,6 +34,7 @@ import frc.robot.hopper.HopperConstants;
 import frc.robot.hopper.HopperFeedShootCommand;
 import frc.robot.hopper.HopperSubsystem;
 import frc.robot.hopper.HopperToggleCommand;
+import frc.robot.intake.IntakeAutoStartCommandGroup;
 // import frc.robot.intake.IntakeAutoStartCommandGroup;
 import frc.robot.intake.IntakeCommand;
 import frc.robot.intake.IntakeSubsystem;
@@ -81,6 +82,8 @@ public class RobotContainer {
 
     public RobotContainer() {
         NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
+        NamedCommands.registerCommand("AutoStart", new IntakeAutoStartCommandGroup(m_intakeSubsystem, m_hopperSubsystem));
+
         NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
             drivetrain,
             m_limeLightSubsystem,
@@ -90,7 +93,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 15).withTimeout(4));
         NamedCommands.registerCommand("SlowIntakeCommand", new IntakeCommand(m_intakeSubsystem, 6).withTimeout(2));
         NamedCommands.registerCommand("Outake", new OutakeCommand(m_intakeSubsystem, 15).withTimeout(0.5));
-        NamedCommands.registerCommand("HopperOutCommand", new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended, HopperConstants.expoKA));
+        NamedCommands.registerCommand("HopperOutCommand", new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
         NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
         NamedCommands.registerCommand("RunKickerRollerHopper", new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_hopperSubsystem));
 
@@ -149,7 +152,7 @@ public class RobotContainer {
 
         // joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
         // joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
-        // joystick.x().onTrue(new InstantCommand(() -> m_hopperSubsystem.zeroHopper()));
+        // joystick.x().onTrue(new InstantCommand(() ->  m_hopperSubsystem.zeroHopper()));
 
 
         drivetrain.registerTelemetry(logger::telemeterize);
@@ -157,7 +160,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // return new PathPlannerAuto("RightTrenchCenter2CycleAuto");
-        return new PathPlannerAuto("LeftTrenchCenter2CycleAuto");
+        return new PathPlannerAuto("LeftGreedyTrenchCenter2CycleAuto");
         // return new PathPlannerAuto("BackAuto");
     }
 }

@@ -29,13 +29,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "HopperOutCommand"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeCommand"
+                  "name": "AutoStart"
                 }
               }
             ]
