@@ -3,6 +3,7 @@ package frc.robot.shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -17,20 +18,15 @@ public class KickerCommandGroup extends SequentialCommandGroup {
         addCommands(
             new ParallelCommandGroup(
                 new KickerRollerCommand(m_kickerSubsystem, m_rollerSubsystem),
-
-                new SequentialCommandGroup(
-                    new HopperCommand(m_hopperSubsystem, 0.15),
-                    new WaitCommand(0.25),
-                    new HopperCommand(m_hopperSubsystem, 0.10),
-                    new WaitCommand(0.25),
-                    new HopperCommand(m_hopperSubsystem, 0.15),
-                    new WaitCommand(0.25),
-                    new HopperCommand(m_hopperSubsystem, 0.10),
-                    new WaitCommand(0.25),
-                    new HopperCommand(m_hopperSubsystem, 0.15),
-                    new WaitCommand(0.25),
-                    new HopperCommand(m_hopperSubsystem, 0.10)
+                new RepeatCommand(
+                    new SequentialCommandGroup(
+                        new HopperCommand(m_hopperSubsystem, 0.20),
+                        new WaitCommand(0.25),
+                        new HopperCommand(m_hopperSubsystem, 0.10),
+                        new WaitCommand(0.25)
+                    )
                 )
+
             
 
             )
