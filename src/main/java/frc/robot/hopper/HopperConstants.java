@@ -27,7 +27,7 @@ public class HopperConstants {
 
   // volts per (motor rot/s²). Controls how hard the motor pushes during acceleration.
   public static final double expoKA = 0.10;
-  public static final double cruiseVelocityRPS = 100;
+  public static final double cruiseVelocityRPS = 45;
   public static final double accelerationRPSS = 120;
 
   public static final double fullyExtended = 0.3;
