@@ -155,7 +155,7 @@ public class RobotContainer {
 
         // joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
         // joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
-        joystick.povRight().onTrue(new InstantCommand(() ->  m_hopperSubsystem.zeroHopper()));
+        // joystick.povRight().onTrue(new InstantCommand(() ->  m_hopperSubsystem.zeroHopper()));
 
 
         drivetrain.registerTelemetry(logger::telemeterize);
