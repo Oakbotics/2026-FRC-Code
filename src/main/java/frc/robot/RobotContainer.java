@@ -96,7 +96,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Outake", new OutakeCommand(m_intakeSubsystem, 15).withTimeout(0.5));
         NamedCommands.registerCommand("HopperOutCommand", new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended).withTimeout(0.5));
         NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
-        NamedCommands.registerCommand("RunKickerRollerHopper", new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_hopperSubsystem));
+        NamedCommands.registerCommand("RunKickerRollerHopper", new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem,m_intakeSubsystem, m_hopperSubsystem));
 
 
         m_autoChooser = AutoBuilder.buildAutoChooser();
@@ -132,8 +132,7 @@ public class RobotContainer {
                     m_limeLightSubsystem,
                     () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
                     () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
-                ),
-                new IntakeCommand(m_intakeSubsystem, 6)
+                )
             )
         ).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
 
@@ -144,7 +143,7 @@ public class RobotContainer {
             )
         );
 
-        joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_hopperSubsystem)).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
+        joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_intakeSubsystem, m_hopperSubsystem)).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
         joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
         joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 10));

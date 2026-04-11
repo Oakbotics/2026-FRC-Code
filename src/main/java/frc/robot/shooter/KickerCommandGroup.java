@@ -11,10 +11,13 @@ import frc.robot.hopper.HopperCommand;
 import frc.robot.hopper.HopperConstants;
 import frc.robot.hopper.HopperFeedShootCommand;
 import frc.robot.hopper.HopperSubsystem;
+import frc.robot.intake.IntakeAutoStartCommandGroup;
+import frc.robot.intake.IntakeCommand;
+import frc.robot.intake.IntakeSubsystem;
 import frc.robot.roller.RollerSubsystem;
 
 public class KickerCommandGroup extends SequentialCommandGroup {
-    public KickerCommandGroup(KickerSubsystem m_kickerSubsystem, RollerSubsystem m_rollerSubsystem, HopperSubsystem m_hopperSubsystem) {
+    public KickerCommandGroup(KickerSubsystem m_kickerSubsystem, RollerSubsystem m_rollerSubsystem, IntakeSubsystem m_intakesubsystem, HopperSubsystem m_hopperSubsystem) {
         addCommands(
             new ParallelCommandGroup(
                 new KickerRollerCommand(m_kickerSubsystem, m_rollerSubsystem),
@@ -25,7 +28,8 @@ public class KickerCommandGroup extends SequentialCommandGroup {
                         new HopperCommand(m_hopperSubsystem, 0.05),
                         new WaitCommand(0.25)
                     )
-                )
+                ),
+                new IntakeCommand(m_intakesubsystem, 10)
 
             
 
