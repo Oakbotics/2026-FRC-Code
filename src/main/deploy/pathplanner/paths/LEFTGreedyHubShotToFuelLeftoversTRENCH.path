@@ -94,12 +94,12 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.18672199170123058,
+      "waypointRelativePos": 0.875518672199153,
       "rotationDegrees": 0.0
     },
     {
       "waypointRelativePos": 1.4712153518123474,
-      "rotationDegrees": -0.0
+      "rotationDegrees": 0.0
     },
     {
       "waypointRelativePos": 1.969294605809107,
@@ -124,7 +124,7 @@
       "minWaypointRelativePos": 2.3473945409428962,
       "maxWaypointRelativePos": 5.0,
       "constraints": {
-        "maxVelocity": 2.5,
+        "maxVelocity": 1.5,
         "maxAcceleration": 8.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,

@@ -94,7 +94,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(m_intakeSubsystem, 15).withTimeout(4));
         NamedCommands.registerCommand("SlowIntakeCommand", new IntakeCommand(m_intakeSubsystem, 6).withTimeout(2));
         NamedCommands.registerCommand("Outake", new OutakeCommand(m_intakeSubsystem, 15).withTimeout(0.5));
-        NamedCommands.registerCommand("HopperOutCommand", new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
+        NamedCommands.registerCommand("HopperOutCommand", new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended).withTimeout(0.5));
         NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
         NamedCommands.registerCommand("RunKickerRollerHopper", new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_hopperSubsystem));
 

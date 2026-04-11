@@ -104,6 +104,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "HopperOutCommand"
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
