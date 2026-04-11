@@ -93,12 +93,6 @@
                 "data": {
                   "name": "ShootFromHubDistance"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeCommand"
-                }
               }
             ]
           }
@@ -179,12 +173,6 @@
                 "type": "named",
                 "data": {
                   "name": "ShootFromHubDistance"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeCommand"
                 }
               }
             ]
