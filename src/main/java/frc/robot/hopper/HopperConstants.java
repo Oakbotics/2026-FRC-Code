@@ -30,7 +30,7 @@ public class HopperConstants {
   public static final double cruiseVelocityRPS = 20.0;
   public static final double accelerationRPSS = 40.0;
 
-  public static final double fullyExtended = 0.3;
+  public static final double fullyExtended = 0.28;
   public static final double fullyRetracted = 0.04;
   public static final double elevatorFeedingRPS = 3.0;
 }
