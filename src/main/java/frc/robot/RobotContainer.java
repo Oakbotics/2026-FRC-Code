@@ -157,8 +157,8 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // return new PathPlannerAuto("RightTrenchCenter2CycleAuto");
-        return new PathPlannerAuto("LeftGreedyTrenchCenter2CycleAuto");
+        return new PathPlannerAuto("RightGreedyTrenchCenter2CycleAuto");
+        // return new PathPlannerAuto("LeftGreedyTrenchCenter2CycleAuto");
         // return new PathPlannerAuto("BackAuto");
     }
 }
