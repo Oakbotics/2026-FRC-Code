@@ -1,6 +1,9 @@
 package frc.robot.hopper;
 
+import java.util.concurrent.locks.Condition;
+
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -51,12 +54,17 @@ public class HopperSubsystem extends SubsystemBase {
     mmConfigs.MotionMagicExpo_kV = expoKV;
     mmConfigs.MotionMagicExpo_kA = HopperConstants.expoKA;
     elevatorMotor.getConfigurator().apply(mmConfigs);
+    elevatorMotor.getConfigurator().apply(configs.elevatorMotorConfig());
     double targetRotations = meters / HopperConstants.metersPerRotation;
     elevatorMotor.setControl(setpointRequest.withPosition(targetRotations));
   }
 
   public void zeroHopper() {
     elevatorMotor.setPosition(0.0);
+  }
+
+  public void applyIdleConfigs() {
+    elevatorMotor.getConfigurator().apply(configs.idleElevatorMotorConfig());
   }
 
   @Override

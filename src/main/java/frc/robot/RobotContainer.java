@@ -31,6 +31,7 @@ import frc.robot.util.ElasticDashboard;
 import frc.robot.drive.TunerConstants;
 import frc.robot.hopper.HopperCommand;
 import frc.robot.hopper.HopperConstants;
+import frc.robot.hopper.HopperExtendCommandGroup;
 import frc.robot.hopper.HopperFeedShootCommand;
 import frc.robot.hopper.HopperSubsystem;
 import frc.robot.hopper.HopperToggleCommand;
@@ -139,13 +140,13 @@ public class RobotContainer {
             )
         );
 
-        joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_intakeSubsystem, m_hopperSubsystem)).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
+        joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_intakeSubsystem, m_hopperSubsystem)).onFalse(new HopperExtendCommandGroup(m_hopperSubsystem));
         joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
         joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 10));
-        joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, 10));
+        joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, m_rollerSubsystem, 10));
         joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
-        joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
+        joystick.y().onTrue(new HopperExtendCommandGroup(m_hopperSubsystem));
         
 
         // joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
