@@ -32,7 +32,7 @@ package frc.robot.shooter;
 //                         )
 //                     )
 //                 ),
-//                 new IntakeCommand(m_intakesubsystem, 10)
+//                 new IntakeCommand(m_intakesubsystem, IntakeConstants.intakeTorqueCurrent)
 //             )
 
 //         );
@@ -56,6 +56,7 @@ import frc.robot.hopper.HopperFeedShootCommand;
 import frc.robot.hopper.HopperSubsystem;
 import frc.robot.intake.IntakeAutoStartCommandGroup;
 import frc.robot.intake.IntakeCommand;
+import frc.robot.intake.IntakeConstants;
 import frc.robot.intake.IntakeSubsystem;
 import frc.robot.roller.RollerSubsystem;
 
@@ -91,7 +92,7 @@ public class KickerCommandGroup extends SequentialCommandGroup {
                         )
                     )
                 ),
-                new IntakeCommand(m_intakesubsystem, 10)
+                new IntakeCommand(m_intakesubsystem, IntakeConstants.intakeTorqueCurrent)
             )
 
         );

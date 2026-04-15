@@ -4,7 +4,7 @@
 
 package frc.robot.intake;
 
-import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class IntakeSubsystem extends SubsystemBase {
 
   private final TalonFX intakeMotor;
-  private final VoltageOut voltageOut = new VoltageOut(0); 
+  private final TorqueCurrentFOC torqueCurrentFOC = new TorqueCurrentFOC(0).withMaxAbsDutyCycle(0.9);
   private final IntakeConfigs configs;
   
   public IntakeSubsystem() {
@@ -21,12 +21,12 @@ public class IntakeSubsystem extends SubsystemBase {
     configureMotors();
   }
 
-  public void intakeFuel(double speed) {
-    intakeMotor.setControl(voltageOut.withOutput(speed));
+  public void intakeFuel(double amps) {
+    intakeMotor.setControl(torqueCurrentFOC.withOutput(amps));
   }
 
-  public void outakeFuel(double speed) {
-    intakeMotor.setControl(voltageOut.withOutput(-speed));
+  public void outakeFuel(double amps) {
+    intakeMotor.setControl(torqueCurrentFOC.withOutput(-amps));
   }
 
   public void configureMotors() {

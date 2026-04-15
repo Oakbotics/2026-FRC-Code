@@ -20,10 +20,10 @@ public class IntakeAutoStartCommandGroup extends SequentialCommandGroup {
             new SequentialCommandGroup(
 
                 new ParallelCommandGroup(
-                    new IntakeCommand(m_intakeSubsystem, 10).withTimeout(0.5)
+                    new IntakeCommand(m_intakeSubsystem, IntakeConstants.intakeTorqueCurrent).withTimeout(0.5)
                 ),
                 new ParallelCommandGroup(
-                    new IntakeCommand(m_intakeSubsystem, 10),
+                    new IntakeCommand(m_intakeSubsystem, IntakeConstants.intakeTorqueCurrent),
                     new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended).withTimeout(0.25)
                 ) 
             )
