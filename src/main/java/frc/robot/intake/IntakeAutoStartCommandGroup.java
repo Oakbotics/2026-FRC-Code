@@ -10,15 +10,9 @@ import frc.robot.hopper.HopperConstants;
 import frc.robot.hopper.HopperSubsystem;
 
 public class IntakeAutoStartCommandGroup extends SequentialCommandGroup {
-    public IntakeAutoStartCommandGroup(
-        IntakeSubsystem m_intakeSubsystem,
-        HopperSubsystem m_hopperSubsystem
-
-    ) {
-
+    public IntakeAutoStartCommandGroup(IntakeSubsystem m_intakeSubsystem, HopperSubsystem m_hopperSubsystem) {
         addCommands(
             new SequentialCommandGroup(
-
                 new ParallelCommandGroup(
                     new IntakeCommand(m_intakeSubsystem, 10).withTimeout(0.5)
                 ),
@@ -27,8 +21,6 @@ public class IntakeAutoStartCommandGroup extends SequentialCommandGroup {
                     new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended).withTimeout(0.25)
                 ) 
             )
-
-   
         );
     }   
 }

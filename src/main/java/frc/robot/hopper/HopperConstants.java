@@ -1,7 +1,7 @@
 package frc.robot.hopper;
 
 public class HopperConstants {
-
+  
   public static final int hopperMotorID = 7;
 
   public static final double kP = 5.0;
@@ -39,5 +39,5 @@ public class HopperConstants {
 
   public static final double fullyExtended = 0.3;
   public static final double fullyRetracted = 0.04;
-  public static final double elevatorFeedingRPS = 3.0;
+  public static final double hopperFeedingRPS = 3.0;
 }

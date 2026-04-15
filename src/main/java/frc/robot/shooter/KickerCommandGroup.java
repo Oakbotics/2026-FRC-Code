@@ -64,6 +64,8 @@ public class KickerCommandGroup extends SequentialCommandGroup {
         addCommands(
             new ParallelCommandGroup(
                 new KickerRollerCommand(m_kickerSubsystem, m_rollerSubsystem),
+                new IntakeCommand(m_intakesubsystem, 10),
+                
                 new SequentialCommandGroup(
                     new WaitCommand(1.0),
                     new RepeatCommand(
@@ -90,13 +92,8 @@ public class KickerCommandGroup extends SequentialCommandGroup {
                             new WaitCommand(0.15)
                         )
                     )
-                ),
-                new IntakeCommand(m_intakesubsystem, 10)
+                )
             )
-
         );
-        
     }
 }
-
-

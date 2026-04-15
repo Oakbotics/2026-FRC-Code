@@ -16,31 +16,31 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class HopperSubsystem extends SubsystemBase {
 
-  private final TalonFX elevatorMotor;
+  private final TalonFX hopperMotor;
   private final HopperConfigs configs;
   private final VoltageOut voltageOut = new VoltageOut(0); 
   private final MotionMagicExpoVoltage setpointRequest = new MotionMagicExpoVoltage(0);
 
   public HopperSubsystem() {
     configs = new HopperConfigs();
-    elevatorMotor = new TalonFX(HopperConstants.hopperMotorID);
+    hopperMotor = new TalonFX(HopperConstants.hopperMotorID);
     //we do this because just in case the configs dont get applied the first time
     for (int i = 0; i < 5; i++) {
-      var status = elevatorMotor.getConfigurator().apply(configs.elevatorMotorConfig());
+      var status = hopperMotor.getConfigurator().apply(configs.hopperMotorConfig());
       if (status.isOK()) break;
     }
   }
 
   public void runHopperFront(double speed){
-    elevatorMotor.setControl(voltageOut.withOutput(speed));
+    hopperMotor.setControl(voltageOut.withOutput(speed));
   }
 
   public void runHopperBack(double speed){
-    elevatorMotor.setControl(voltageOut.withOutput(-speed));
+    hopperMotor.setControl(voltageOut.withOutput(-speed));
   }
 
   public double getPositionMeters() {
-    double mechanismRotations = elevatorMotor.getPosition(true).getValueAsDouble();
+    double mechanismRotations = hopperMotor.getPosition(true).getValueAsDouble();
     return mechanismRotations * HopperConstants.metersPerRotation;
   }
 
@@ -53,23 +53,23 @@ public class HopperSubsystem extends SubsystemBase {
     MotionMagicConfigs mmConfigs = new MotionMagicConfigs();
     mmConfigs.MotionMagicExpo_kV = expoKV;
     mmConfigs.MotionMagicExpo_kA = HopperConstants.expoKA;
-    elevatorMotor.getConfigurator().apply(mmConfigs);
-    elevatorMotor.getConfigurator().apply(configs.elevatorMotorConfig());
+    hopperMotor.getConfigurator().apply(mmConfigs);
+    hopperMotor.getConfigurator().apply(configs.hopperMotorConfig());
     double targetRotations = meters / HopperConstants.metersPerRotation;
-    elevatorMotor.setControl(setpointRequest.withPosition(targetRotations));
+    hopperMotor.setControl(setpointRequest.withPosition(targetRotations));
   }
 
   public void zeroHopper() {
-    elevatorMotor.setPosition(0.0);
+    hopperMotor.setPosition(0.0);
   }
 
   public void applyIdleConfigs() {
-    elevatorMotor.getConfigurator().apply(configs.idleElevatorMotorConfig());
+    hopperMotor.getConfigurator().apply(configs.idleHopperMotorConfig());
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Elevator Position Meters", getPositionMeters());
+    SmartDashboard.putNumber("Hopper Position Meters", getPositionMeters());
   }
 
   @Override
