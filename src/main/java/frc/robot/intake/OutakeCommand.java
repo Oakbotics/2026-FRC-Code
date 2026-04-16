@@ -34,14 +34,14 @@ public class OutakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intakeSubsystem.outakeFuel(speed);
+    // m_intakeSubsystem.outakeFuel(speed);
     m_rollerSubsystem.setSpeed(-ShooterConstants.hopperFeedPercent);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intakeSubsystem.outakeFuel(0);
+    // m_intakeSubsystem.outakeFuel(0);
     m_rollerSubsystem.setSpeed(0);
   }
 
