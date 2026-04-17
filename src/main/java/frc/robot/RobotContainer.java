@@ -121,11 +121,16 @@ public class RobotContainer {
         joystick.rightTrigger().whileTrue(
             new ParallelCommandGroup(
                 new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
-                new AlignRotationToHubOdometry(
-                    drivetrain,
-                    m_limeLightSubsystem,
-                    () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
-                    () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
+                
+                new SequentialCommandGroup(
+                    new AlignRotationToHubOdometry(
+                        drivetrain,
+                        m_limeLightSubsystem,
+                        () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
+                        () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
+                    ).withTimeout(1),
+
+                    drivetrain.applyRequest(() -> brake).withTimeout(3)
                 )
             )
         ).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
@@ -143,11 +148,11 @@ public class RobotContainer {
         joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 12));
         joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, m_rollerSubsystem, 12));
-        joystick.a().onTrue(drivetrain.applyRequest(() -> brake).withTimeout(0.1));
+        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.y().onTrue(new HopperExtendCommandGroup(m_hopperSubsystem));
 
 
-        // joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
+        joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
         // joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
         // joystick.povRight().onTrue(new InstantCommand(() ->  m_hopperSubsystem.zeroHopper()));
 

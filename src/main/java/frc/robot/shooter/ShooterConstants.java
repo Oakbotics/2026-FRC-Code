@@ -36,7 +36,7 @@ public class ShooterConstants {
 
     public static final int kickerMotorID = 3;
 
-    public static final double hopperFeedPercent = 0.35;
+    public static final double hopperFeedPercent = 0.5;
     public static final double kickerFeedPercent = 8.0;
     public static final double hopperReversePercent = 0.20;
     public static final double kickerReversePercent = 8.0;
