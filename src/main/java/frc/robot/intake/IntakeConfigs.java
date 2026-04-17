@@ -10,7 +10,7 @@ public class IntakeConfigs {
         config.CurrentLimits.SupplyCurrentLimit = 50;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-        config.CurrentLimits.StatorCurrentLimit = 40;
+        config.CurrentLimits.StatorCurrentLimit = 100;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
 
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;    
