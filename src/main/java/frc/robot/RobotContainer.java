@@ -63,7 +63,7 @@ public class RobotContainer {
     private final RollerSubsystem m_rollerSubsystem = new RollerSubsystem();
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     private final HopperSubsystem m_hopperSubsystem = new HopperSubsystem();
-    // private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -146,7 +146,7 @@ public class RobotContainer {
         joystick.y().onTrue(new HopperExtendCommandGroup(m_hopperSubsystem));
 
 
-        // joystick.povRight().whTrue();
+        joystick.povRight().whileTrue(drivetrain.applyRequest(() -> brake));
         // joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
         // joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
         // joystick.povRight().onTrue(new InstantCommand(() ->  m_hopperSubsystem.zeroHopper()));
