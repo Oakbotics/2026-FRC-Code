@@ -145,6 +145,8 @@ public class RobotContainer {
         joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
         joystick.y().onTrue(new HopperExtendCommandGroup(m_hopperSubsystem));
 
+
+        // joystick.povRight().whTrue();
         // joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
         // joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
         // joystick.povRight().onTrue(new InstantCommand(() ->  m_hopperSubsystem.zeroHopper()));
@@ -154,7 +156,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // return new PathPlannerAuto("RightGreedyTrenchCenter2CycleAuto");
-        // return new PathPlannerAuto("LeftGreedyTrenchCenter2CycleAuto");
-        return new PathPlannerAuto("MiddleGreedyTrenchCenter2CycleAuto");
+        return new PathPlannerAuto("LeftGreedyTrenchCenter2CycleAuto");
+        // return new PathPlannerAuto("MiddleGreedyTrenchCenter2CycleAuto");
     }
 }
