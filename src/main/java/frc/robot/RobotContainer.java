@@ -137,16 +137,13 @@ public class RobotContainer {
             )
         );
 
-        joystick.rightBumper().whileTrue(new SequentialCommandGroup(
-            drivetrain.applyRequest(() -> brake).withTimeout(0.1),
-            new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_intakeSubsystem, m_hopperSubsystem))
-        ).onFalse(new HopperExtendCommandGroup(m_hopperSubsystem));
+        joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_intakeSubsystem, m_hopperSubsystem)).onFalse(new HopperExtendCommandGroup(m_hopperSubsystem));
 
         joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
         joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 12));
         joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, m_rollerSubsystem, 12));
-        joystick.a().whileTrue(new AlignToTrench(drivetrain, () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed * speedMultiplier));
+        joystick.a().onTrue(drivetrain.applyRequest(() -> brake).withTimeout(0.1));
         joystick.y().onTrue(new HopperExtendCommandGroup(m_hopperSubsystem));
 
 
@@ -159,7 +156,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // return new PathPlannerAuto("RightGreedyTrenchCenter2CycleAuto");
-        // return new PathPlannerAuto("LeftGreedyTrenchCenter2CycleAuto");
-        return new PathPlannerAuto("LeftDELAYEDTrenchCenter2CycleAuto");
+        return new PathPlannerAuto("LeftGreedyTrenchCenter2CycleAuto");
+        // return new PathPlannerAuto("LeftDELAYEDTrenchCenter2CycleAuto");
     }
 }
