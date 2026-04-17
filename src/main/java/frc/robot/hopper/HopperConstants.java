@@ -40,4 +40,6 @@ public class HopperConstants {
   public static final double fullyExtended = 0.3;
   public static final double fullyRetracted = 0.04;
   public static final double hopperFeedingRPS = 3.0;
+
+  public static final double hopperAgitateDelay = 0.15;
 }

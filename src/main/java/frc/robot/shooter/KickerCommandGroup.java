@@ -21,49 +21,49 @@ public class KickerCommandGroup extends SequentialCommandGroup {
     public KickerCommandGroup(KickerSubsystem m_kickerSubsystem, RollerSubsystem m_rollerSubsystem, IntakeSubsystem m_intakesubsystem, HopperSubsystem m_hopperSubsystem) {
         addCommands(
             new SequentialCommandGroup(
-                new OutakeCommand(m_intakesubsystem, m_rollerSubsystem, 0).withTimeout(0.5),
+                new KickerRollerCommand(m_kickerSubsystem, m_rollerSubsystem, -1.0).withTimeout(0.5),
 
-            new ParallelCommandGroup(
-                
-                new KickerRollerCommand(m_kickerSubsystem, m_rollerSubsystem),
-                new IntakeCommand(m_intakesubsystem, 10),
-                
-                new SequentialCommandGroup(
-                new WaitCommand(1.5),
-                    new RepeatCommand(
-                        new SequentialCommandGroup(
-                            new HopperCommand(m_hopperSubsystem, 0.25),
-                            new WaitCommand(0.25),
-                            new HopperCommand(m_hopperSubsystem, 0.225),
-                            new WaitCommand(0.25),
-                            new HopperCommand(m_hopperSubsystem, 0.20),
-                            new WaitCommand(0.25),
-                            new HopperCommand(m_hopperSubsystem, 0.175),
-                            new WaitCommand(0.25),
-                            new HopperCommand(m_hopperSubsystem, 0.15),
-                            new WaitCommand(0.25),
-                            new HopperCommand(m_hopperSubsystem, 0.125),
-                            new WaitCommand(0.25),
-                            new HopperCommand(m_hopperSubsystem, 0.1),
-                            new WaitCommand(0.25),
-                            new HopperCommand(m_hopperSubsystem, 0.175),
-                            new WaitCommand(0.25),
-                            new HopperCommand(m_hopperSubsystem, 0.15),
-                            new WaitCommand(0.25),
-                            new HopperCommand(m_hopperSubsystem, 0.125),
-                            new WaitCommand(0.25),
-                            new HopperCommand(m_hopperSubsystem, 0.1),
-                            new WaitCommand(0.25),
-                            new HopperCommand(m_hopperSubsystem, 0.075),
-                            new WaitCommand(0.25),
-                            new HopperCommand(m_hopperSubsystem, 0.05),
-                            new WaitCommand(0.25),
-                            new HopperCommand(m_hopperSubsystem, 0.025),
-                            new WaitCommand(0.25)
+                new ParallelCommandGroup(
+                    
+                    new KickerRollerCommand(m_kickerSubsystem, m_rollerSubsystem),
+                    new IntakeCommand(m_intakesubsystem, 10),
+                    
+                    new SequentialCommandGroup(
+                    new WaitCommand(1.0),
+                        new RepeatCommand(
+                            new SequentialCommandGroup(
+                                new HopperCommand(m_hopperSubsystem, 0.25),
+                                new WaitCommand(HopperConstants.hopperAgitateDelay),
+                                new HopperCommand(m_hopperSubsystem, 0.225),
+                                new WaitCommand(HopperConstants.hopperAgitateDelay),
+                                new HopperCommand(m_hopperSubsystem, 0.20),
+                                new WaitCommand(HopperConstants.hopperAgitateDelay),
+                                new HopperCommand(m_hopperSubsystem, 0.175),
+                                new WaitCommand(HopperConstants.hopperAgitateDelay),
+                                new HopperCommand(m_hopperSubsystem, 0.15),
+                                new WaitCommand(HopperConstants.hopperAgitateDelay),
+                                new HopperCommand(m_hopperSubsystem, 0.125),
+                                new WaitCommand(HopperConstants.hopperAgitateDelay),
+                                new HopperCommand(m_hopperSubsystem, 0.1),
+                                new WaitCommand(HopperConstants.hopperAgitateDelay),
+                                new HopperCommand(m_hopperSubsystem, 0.175),
+                                new WaitCommand(HopperConstants.hopperAgitateDelay),
+                                new HopperCommand(m_hopperSubsystem, 0.15),
+                                new WaitCommand(HopperConstants.hopperAgitateDelay),
+                                new HopperCommand(m_hopperSubsystem, 0.125),
+                                new WaitCommand(HopperConstants.hopperAgitateDelay),
+                                new HopperCommand(m_hopperSubsystem, 0.1),
+                                new WaitCommand(HopperConstants.hopperAgitateDelay),
+                                new HopperCommand(m_hopperSubsystem, 0.075),
+                                new WaitCommand(HopperConstants.hopperAgitateDelay),
+                                new HopperCommand(m_hopperSubsystem, 0.05),
+                                new WaitCommand(HopperConstants.hopperAgitateDelay),
+                                new HopperCommand(m_hopperSubsystem, 0.025),
+                                new WaitCommand(HopperConstants.hopperAgitateDelay)
+                            )
                         )
                     )
                 )
-            )
             )
         );
     }

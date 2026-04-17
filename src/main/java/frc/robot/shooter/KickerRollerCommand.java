@@ -8,22 +8,33 @@ public class KickerRollerCommand extends Command {
 
     private final KickerSubsystem m_kickerSubsystem;
     private final RollerSubsystem m_rollerSubsystem;
+    private double m_speedMultiplier;
 
-    public KickerRollerCommand(KickerSubsystem m_kickerSubsystem, RollerSubsystem m_rollerSubsystem){
+    public KickerRollerCommand(KickerSubsystem m_kickerSubsystem, RollerSubsystem m_rollerSubsystem) {
 
         this.m_rollerSubsystem = m_rollerSubsystem;
         this.m_kickerSubsystem = m_kickerSubsystem;
+        this.m_speedMultiplier = 1.0;
+
+        addRequirements(m_kickerSubsystem, m_rollerSubsystem);
+    }
+
+    public KickerRollerCommand(KickerSubsystem m_kickerSubsystem, RollerSubsystem m_rollerSubsystem, double speedMultiplier) {
+
+        this.m_rollerSubsystem = m_rollerSubsystem;
+        this.m_kickerSubsystem = m_kickerSubsystem;
+        this.m_speedMultiplier = speedMultiplier;
 
         addRequirements(m_kickerSubsystem, m_rollerSubsystem);
     }
 
     @Override
-    public void initialize(){}
+    public void initialize() {}
 
     @Override
     public void execute() {
-        m_rollerSubsystem.setSpeed(ShooterConstants.hopperFeedPercent);
-        m_kickerSubsystem.setKickerSpeed(ShooterConstants.kickerFeedPercent); 
+        m_rollerSubsystem.setSpeed(ShooterConstants.hopperFeedPercent * m_speedMultiplier);
+        m_kickerSubsystem.setKickerSpeed(ShooterConstants.kickerFeedPercent * m_speedMultiplier); 
     }
     
     @Override

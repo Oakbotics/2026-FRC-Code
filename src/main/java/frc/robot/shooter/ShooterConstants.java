@@ -50,7 +50,6 @@ public class ShooterConstants {
     public static final double unjamReverseSec = 0.5;
     public static final double unjamRecoverySec = 0.18;
 
-
     public static final InterpolatingDoubleTreeMap DISTANCE_M_TO_RPS = new InterpolatingDoubleTreeMap();
 
     static {
