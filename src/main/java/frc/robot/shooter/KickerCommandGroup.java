@@ -26,7 +26,7 @@ public class KickerCommandGroup extends SequentialCommandGroup {
                 new ParallelCommandGroup(
                     
                     new KickerRollerCommand(m_kickerSubsystem, m_rollerSubsystem),
-                    new IntakeCommand(m_intakesubsystem, 10),
+                    new IntakeCommand(m_intakesubsystem, 12),
                     
                     new SequentialCommandGroup(
                     new WaitCommand(1.0),

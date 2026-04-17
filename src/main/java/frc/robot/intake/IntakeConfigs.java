@@ -7,10 +7,10 @@ public class IntakeConfigs {
     public TalonFXConfiguration intakeMotorConfigs() {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
-        config.CurrentLimits.SupplyCurrentLimit = 40;
+        config.CurrentLimits.SupplyCurrentLimit = 50;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-        config.CurrentLimits.StatorCurrentLimit = 100;
+        config.CurrentLimits.StatorCurrentLimit = 40;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
 
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;    
