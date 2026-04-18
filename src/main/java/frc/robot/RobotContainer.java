@@ -150,8 +150,7 @@ public class RobotContainer {
         joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, m_rollerSubsystem, 12));
         // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.y().onTrue(new HopperExtendCommandGroup(m_hopperSubsystem));
-
-
+ 
         joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
         // joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
         // joystick.povRight().onTrue(new InstantCommand(() ->  m_hopperSubsystem.zeroHopper()));
