@@ -128,9 +128,9 @@ public class RobotContainer {
                         m_limeLightSubsystem,
                         () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
                         () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
-                    ).withTimeout(1),
+                    ).withTimeout(1.25),
 
-                    drivetrain.applyRequest(() -> brake).withTimeout(3)
+                    drivetrain.applyRequest(() -> brake)
                 )
             )
         ).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));

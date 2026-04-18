@@ -93,6 +93,6 @@ public class AlignRotationToHubOdometry extends Command {
 
   @Override
   public boolean isFinished() {
-    return DriverStation.isAutonomousEnabled() && Math.abs(desiredHeading - currentHeading) <= Math.toRadians(3);
+    return DriverStation.isAutonomousEnabled() && Math.abs(desiredHeading - currentHeading) <= Math.toRadians(1.5);
   }
 }
