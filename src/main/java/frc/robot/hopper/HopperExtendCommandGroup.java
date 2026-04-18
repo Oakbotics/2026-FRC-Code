@@ -9,8 +9,8 @@ public class HopperExtendCommandGroup extends SequentialCommandGroup {
     public HopperExtendCommandGroup(HopperSubsystem m_hopperSubsystem) {
         addCommands(
            new SequentialCommandGroup(
-                new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended).withTimeout(3.0),
-                new InstantCommand(() -> m_hopperSubsystem.applyIdleConfigs())
+                new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended)//.withTimeout(3.0),
+                //new InstantCommand(() -> m_hopperSubsystem.applyIdleConfigs())
            )
         );
     }   
