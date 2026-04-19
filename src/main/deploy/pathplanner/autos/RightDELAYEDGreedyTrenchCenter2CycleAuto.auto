@@ -1,0 +1,193 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetOdometryLimelight"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RIGHTTrenchToFuelTRENCH"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeHopper"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RIGHTFuelToHubShotTRENCH"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetOdometryLimelight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignRotationToHubOdometry"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.25
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootFromHubDistance"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RunKickerRollerHopper"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootFromHubDistance"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "HopperOutCommand"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RIGHTGreedyHubShotToFuelLeftoversTRENCH"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeHopper"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RIGHTFuelLeftoversToHubShotTRENCH"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetOdometryLimelight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignRotationToHubOdometry"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.25
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootFromHubDistance"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RunKickerRollerHopper"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootFromHubDistance"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": null,
+  "choreoAuto": false
+}
