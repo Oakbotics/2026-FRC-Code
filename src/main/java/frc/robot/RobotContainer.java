@@ -33,6 +33,7 @@ import frc.robot.hopper.HopperCommand;
 import frc.robot.hopper.HopperConstants;
 import frc.robot.hopper.HopperExtendCommandGroup;
 import frc.robot.hopper.HopperFeedShootCommand;
+import frc.robot.hopper.HopperRetractCommandGroup;
 import frc.robot.hopper.HopperSubsystem;
 import frc.robot.hopper.HopperToggleCommand;
 import frc.robot.intake.IntakeAutoStartCommandGroup;
@@ -150,6 +151,7 @@ public class RobotContainer {
         joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, m_rollerSubsystem, 12));
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.y().onTrue(new HopperExtendCommandGroup(m_hopperSubsystem));
+        joystick.b().onTrue(new HopperRetractCommandGroup(m_hopperSubsystem));
 
         // joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
         // joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
@@ -160,7 +162,8 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // return new PathPlannerAuto("RightGreedyTrenchCenter2CycleAuto");
-        return new PathPlannerAuto("LeftGreedyTrenchCenter2CycleAuto");
+        // return new PathPlannerAuto("LeftGreedyTrenchCenter2CycleAuto");
         // return new PathPlannerAuto("LeftDELAYEDTrenchCenter2CycleAuto");
+        return new PathPlannerAuto("BackAuto");
     }
 }
