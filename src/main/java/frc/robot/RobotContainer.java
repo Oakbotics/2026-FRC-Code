@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -56,10 +57,12 @@ import frc.robot.shooter.KickerRollerCommand;
 import frc.robot.shooter.KickerSubsystem;
 import frc.robot.shooter.LeftShooterSubsystem;
 import frc.robot.shooter.RightShooterSubsystem;
+import frc.robot.shooter.ShooterCommand;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); 
+    public double shooterRPS = 5.0;
     boolean isPressed;
     private final LeftShooterSubsystem m_leftShooterSubsystem = new LeftShooterSubsystem();
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
@@ -83,25 +86,10 @@ public class RobotContainer {
 
     private final LimeLightSubsystem m_limeLightSubsystem = new LimeLightSubsystem(drivetrain);
     private final ElasticDashboard elastic_dashboard = new frc.robot.util.ElasticDashboard(drivetrain, m_limeLightSubsystem);
-    private final SendableChooser<Command> m_autoChooser;
     BooleanSupplier isShooting = () -> m_kickerSubsystem.getStatorCurrentAmps() > 15.0;
     double speedMultiplier;
 
     public RobotContainer() {
-        NamedCommands.registerCommand("ResetOdometryLimelight", new ResetOdometryLimelight(drivetrain));
-        NamedCommands.registerCommand("IntakeHopper", new IntakeAutoStartCommandGroup(m_intakeSubsystem, m_hopperSubsystem));
-        NamedCommands.registerCommand("AlignRotationToHubOdometry", new AlignRotationToHubOdometry( 
-            drivetrain,
-            m_limeLightSubsystem,
-            () -> MathUtil.applyDeadband(joystick.getLeftY(), 0.10) * MaxSpeed,
-            () -> MathUtil.applyDeadband(joystick.getLeftX(), 0.10) * MaxSpeed
-        ).withTimeout(1.0));
-        NamedCommands.registerCommand("HopperOutCommand", new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended).withTimeout(0.5));
-        NamedCommands.registerCommand("ShootFromHubDistance", new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem));
-        NamedCommands.registerCommand("RunKickerRollerHopper", new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem,m_intakeSubsystem, m_hopperSubsystem));
-
-        m_autoChooser = AutoBuilder.buildAutoChooser();
-        
         configureBindings();
     }
 
@@ -124,58 +112,30 @@ public class RobotContainer {
         );
         
         joystick.rightTrigger().whileTrue(
-            new ParallelCommandGroup(
-                new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
-                
-                new SequentialCommandGroup(
-                    new AlignRotationToHubOdometry(
-                        drivetrain,
-                        m_limeLightSubsystem,
-                        () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
-                        () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
-                    ) //.withTimeout(1.25),
-
-                    //drivetrain.applyRequest(() -> brake).withTimeout(3.0)
-                )
-            )
+            new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, () -> shooterRPS)
         ).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
 
-        joystick.povUp().whileTrue(
-            new ParallelCommandGroup(
-                new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
-                new IntakeCommand(m_intakeSubsystem, 12)
-            )
-        );
+        joystick.rightBumper().whileTrue(new KickerRollerCommand(m_kickerSubsystem, m_rollerSubsystem));
 
-        joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_intakeSubsystem, m_hopperSubsystem)).onFalse(new HopperExtendCommandGroup(m_hopperSubsystem));
+        joystick.povUp().onTrue(new InstantCommand(() -> shooterRPS = MathUtil.clamp(shooterRPS + 1, 1.0, 70.0)));
+        joystick.povDown().onTrue(new InstantCommand(() -> shooterRPS = MathUtil.clamp(shooterRPS - 1, 1.0, 70.0)));
 
         joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
-        joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+        joystick.povRight().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
         joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 12));
         joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, m_rollerSubsystem, 12));
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.y().onTrue(new HopperExtendCommandGroup(m_hopperSubsystem));
+        joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
+        joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, 0.15));
         // joystick.b().onTrue(new HopperRetractCommandGroup(m_hopperSubsystem));
-        joystick.b().onTrue(new ElevatorCommand(m_elevatorSubsystem, ElevatorConstants.fullyExtended));
+        // joystick.b().onTrue(new ElevatorCommand(m_elevatorSubsystem, ElevatorConstants.fullyExtended));
 
         // joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
-        // joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
         // joystick.povRight().onTrue(new InstantCommand(() ->  m_hopperSubsystem.zeroHopper()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
-        //normal trench autos
-        // return new PathPlannerAuto("RightGreedyTrenchCenter2CycleAuto");
-        // return new PathPlannerAuto("LeftGreedyTrenchCenter2CycleAuto");
-        
-        //middle autos
-        return new PathPlannerAuto("BackAuto");
-        // return new PathPlannerAuto("BackAutoDepot");
-
-        //heist autos 🤑🤑
-        // return new PathPlannerAuto("LLeftDELAYEDTrenchCenter2CycleAuto");
-        // return new PathPlannerAuto("RightDELAYEDTrenchCenter2CycleAuto");
+        return Commands.none();
     }
 }

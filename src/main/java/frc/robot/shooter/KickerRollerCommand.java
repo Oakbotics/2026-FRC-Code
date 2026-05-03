@@ -34,7 +34,7 @@ public class KickerRollerCommand extends Command {
     @Override
     public void execute() {
         m_rollerSubsystem.setSpeed(ShooterConstants.hopperFeedPercent * m_speedMultiplier);
-        m_kickerSubsystem.setKickerSpeed(ShooterConstants.kickerFeedPercent * m_speedMultiplier); 
+        m_kickerSubsystem.setKickerSpeed(ShooterConstants.kickerFeedPercent * m_speedMultiplier);
     }
     
     @Override
