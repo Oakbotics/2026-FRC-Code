@@ -62,7 +62,7 @@ import frc.robot.shooter.ShooterCommand;
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); 
-    public double shooterRPS = 5.0;
+    public double shooterRPS = 20.0;
     boolean isPressed;
     private final LeftShooterSubsystem m_leftShooterSubsystem = new LeftShooterSubsystem();
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
@@ -111,14 +111,31 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
         
+        // joystick.rightTrigger().whileTrue(
+        //     new ParallelCommandGroup(
+        //         new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
+                
+        //         new SequentialCommandGroup(
+        //             new AlignRotationToHubOdometry(
+        //                 drivetrain,
+        //                 m_limeLightSubsystem,
+        //                 () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
+        //                 () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
+        //             )
+        //         )
+        //     )
+        // ).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
+
         joystick.rightTrigger().whileTrue(
             new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, () -> shooterRPS)
         ).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
 
         joystick.rightBumper().whileTrue(new KickerRollerCommand(m_kickerSubsystem, m_rollerSubsystem));
 
-        joystick.povUp().onTrue(new InstantCommand(() -> shooterRPS = MathUtil.clamp(shooterRPS + 1, 1.0, 70.0)));
-        joystick.povDown().onTrue(new InstantCommand(() -> shooterRPS = MathUtil.clamp(shooterRPS - 1, 1.0, 70.0)));
+        // joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_intakeSubsystem, m_hopperSubsystem)).onFalse(new HopperExtendCommandGroup(m_hopperSubsystem));
+
+        joystick.povUp().onTrue(new InstantCommand(() -> shooterRPS = MathUtil.clamp(shooterRPS + 2.0, 5.0, 70.0)));
+        joystick.povDown().onTrue(new InstantCommand(() -> shooterRPS = MathUtil.clamp(shooterRPS - 2.0, 5.0, 70.0)));
 
         joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
         joystick.povRight().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
