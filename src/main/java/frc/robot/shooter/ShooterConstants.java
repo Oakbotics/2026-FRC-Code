@@ -29,7 +29,7 @@ public class ShooterConstants {
 
     // public static final int velocityTorque = 40;
 
-    public static final int leftShooterMotorOneID = 4;
+    public static final int leftShooterMotorOneID = 7;
     public static final int leftShooterMotorTwoID = 2;
     public static final int rightShooterMotorOneID = 6;
     public static final int rightShooterMotorTwoID = 5;

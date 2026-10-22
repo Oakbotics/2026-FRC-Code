@@ -19,6 +19,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -33,6 +35,8 @@ import frc.robot.drive.TunerConstants;
 import frc.robot.elevator.ElevatorCommand;
 import frc.robot.elevator.ElevatorConstants;
 import frc.robot.elevator.ElevatorSubsystem;
+import frc.robot.example.ExampleCommand;
+import frc.robot.example.ExampleSubsystem;
 import frc.robot.hopper.HopperCommand;
 import frc.robot.hopper.HopperConstants;
 import frc.robot.hopper.HopperExtendCommandGroup;
@@ -56,14 +60,17 @@ import frc.robot.shooter.KickerCommandGroup;
 import frc.robot.shooter.KickerRollerCommand;
 import frc.robot.shooter.KickerSubsystem;
 import frc.robot.shooter.LeftShooterSubsystem;
+import frc.robot.shooter.MotorCommand;
+import frc.robot.shooter.MotorSubsystem;
 import frc.robot.shooter.RightShooterSubsystem;
 import frc.robot.shooter.ShooterCommand;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); 
-    public double shooterRPS = 20.0;
+    public double shooterRPS = 6.5;
     boolean isPressed;
+    private final Timer timeToRumble;
     private final LeftShooterSubsystem m_leftShooterSubsystem = new LeftShooterSubsystem();
     private final RightShooterSubsystem m_rightShooterSubsystem = new RightShooterSubsystem();
     private final KickerSubsystem m_kickerSubsystem = new KickerSubsystem();
@@ -71,6 +78,8 @@ public class RobotContainer {
     private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     private final HopperSubsystem m_hopperSubsystem = new HopperSubsystem();
     private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
+    private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+    private final MotorSubsystem m_motorSubsystem = new MotorSubsystem();
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -90,6 +99,8 @@ public class RobotContainer {
     double speedMultiplier;
 
     public RobotContainer() {
+        timeToRumble = new Timer();
+        timeToRumble.start();
         configureBindings();
     }
 
@@ -126,28 +137,33 @@ public class RobotContainer {
         //     )
         // ).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
 
-        joystick.rightTrigger().whileTrue(
-            new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, () -> shooterRPS)
-        ).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
-
-        joystick.rightBumper().whileTrue(new KickerRollerCommand(m_kickerSubsystem, m_rollerSubsystem));
+        //joystick.a().whileTrue(new ShooterCommand(m_rightShooterSubsystem, m_leftShooterSubsystem, () -> shooterRPS));
+        joystick.rightTrigger().whileTrue(new ExampleCommand(m_exampleSubsystem, 5.0));
+        // joystick.rightBumper().whileTrue(new KickerRollerCommand(m_kickerSubsystem, m_rollerSubsystem));
 
         // joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_intakeSubsystem, m_hopperSubsystem)).onFalse(new HopperExtendCommandGroup(m_hopperSubsystem));
 
-        joystick.povUp().onTrue(new InstantCommand(() -> shooterRPS = MathUtil.clamp(shooterRPS + 2.0, 5.0, 70.0)));
-        joystick.povDown().onTrue(new InstantCommand(() -> shooterRPS = MathUtil.clamp(shooterRPS - 2.0, 5.0, 70.0)));
+        // joystick.povUp().onTrue(new InstantCommand(() -> shooterRPS = MathUtil.clamp(shooterRPS + 2.0, 5.0, 70.0)));
+        // joystick.povDown().onTrue(new InstantCommand(() -> shooterRPS = MathUtil.clamp(shooterRPS - 2.0, 5.0, 70.0)));
 
-        joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
-        joystick.povRight().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
-        joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 12));
-        joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, m_rollerSubsystem, 12));
-        joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
-        joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, 0.15));
+        // joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
+        // joystick.povRight().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+        // joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 12));
+        // joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, m_rollerSubsystem, 12));
+        // joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
+        // joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, 0.15));
         // joystick.b().onTrue(new HopperRetractCommandGroup(m_hopperSubsystem));
         // joystick.b().onTrue(new ElevatorCommand(m_elevatorSubsystem, ElevatorConstants.fullyExtended));
 
         // joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
         // joystick.povRight().onTrue(new InstantCommand(() ->  m_hopperSubsystem.zeroHopper()));
+        new Trigger( 
+            {
+                if(timeToRumble.hasElapsed >= 5.0) {
+                    joystick.setRumble(RumbleType.kBothRumble, 1.0);
+                }
+            },{()-> (timeToRumble.hasElapsed >= 5.0)}
+        );
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
