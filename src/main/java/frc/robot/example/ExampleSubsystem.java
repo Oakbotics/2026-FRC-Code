@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ExampleSubsystem extends SubsystemBase {
-  private final TalonFX intakeMotor = new TalonFX(0);
+  private final TalonFX intakeMotor = new TalonFX(1);
   private final VoltageOut voltageOut = new VoltageOut(0); 
   private final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
 
