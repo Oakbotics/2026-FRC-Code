@@ -23,7 +23,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void intakeFuel(double speed) {
     intakeMotor.setControl(voltageOut.withOutput(speed));
-  }
+  } 
 
   public void outakeFuel(double speed) {
     intakeMotor.setControl(voltageOut.withOutput(-speed));

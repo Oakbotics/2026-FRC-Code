@@ -32,6 +32,8 @@ import frc.robot.drive.TunerConstants;
 import frc.robot.elevator.ElevatorCommand;
 import frc.robot.elevator.ElevatorConstants;
 import frc.robot.elevator.ElevatorSubsystem;
+import frc.robot.example.ExampleCommand;
+import frc.robot.example.ExampleSubsystem;
 import frc.robot.hopper.HopperCommand;
 import frc.robot.hopper.HopperConstants;
 import frc.robot.hopper.HopperExtendCommandGroup;
@@ -69,6 +71,7 @@ public class RobotContainer {
     private final HopperSubsystem m_hopperSubsystem = new HopperSubsystem();
     private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -106,63 +109,66 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        drivetrain.setDefaultCommand(
-            drivetrain.applyRequest(() -> {
+        // drivetrain.setDefaultCommand(
+        //     drivetrain.applyRequest(() -> {
 
-                boolean isPressed = joystick.leftBumper().getAsBoolean();
-                speedMultiplier = isPressed ? 0.45 : 0.8; 
+        //         boolean isPressed = joystick.leftBumper().getAsBoolean();
+        //         speedMultiplier = isPressed ? 0.45 : 0.8; 
                 
-                return drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * speedMultiplier) 
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * speedMultiplier) 
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate);
-            })
-        );
+        //         return drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * speedMultiplier) 
+        //             .withVelocityY(-joystick.getLeftX() * MaxSpeed * speedMultiplier) 
+        //             .withRotationalRate(-joystick.getRightX() * MaxAngularRate);
+        //     })
+        // );
 
-        final var idle = new SwerveRequest.Idle();
-        RobotModeTriggers.disabled().whileTrue(
-            drivetrain.applyRequest(() -> idle).ignoringDisable(true)
-        );
+        // final var idle = new SwerveRequest.Idle();
+        // RobotModeTriggers.disabled().whileTrue(
+        //     drivetrain.applyRequest(() -> idle).ignoringDisable(true)
+        // );
         
-        joystick.rightTrigger().whileTrue(
-            new ParallelCommandGroup(
-                new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
+        // joystick.rightTrigger().whileTrue(
+        //     new ParallelCommandGroup(
+        //         new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
                 
-                new SequentialCommandGroup(
-                    new AlignRotationToHubOdometry(
-                        drivetrain,
-                        m_limeLightSubsystem,
-                        () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
-                        () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
-                    ) //.withTimeout(1.25),
+        //         new SequentialCommandGroup(
+        //             new AlignRotationToHubOdometry(
+        //                 drivetrain,
+        //                 m_limeLightSubsystem,
+        //                 () -> MathUtil.applyDeadband(-joystick.getLeftY(), 0.10) * MaxSpeed,
+        //                 () -> MathUtil.applyDeadband(-joystick.getLeftX(), 0.10) * MaxSpeed
+        //             ) //.withTimeout(1.25),
 
-                    //drivetrain.applyRequest(() -> brake).withTimeout(3.0)
-                )
-            )
-        ).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
+        //             //drivetrain.applyRequest(() -> brake).withTimeout(3.0)
+        //         )
+        //     )
+        // ).onFalse(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
 
-        joystick.povUp().whileTrue(
-            new ParallelCommandGroup(
-                new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
-                new IntakeCommand(m_intakeSubsystem, 12)
-            )
-        );
+        // joystick.povUp().whileTrue(
+        //     new ParallelCommandGroup(
+        //         new ShootFromHubDistance(m_leftShooterSubsystem, m_rightShooterSubsystem, m_limeLightSubsystem),
+        //         new IntakeCommand(m_intakeSubsystem, 12)
+        //     )
+        // );
 
-        joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_intakeSubsystem, m_hopperSubsystem)).onFalse(new HopperExtendCommandGroup(m_hopperSubsystem));
+        // joystick.rightBumper().whileTrue(new KickerCommandGroup(m_kickerSubsystem, m_rollerSubsystem, m_intakeSubsystem, m_hopperSubsystem)).onFalse(new HopperExtendCommandGroup(m_hopperSubsystem));
 
-        joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
-        joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
-        joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 12));
-        joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, m_rollerSubsystem, 12));
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.y().onTrue(new HopperExtendCommandGroup(m_hopperSubsystem));
-        // joystick.b().onTrue(new HopperRetractCommandGroup(m_hopperSubsystem));
-        joystick.b().onTrue(new ElevatorCommand(m_elevatorSubsystem, ElevatorConstants.fullyExtended));
-
-        // joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
-        // joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
-        // joystick.povRight().onTrue(new InstantCommand(() ->  m_hopperSubsystem.zeroHopper()));
-
-        drivetrain.registerTelemetry(logger::telemeterize);
+        // joystick.povLeft().onTrue(new ResetOdometryLimelight(drivetrain));
+        // joystick.povDown().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)))));
+        // joystick.leftTrigger().whileTrue(new IntakeCommand(m_intakeSubsystem, 12));
+        // joystick.x().whileTrue(new OutakeCommand(m_intakeSubsystem, m_rollerSubsystem, 12));
+        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        // joystick.y().onTrue(new HopperExtendCommandGroup(m_hopperSubsystem));
+        // // joystick.b().onTrue(new HopperRetractCommandGroup(m_hopperSubsystem));
+        // joystick.b().onTrue(new ElevatorCommand(m_elevatorSubsystem, ElevatorConstants.fullyExtended));
+        joystick.a().whileTrue(new ExampleCommand(m_exampleSubsystem, 10.0));
+        // // joystick.a().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyExtended));
+        // // joystick.y().onTrue(new HopperCommand(m_hopperSubsystem, HopperConstants.fullyRetracted));
+        // // joystick.povRight().onTrue(new InstantCommand(() ->  m_hopperSubsystem.zeroHopper()));
+        // 
+        // (O..O)
+        //  ----wt
+        //
+        // drivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {
