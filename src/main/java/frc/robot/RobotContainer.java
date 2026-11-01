@@ -167,7 +167,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         //normal trench autos
-        // return new PathPlannerAuto("RightGreedyTrenchCenter2CycleAuto");
+        //return new PathPlannerAuto("RightGreedyTrenchCenter2CycleAuto");
         // return new PathPlannerAuto("LeftGreedyTrenchCenter2CycleAuto");
         
         //middle autos
